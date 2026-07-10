@@ -7,9 +7,9 @@ go in `07_assembly_notes/` using the template in `PRINT_LOG_TEMPLATE.md` §5.
 > ⚠ **Scope + caveats.** This maps the *supplier's* instructions for the stock RC-01 —
 > our build deviates (own electronics, FPV camera, W17 paint), so treat drawings as
 > geometry reference, not gospel. Electronics installation is owned by the firmware
-> repos and `docs/00_BUILD_SHEET_v2.md`, not this file. The PDFs/photos have **not been
-> visually reviewed by Claude** (binary files) — the mapping below is from their
-> filenames and READ MEs; verify against the actual pages as you use them.
+> repos and `docs/00_BUILD_SHEET_v2.md`, not this file. Drawings `[0][1][2][3][5][7]`
+> **were visually reviewed 2026-07-10** (key findings below); `[4][6][8][9]` and the
+> photos still haven't been — verify against the actual pages as you use them.
 
 ---
 
@@ -44,6 +44,30 @@ go in `07_assembly_notes/` using the template in `PRINT_LOG_TEMPLATE.md` §5.
 (Rev 1.1-era build; useful even though we skip the 1.1 steering). Support contact in
 its READ ME (ryanscreations28@gmail.com).
 
+### Key findings from the reviewed drawings (2026-07-10)
+
+- **`[2]` Floor:** the **"Servo Holder" is a floor part** (→ `Servoholder.stl`,
+  now required); the **rear wing mounts on the floor's spring-mount tower**, not the
+  body; **"Insert small DRS Servo here (optional)"** + a metal rod to the servo horn —
+  DRS was designed in from the start. Floor set in the drawing: Front Floor, Rear
+  Floor, Rear Floor 2 (bendable — thin metal rod through the hole), Floorboard,
+  Side Vents L/R, Diffuser — matches our group 05. 12× M3 nuts sit in floor slots.
+- **`[3]` Front suspension:** the steering servo is NOT in the front assembly — a
+  **long rod links the servo to the servo-saver** ("mount this hole with a rod to the
+  steering servo motor"). Guide rods tap in gently with a hammer. Front assembly locks
+  to the floor with nuts.
+- **`[1]` Body (2023-era):** nose and front wing are always **separate printed parts**
+  bolted on (12× M3 pattern) — no rear wing in the body drawing (it's on the chassis).
+- **`[5]` Rev-1 body upgrades:** shows "Revised Front Nose" (=`FRONTNOSE2024`) and
+  "Revised Front Wing" (=`2024 Revised Front Wing`) as separate parts, installed "as
+  per original instructions".
+- **`[7]` Rev-1 rear axle:** the Rev-1 stack seats the **bearings in the Motor Cover
+  L/R parts** (no separate axle holders visible!), bolts **diffuser + rear wing +
+  backplate** together with M3 (don't touch the axle), retains rear wheels by an
+  **M4 bolt through the tyreslot into the axle**, and has a **"Pass LED here
+  (optional)"** channel + "Light Cover" at the brake-light position. Non-printed:
+  Tamiya F104 rim + tyre, M3/M4 bolts, 2 bearings.
+
 ---
 
 ## Hardware / fastener list
@@ -61,8 +85,14 @@ see `docs/00_BUILD_SHEET_v2.md`).
 | Metal spacers | **14 mm ID**, rear axle | 4 (2/side) | between printed spacers and axle — **heat protection, do not omit** |
 | M4 double-sided rod | 40 mm | 2 | steering arms |
 | M4 tie rods | 22 mm | 6 (4 steering + 2 servo) | steering linkage |
-| Front shocks | Tamiya CVA Super Mini ~51–52 mm | 2 | ⚠ 51 (Ryan) vs 52 mm (build sheet v2) — measure on arrival |
-| Rear shock | 68 mm | 1 | rear rocker/mount — gate #1 in `BUILD_SHEET.md` |
+| M4 rod-end ball joints | 24 mm | pack (BOM v2) | steering links |
+| Turnbuckles | 3×32 mm | 2 (+crash spares) (BOM v2) | adjustable toe links — the crash-snap item |
+| M3 ball studs | Tamiya/Sakura style | pack (BOM v2) | pivot balls the rod ends clip onto |
+| King pins | M3×30 mm dowel + circlip | 2 (+spares) (BOM v2) | knuckle pivots — ⚠ confirm 3 mm bore in slicer |
+| Steering servo | DS3235SG (standard size), 25T horn | 1 (in transit) | into `Servoholder` on the rear floor — ⚠ fit-check on arrival |
+| DRS servo | MG90S micro, positional | 1 of 3 (in transit) | into the chosen rear wing's pocket + metal rod to horn (drawing `[2]`) |
+| Front shocks | 52 mm ordered (BOM v2) | 2 (+spares) | ⚠ 51 (Ryan) vs 52 mm (v2) — measure on arrival |
+| Rear shock | 68 mm (HSP, ordered) | 1 (+spare) | rear stack — gate #1 in `BUILD_SHEET.md` |
 | Pinion / spur | 28T / HPI 75T, both 48-pitch | 1+1 | belt drive |
 | Heat-set inserts (optional, recommended) | brass **M3 × 5 mm** | pack | high-wear screw bosses — install per `BEGINNER_3D_PRINTING_GUIDE.md`, safety in `FINISHING_GUIDE.md` |
 | Metal sleeves (optional) | 5 mm OD × M3, 5 mm long | 4 | replaces printed `GuideRod` in front suspension |
@@ -81,14 +111,21 @@ screws) of every stage first**, then final assembly after painting.
 
 ### Stage 2 — Rear axle + drivetrain
 - [ ] Drawing `[7]`; 14 mm metal sleeves ON THE AXLE before printed spacers
-- [ ] Axle holders (L/R), motor lock, spur/pinion mesh (48P both, slight backlash)
+- [ ] Bearing carriers per resolved Gate A: original path = axle holders (L/R);
+      Rev-1 path = bearings seat in the Motor Covers (drawing `[7]`)
+- [ ] Motor lock, spur/pinion mesh (48P both, slight backlash)
 - [ ] 68 mm shock into chosen mount (per resolved gate #1)
-- [ ] Rear hub (ASA) + wheels; axle spins free, no wobble
+- [ ] Rear wing onto the chosen stack (+ DRS servo in pocket, metal rod to horn)
+- [ ] Rear wheels onto axle via tyre-slot adapters (M4 bolt through tyreslot into
+      axle per `[7]`) — there is **no separate rear-hub part** (v2's "ASA rear hub"
+      has no matching STL); axle spins free, no wobble
 
 ### Stage 3 — Front suspension + steering
 - [ ] Drawing `[3]`; original oil-shock parts only (no Rev 1.1 steering)
 - [ ] King pins ~3 mm bore verified; uprights pivot freely
-- [ ] M4 tie rods + servo linkage; equal lengths L/R before trim
+- [ ] Steering servo into `Servoholder` on the rear floor; long rod to the
+      servo-saver (drawing `[3]`) — centre the servo in firmware BEFORE linkage
+- [ ] M4 tie rods + turnbuckles + ball studs; equal lengths L/R before trim
 - [ ] Shocks mounted; suspension compresses/returns without binding
 
 ### Stage 4 — Floor
@@ -102,7 +139,11 @@ screws) of every stage first**, then final assembly after painting.
 ### Stage 6 — Body + cosmetics (after painting)
 - [ ] Drawing `[1]` + 2024-body READ ME: 3× M3 bolts, holes are tight/self-threading —
       thread carefully once, don't strip; consider M3×5 inserts if they wear
+- [ ] Nose (`FRONTNOSE2024`, silver) bolts to the front floor per the body READ ME;
+      front wing per drawing `[5]`/original instructions
 - [ ] Halo, mirrors, camera-top pod, brake-light diffuser (lens unpainted, WS2812 seated)
+- [ ] Rear wing is a Stage-2 (chassis) item, not a body item — verify it cleared
+      Stage 2 with DRS actuating before final body fit
 - [ ] Wings: check for crash-sacrificial mounting (see `FINISHING_GUIDE.md` realism-vs-durability)
 
 **Plastic-thread golden rule:** snug, not tight; re-threading the same plastic hole

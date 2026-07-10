@@ -90,11 +90,24 @@ filament on hand, nothing printed yet.
 
 Tracked here until resolved; details in `MODEL_INVENTORY.md`:
 
-1. **Gate A** — rocker vs 68 mm shock (slicer check) → decides 8 rear files.
-2. **Gate B** — is nose/front wing integrated in `NEW BODY 2024 FRONT 1`? → FRONTNOSE2024 / front wing / silver-nose plan.
-3. **Gate C** — measure camera + ACP2006 blower → render duct from .scad. *(blocked on hardware)*
-4. **Gate D** — does the oil-shock front use `Servoholder.stl`?
-5. Tamiya tyres 54198/51400 + front-shock length check (51 vs 52 mm) + battery ≤75×45×25 mm — purchases to build-sheet numbers.
+1. **Gate A + rear wing/DRS (coupled, expanded 2026-07-10)** — rocker vs 68 mm shock
+   in the slicer decides the rear stack (Rev-1 path may replace the L/R axle holders —
+   drawing `[7]`); pick the DRS wing (2021 / MCL60-style / PIP DRSv2) together with it.
+   Candidates + pros/cons: `MODEL_INVENTORY.md` Gate B. DRS reinstated by Vitaliy
+   2026-07-10 (BOM v2: MG90S servo, CH6).
+2. **Gate B front — RESOLVED 2026-07-10:** `FRONTNOSE2024` + `2024 Revised Front Wing`
+   → REQUIRED (drawing `[5]`, body README, bbox math). Residual: slicer visual confirm
+   of shell+nose+wing together; formally reject `pin.stl` once no pin holes are seen.
+3. **Gate C** — camera on hand (measure it now); ACP2006-class blower in transit →
+   render duct from .scad when both are measured.
+4. **Gate D — RESOLVED 2026-07-10:** `Servoholder` is the floor servo mount (drawing
+   `[2]`) → REQUIRED. Residual: DS3235SG fit-check on arrival, before the floor batch.
+5. Hardware **ordered, in transit** (tyres 54198/51400, bearings, 52/68 mm shocks,
+   servos, king pins, belt set…). On arrival: measure front shocks (51 vs 52 mm),
+   spur↔pulley bolt pattern, both servo fit-checks. **Battery not final** — keep
+   ≤75×45×25 mm; measure the floor tub in the slicer first.
 6. Tyre-slot adapter final quantity (1 or 2 per side) — at assembly.
 7. Rear tyre-slot adapters heat-watch after first drives (PETG → ASA if soft).
 8. Review this session's inventory + material matrix (Vitaliy).
+9. Execute `FIRST_PRINT_DECISION.md` (rev. 2026-07-10 second pass): coupons printable
+   now; the coupled rear decision is the next slicer sitting.

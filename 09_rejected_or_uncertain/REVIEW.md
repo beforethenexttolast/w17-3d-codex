@@ -7,35 +7,45 @@ its entry out of here.
 
 ## UNCERTAIN — parked behind human gates (do not print yet)
 
+*(2026-07-10 second pass: `FRONTNOSE2024`, `2024 Revised Front Wing`, `Servoholder`
+moved OUT to REQUIRED — Gate B front / Gate D resolved via drawings [5], [2], [3] and
+the 2024-body README. Seven rear-wing/DRS files moved IN from the rejected tiers —
+the user reinstated DRS (BOM v2 orders an MG90S for it). Gate A text expanded after
+reading drawing [7].)*
+
 | File | Location | Material if selected | Uncertainty | Gate / required check |
 |---|---|---|---|---|
-| `2024 Revised Front Wing.stl` | `unsorted_stl_raw/RC-01 Revision 1.1/Original + Revision 1 Files pre-released to fully build the car/RC-01 Revision 1 Files/Body Parts` | PLA | medium | open NEW BODY 2024 FRONT 1 in slicer: is nose/front wing integrated? If not, this part is needed (and is the silver-nose piece -> print white/grey) |
-| `Diffuser backplate.stl` | `unsorted_stl_raw/RC-01 Revision 1.1/Original + Revision 1 Files pre-released to fully build the car/RC-01 Revision 1 Files/Rear Axle Upgrades` | ASA or PETG | medium | verify whether chosen rear assembly needs it (drawing [7]) |
-| `FRONTNOSE2024.stl` | `unsorted_stl_raw/RC-01 Revision 1 Files/Body Upgrades` | PLA white/grey | medium | open NEW BODY 2024 FRONT 1 in slicer: is nose/front wing integrated? If not, this part is needed (and is the silver-nose piece -> print white/grey) |
-| `Rear Back Motor Cover REVISION 1.stl` | `unsorted_stl_raw/RC-01 Revision 1.1/Original + Revision 1 Files pre-released to fully build the car/RC-01 Revision 1 Files/Rear Axle Upgrades` | ASA if selected | medium | GATE: confirm Spring mount 2 REVISION 1 seats the 68mm coilover in slicer; fits -> hybrid rocker path, else original mount and skip REV4/springblock |
-| `Rear Left Motor Cover REVISION 1.stl` | `unsorted_stl_raw/RC-01 Revision 1.1/Original + Revision 1 Files pre-released to fully build the car/RC-01 Revision 1 Files/Rear Axle Upgrades` | ASA if selected | medium | GATE: confirm Spring mount 2 REVISION 1 seats the 68mm coilover in slicer; fits -> hybrid rocker path, else original mount and skip REV4/springblock |
-| `Rear Right Motor Cover REVISION 1.stl` | `unsorted_stl_raw/RC-01 Revision 1.1/Original + Revision 1 Files pre-released to fully build the car/RC-01 Revision 1 Files/Rear Axle Upgrades` | ASA if selected | medium | GATE: confirm Spring mount 2 REVISION 1 seats the 68mm coilover in slicer; fits -> hybrid rocker path, else original mount and skip REV4/springblock |
-| `RearSpringMountREV4.stl` | `unsorted_stl_raw/Ryans Creations Open RC F1 Car/Rear Suspension` | ASA if selected | high | GATE: confirm Spring mount 2 REVISION 1 seats the 68mm coilover in slicer; fits -> hybrid rocker path, else original mount and skip REV4/springblock |
-| `Servoholder.stl` | `unsorted_stl_raw/Ryans Creations Open RC F1 Car/Floor` | PETG | low | check against drawing [3] whether oil-shock front uses it or the servo mounts differently |
-| `Spring Block.stl` | `unsorted_stl_raw/RC-01 Revision 1.1/Original + Revision 1 Files pre-released to fully build the car/RC-01 Revision 1 Files/Rear Axle Upgrades` | ASA if selected | high | GATE: confirm Spring mount 2 REVISION 1 seats the 68mm coilover in slicer; fits -> hybrid rocker path, else original mount and skip REV4/springblock |
-| `Spring mount 2 REVISION 1.stl` | `unsorted_stl_raw/RC-01 Revision 1.1/Original + Revision 1 Files pre-released to fully build the car/RC-01 Revision 1 Files/Rear Axle Upgrades` | ASA if selected | high | GATE: confirm Spring mount 2 REVISION 1 seats the 68mm coilover in slicer; fits -> hybrid rocker path, else original mount and skip REV4/springblock |
-| `camera 2 colour.stl` | `unsorted_stl_raw/Ryans Creations Open RC F1 Car/Car Body/Decoration Parts` | PETG or PLA | low | GATE: measure real camera + ACP2006 blower before choosing/rendering |
-| `camera_blower_duct.scad` | `unsorted_stl_raw` | PETG | high | GATE: measure real camera + ACP2006 blower before choosing/rendering |
-| `cameranose.stl` | `unsorted_stl_raw/Ryans Creations Open RC F1 Car/Car Body/Decoration Parts` | PETG or PLA | low | GATE: measure real camera + ACP2006 blower before choosing/rendering |
-| `f104camera.stl` | `unsorted_stl_raw/Ryans Creations Open RC F1 Car/Car Body/Decoration Parts` | PETG or PLA | low | GATE: measure real camera + ACP2006 blower before choosing/rendering |
-| `pin.stl` | `unsorted_stl_raw/Ryans Creations Open RC F1 Car/Car Body/General Parts` | PLA or PETG | low | check if 2024 body (M3 bolts) still uses pins |
-| `springblock.stl` | `unsorted_stl_raw/Ryans Creations Open RC F1 Car/Rear Suspension` | ASA if selected | high | GATE: confirm Spring mount 2 REVISION 1 seats the 68mm coilover in slicer; fits -> hybrid rocker path, else original mount and skip REV4/springblock |
+| `Diffuser backplate.stl` | `unsorted_stl_raw/RC-01 Revision 1.1/Original + Revision 1 Files pre-released to fully build the car/RC-01 Revision 1 Files/Rear Axle Upgrades` | ASA or PETG | medium | needed iff Gate A resolves to the Rev-1 stack — drawing [7] bolts diffuser + rear wing + backplate together |
+| `Rear Back Motor Cover REVISION 1.stl` | `unsorted_stl_raw/RC-01 Revision 1.1/Original + Revision 1 Files pre-released to fully build the car/RC-01 Revision 1 Files/Rear Axle Upgrades` | ASA if selected | medium | GATE A: confirm Spring mount 2 REVISION 1 seats the 68mm coilover in slicer; fits -> Rev-1 stack (bearings seat in these covers per [7] — check whether Left/Rightrearaxle are replaced), else original stack; resolve together with the rear-wing gate |
+| `Rear Left Motor Cover REVISION 1.stl` | `unsorted_stl_raw/RC-01 Revision 1.1/Original + Revision 1 Files pre-released to fully build the car/RC-01 Revision 1 Files/Rear Axle Upgrades` | ASA if selected | medium | GATE A (same as above) |
+| `Rear Right Motor Cover REVISION 1.stl` | `unsorted_stl_raw/RC-01 Revision 1.1/Original + Revision 1 Files pre-released to fully build the car/RC-01 Revision 1 Files/Rear Axle Upgrades` | ASA if selected | medium | GATE A (same as above) |
+| `RearSpringMountREV4.stl` | `unsorted_stl_raw/Ryans Creations Open RC F1 Car/Rear Suspension` | ASA if selected | high | GATE A (same as above) — only if the rocker does NOT fit |
+| `Spring Block.stl` | `unsorted_stl_raw/RC-01 Revision 1.1/Original + Revision 1 Files pre-released to fully build the car/RC-01 Revision 1 Files/Rear Axle Upgrades` | ASA if selected | high | GATE A (same as above) |
+| `Spring mount 2 REVISION 1.stl` | `unsorted_stl_raw/RC-01 Revision 1.1/Original + Revision 1 Files pre-released to fully build the car/RC-01 Revision 1 Files/Rear Axle Upgrades` | ASA if selected | high | GATE A (same as above) |
+| `springblock.stl` | `unsorted_stl_raw/Ryans Creations Open RC F1 Car/Rear Suspension` | ASA if selected | high | GATE A (same as above) — only if the rocker does NOT fit |
+| `2021Rearwing with DRS.stl` | `unsorted_stl_raw/Ryans Creations Open RC F1 Car/Car Body/2021 Upgrades` | PLA or PETG | medium | REAR-WING/DRS GATE: pairs with the ORIGINAL rear stack — drawings [0]/[2] show it mounted with a DRS-servo pocket + metal-rod linkage; pick wing together with Gate A in Bambu Studio |
+| `2021Rearwingflapdeco.stl` | `unsorted_stl_raw/Ryans Creations Open RC F1 Car/Car Body/2021 Upgrades/DECO Painting Parts` | PLA | medium | REAR-WING/DRS GATE: colour-split flap deco — only if the 2021 wing is chosen |
+| `MCL60 2023 Rear Wing.stl` | `unsorted_stl_raw/RC-01 Revision 1.1/Original + Revision 1 Files pre-released to fully build the car/RC-01 Revision 1 Files/Body Parts` | PLA or PETG | medium | REAR-WING/DRS GATE: very likely drawing [7]'s "Revised rear wing" (only rear-wing STL in the Rev-1 release); pairs with the Rev-1 stack + DRS Arm for 2023; McLaren-shaped but painted black anyway |
+| `DRS Arm for 2021 Rear Wing.stl` | `unsorted_stl_raw/Ryans Creations Open RC F1 Car/Experimental Parts` | PETG | medium | REAR-WING/DRS GATE: 58mm actuation arm for the 2021 wing |
+| `DRS Arm for 2023 Rear Wing.stl` | `unsorted_stl_raw/Ryans Creations Open RC F1 Car/Experimental Parts` | PETG | medium | REAR-WING/DRS GATE: 63.8mm actuation arm for the 2023-style wing |
+| `Print_In_Place DRSv2.stl` | `unsorted_stl_raw/Ryans Creations Open RC F1 Car/Car Body/2023 Upgrades` | PLA or PETG | high | REAR-WING/DRS GATE: newest DRS design by name, but no drawing covers it; PIP hinge = printability risk; mounting unverified |
+| `DRS Diffuser.stl` | `unsorted_stl_raw/Ryans Creations Open RC F1 Car/Floor` | PETG | high | REAR-WING/DRS GATE: floor-diffuser variant for a DRS install — compare against required Diffuser.stl once the wing is chosen |
+| `camera 2 colour.stl` | `unsorted_stl_raw/Ryans Creations Open RC F1 Car/Car Body/Decoration Parts` | PETG or PLA | low | GATE C: camera on hand (owned+flashed); measure it now, blower in transit — probably unneeded (camera top 1.1 selected) |
+| `camera_blower_duct.scad` | `unsorted_stl_raw` | PETG | high | GATE C: measure camera (on hand) + ACP2006-class blower (in transit), set the 9 params, render STL |
+| `cameranose.stl` | `unsorted_stl_raw/Ryans Creations Open RC F1 Car/Car Body/Decoration Parts` | PETG or PLA | low | GATE C (same as camera 2 colour) |
+| `f104camera.stl` | `unsorted_stl_raw/Ryans Creations Open RC F1 Car/Car Body/Decoration Parts` | PETG or PLA | low | GATE C (same as camera 2 colour) |
+| `pin.stl` | `unsorted_stl_raw/Ryans Creations Open RC F1 Car/Car Body/General Parts` | PLA or PETG | low | 2024 body mounts with 3x M3 bolts (README) — pins probably unneeded; confirm no pin holes remain when shells are in the slicer |
 
-## REJECTED — Wrong livery / era (42)
+## REJECTED — Wrong livery / era (39)
 
 Team- or era-specific shells and aero. We paint W17 on the generic 2024 shell.
+*(2026-07-10: `2021Rearwing with DRS`, `2021Rearwingflapdeco`, `MCL60 2023 Rear Wing`
+moved to UNCERTAIN — rear-wing/DRS gate.)*
 
 | File | Location | Reason |
 |---|---|---|
 | `2021 front wing sides.stl` | `unsorted_stl_raw/Ryans Creations Open RC F1 Car/Car Body/2021 Upgrades/DECO Painting Parts` | 2021-era body/aero |
 | `2021 front wing wing.stl` | `unsorted_stl_raw/Ryans Creations Open RC F1 Car/Car Body/2021 Upgrades` | 2021-era body/aero |
-| `2021Rearwing with DRS.stl` | `unsorted_stl_raw/Ryans Creations Open RC F1 Car/Car Body/2021 Upgrades` | 2021-era body/aero |
-| `2021Rearwingflapdeco.stl` | `unsorted_stl_raw/Ryans Creations Open RC F1 Car/Car Body/2021 Upgrades/DECO Painting Parts` | 2021-era body/aero |
 | `2021deco.stl` | `unsorted_stl_raw/Ryans Creations Open RC F1 Car/Car Body/2021 Upgrades/DECO Painting Parts` | 2021-era body/aero |
 | `2021sidevent2.stl` | `unsorted_stl_raw/Ryans Creations Open RC F1 Car/Floor` | 2021-era body/aero |
 | `2023 Front Wingsplit.stl` | `unsorted_stl_raw/Ryans Creations Open RC F1 Car/Car Body/2023 Upgrades` | 2023-era body/aero (2023 top-body chassis line, not our 2024 shell) |
@@ -58,7 +68,6 @@ Team- or era-specific shells and aero. We paint W17 on the generic 2024 shell.
 | `FRONTNOSE2023tighterpins.stl` | `unsorted_stl_raw/Ryans Creations Open RC F1 Car/Car Body/General Parts` | 2023-era body/aero (2023 top-body chassis line, not our 2024 shell) |
 | `LargerturningvaneLeft.stl` | `unsorted_stl_raw/Ryans Creations Open RC F1 Car/Car Body/General Parts` | 2023-era body/aero (2023 top-body chassis line, not our 2024 shell) |
 | `LargerturningvaneRight.stl` | `unsorted_stl_raw/Ryans Creations Open RC F1 Car/Car Body/General Parts` | 2023-era body/aero (2023 top-body chassis line, not our 2024 shell) |
-| `MCL60 2023 Rear Wing.stl` | `unsorted_stl_raw/RC-01 Revision 1.1/Original + Revision 1 Files pre-released to fully build the car/RC-01 Revision 1 Files/Body Parts` | McLaren MCL60 2023 wing |
 | `NEW BODY 2024 FRONT 1 SF24.stl` | `unsorted_stl_raw/RC-01 Revision 1.1/New 2024 Body/Ferrari SF 24` | Ferrari SF24 shell - we paint W17 on generic 2024 |
 | `NEW BODY 2024 REAR BLACK.stl` | `unsorted_stl_raw/RC-01 Revision 1.1/New 2024 Body/Mclaren mcl38` | McLaren MCL38 colour-split shell |
 | `NEW BODY 2024 REAR ORANGE 1.stl` | `unsorted_stl_raw/RC-01 Revision 1.1/New 2024 Body/Mclaren mcl38` | McLaren MCL38 colour-split shell |
@@ -100,22 +109,20 @@ Revision 1/1.1 ball-joint front + revision floors. Locked config = original oil-
 | `Steering Arm 1.stl` | `unsorted_stl_raw/RC-01 Revision 1 Files/Front Axle Upgrades` | Revision-1 front axle upgrade set - locked config uses original front |
 | `Steering Block 12x5x3 Bearings .stl` | `unsorted_stl_raw/RC-01 Revision 1 Files/Front Axle Upgrades` | Revision-1 front axle upgrade set - locked config uses original front |
 
-## REJECTED — Superseded versions (13)
+## REJECTED — Superseded versions (9)
 
 An explicitly newer/other part replaces each of these.
+*(2026-07-10: both `DRS Arm`s, `DRS Diffuser`, `Print_In_Place DRSv2` moved to
+UNCERTAIN — DRS is back in the build.)*
 
 | File | Location | Reason |
 |---|---|---|
 | `2024 halo.stl` | `unsorted_stl_raw/Ryans Creations Open RC F1 Car/Car Body/Decoration Parts` | Superseded by new halo 2.1 |
-| `DRS Arm for 2021 Rear Wing.stl` | `unsorted_stl_raw/Ryans Creations Open RC F1 Car/Experimental Parts` | DRS system - dropped from v2 build (no DRS in locked config) |
-| `DRS Arm for 2023 Rear Wing.stl` | `unsorted_stl_raw/Ryans Creations Open RC F1 Car/Experimental Parts` | DRS system - dropped from v2 build (no DRS in locked config) |
-| `DRS Diffuser.stl` | `unsorted_stl_raw/Ryans Creations Open RC F1 Car/Floor` | DRS system - dropped from v2 build (no DRS in locked config) |
 | `F104 tyreslot1 no grubs.stl` | `unsorted_stl_raw/RC-01 Revision 1 Files/Rear Axle Upgrades` | Superseded by the 'tighter' Rev1.1 adapters |
 | `F104 tyreslot2 no grubs.stl` | `unsorted_stl_raw/RC-01 Revision 1 Files/Rear Axle Upgrades` | Superseded by the 'tighter' Rev1.1 adapters |
 | `Mirrors 2024.stl` | `unsorted_stl_raw/Ryans Creations Open RC F1 Car/Car Body/Decoration Parts` | Superseded by NEW BODY 2024 Mirror |
 | `NewRearCovertighterholes.stl` | `unsorted_stl_raw/Ryans Creations Open RC F1 Car/Car Body/General Parts` | Old rear covers - 2024 REAR shell replaces them |
 | `Newinvaxle2full.stl` | `unsorted_stl_raw/Ryans Creations Open RC F1 Car/Car Body/Mechanical Parts` | Old invert-axle parts - belt-drive rear uses Left/Rightrearaxle |
-| `Print_In_Place DRSv2.stl` | `unsorted_stl_raw/Ryans Creations Open RC F1 Car/Car Body/2023 Upgrades` | DRS system - dropped from v2 build (no DRS in locked config) |
 | `RCRNewRearCover rev1.stl` | `unsorted_stl_raw/RC-01 Revision 1 Files/Body Upgrades` | Old rear covers - 2024 REAR shell replaces them |
 | `cameratop.stl` | `unsorted_stl_raw/Ryans Creations Open RC F1 Car/Car Body/Decoration Parts` | Superseded by camera top 1.1 |
 | `newinvaxleextended.stl` | `unsorted_stl_raw/Ryans Creations Open RC F1 Car/Car Body/Mechanical Parts` | Old invert-axle parts - belt-drive rear uses Left/Rightrearaxle |

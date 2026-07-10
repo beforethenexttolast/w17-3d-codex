@@ -10,24 +10,31 @@ READMEs, 6 Inventor `.ipt` sources, 1 OpenSCAD, 1 `.3mf`.
 
 | Tier | Count | Meaning |
 |---|---|---|
-| REQUIRED | **37** | print for the locked build (grouped 02–07 below) |
+| REQUIRED | **40** | print for the locked build (grouped 02–07 below) |
 | OPTIONAL | 5 | cosmetic/display extras, print if desired |
-| UNCERTAIN | 16 (15 STL + 1 .scad) | blocked on a human gate — do NOT print yet |
-| REJECTED_LIVERY | 42 | wrong team/era shells & aero (Ferrari, McLaren, SF23, RB19, 2021/2023) |
+| UNCERTAIN | 20 (19 STL + 1 .scad) | blocked on a human gate — do NOT print yet |
+| REJECTED_LIVERY | 39 | wrong team/era shells & aero (Ferrari, McLaren, SF23, RB19, 2021/2023) |
 | REJECTED_WRONG_CHASSIS | 18 | Revision 1/1.1 front & floor parts — we run the original oil-shock config |
-| REJECTED_SUPERSEDED | 13 | older versions of parts we print differently |
+| REJECTED_SUPERSEDED | 9 | older versions of parts we print differently |
 | DUPLICATE | 22 | identical file at a second path (canonical copy noted in CSV) |
 | REFERENCE | 57 | PDFs, photos, READMEs, CAD sources — keep, never print |
 
+*(Counts revised 2026-07-10 second pass: +3 required — FRONTNOSE2024, 2024 Revised
+Front Wing, Servoholder — resolved by reading drawings [2]/[3]/[5]; 7 rear-wing/DRS
+files moved from rejected to UNCERTAIN after the user's DRS decision. See the
+change note at the bottom.)*
+
 **How to read the tables.** Dims are the authored-frame bounding box in mm (X×Y×Z) —
 NOT print orientation; orientation is decided in the slicer per `PRINT_SPEC.md`.
-Geometry has **not been visually inspected** — classification is from filenames, READMEs,
-the v2 docs, measured bounding boxes, and a skeptical cross-check of the Codex print
-repo's decision reports. Anything load-bearing gets a human check before printing.
+STL geometry has **not been visually inspected** — classification is from filenames,
+READMEs, the v2 docs, measured bounding boxes, and a skeptical cross-check of the Codex
+print repo's decision reports. Six supplier drawings ([0][1][2][3][5][7]) **were
+visually reviewed 2026-07-10** (findings in `ASSEMBLY_NOTES.md`). Anything load-bearing
+still gets a human slicer check before printing.
 
 ---
 
-## REQUIRED (37) — the locked build
+## REQUIRED (40) — the locked build
 
 ### Group 02 — Rear axle + drivetrain · **ASA black, 100% rectilinear** (9)
 
@@ -38,11 +45,11 @@ except Axle Main (nested Rev-1 tree).
 
 | File | Dims (mm) | Confidence | Note / check |
 |---|---|---|---|
-| `Leftrearaxle.stl` | 81×25×10 | high | use the STL (a `.3mf` twin exists — ignore it) |
-| `Rightrearaxle.stl` | 81×35×10 | high | |
+| `Leftrearaxle.stl` | 81×25×10 | **medium** | use the STL (a `.3mf` twin exists — ignore it). ⚠ **do NOT print before Gate A**: drawing `[7]` shows the Rev-1 rear seating the bearings in the Motor Covers instead — these holders may be replaced on that path |
+| `Rightrearaxle.stl` | 81×35×10 | **medium** | ⚠ same Gate A caveat |
 | `beltdrivemotorlock.stl` | 32×3.5×32 | high | belt-drive motor lock |
-| `newgearmotorlock.stl` | 38×3.5×38 | high | second motor lock — v2 lists both |
-| `Axle Main no grubs.stl` | 11×115×15 | **medium** | ⚠ confirm role vs drawing `[7]` before printing |
+| `newgearmotorlock.stl` | 38×3.5×38 | **medium** | ⚠ BOM v2 print list names only `beltdrivemotorlock` — confirm via `[7]`/photos whether both locks are used |
+| `Axle Main no grubs.stl` | 11×115×15 | **medium** | ⚠ confirm role vs drawing `[7]` before printing (note: BOM v2 says the belt set *includes* the metal rear output shaft) |
 | `Left/Right Spacer for long axle.stl` | 44/26×21×21 | **medium** | ⚠ verify spacer pairing at assembly |
 | `NewSpacerleft/right.stl` | 30/18×21×21 | **medium** | ⚠ same — four spacer files, unclear which pair the long axle needs |
 
@@ -52,8 +59,8 @@ Original oil-shock set (locked config). Source: `Ryans…/Front Suspension/`.
 `2023WheelHubsSuspension5.stl` + `…mir.stl` (57×20×50), `Arm4.stl`, `Crossarm3_extended.stl`,
 `GuideRod.stl`, `Steering Block4.stl`, `Suspension Block_10.stl` (37×37×71),
 `servosaverv7.stl` (⚠ multi-body STL — import once, don't duplicate). All high confidence.
-Orient so cornering/steering loads run along layers. Optional: 5×M3 metal sleeves can
-replace printed `GuideRod` (Ryan's parts list).
+Orient so cornering/steering loads run along layers. Optional: 4× metal sleeves
+(5 mm OD × M3, 5 mm long) can replace printed `GuideRod` (Ryan's parts list).
 
 ### Group 04 — Wheels · **PETG** (7)
 
@@ -73,23 +80,35 @@ STL exists (rear wheels mount via the tyre-slot adapters). Flagged instead as th
 watch on the adapters above. The folder name mentions a "Wheelfin" that isn't present —
 presumed not needed.
 
-### Group 05 — Floor · **PETG** (7)
+### Group 05 — Floor · **PETG** (8)
 
 Original floor (NOT the Rev-1.1 front floor). Source: `Ryans…/Floor/`. Medium
 confidence as a set — ⚠ cross-check against drawing `[2] FLOOR ASSEMBLY.pdf` that
-nothing is missing before printing all seven.
+nothing is missing before printing all eight.
 `2023NewFrontFloorLargerParts.stl` (182×8×137 — largest part, fits X1C bed),
 `2023NewBackFloorLargerParts.stl` (117×8×137), `2023NewBackFloorLargerPart2.stl`,
 `FloorBoard2.stl`, `Diffuser.stl` (the floor aero diffuser — not the brake light),
-`2023NEWSideVent1.stl` (⚠ multi-body), `2023NEWSideVent2.stl`.
+`2023NEWSideVent1.stl` (⚠ multi-body), `2023NEWSideVent2.stl`,
+`Servoholder.stl` (23×10×58 — **Gate D resolved 2026-07-10**: drawing `[2]` labels it
+"Servo Holder" on the rear floor; drawing `[3]` shows the servo driving the servo-saver
+via a long rod. ⚠ confirm the ordered DS3235SG fits it when the servo arrives, before
+printing the floor batch).
 
-### Group 06 — Body shell · **PLA matte black, 0.12–0.16 mm** (5)
+### Group 06 — Body shell · **PLA matte black, 0.12–0.16 mm** (7)
 
 Generic 2024 body painted as W17. Source: `RC-01 Revision 1.1/New 2024 Body/` (+ nested
-Body Parts for the camera pod). `NEW BODY 2024 FRONT 1.stl` (161×129×54),
-`NEW BODY 2024 REAR.stl` (156×127×73), `NEW BODY 2024 Mirror.stl`, `new halo 2.1.stl`,
-`camera top 1.1.stl` (FPV camera pod). Mounts with 3× M3 into tight self-threading
-holes (per its READ ME). See the FRONTNOSE2024 gate under UNCERTAIN.
+Body Parts for the camera pod, + Rev-1 Body Upgrades for nose/wing).
+`NEW BODY 2024 FRONT 1.stl` (161×129×54), `NEW BODY 2024 REAR.stl` (156×127×73),
+`NEW BODY 2024 Mirror.stl`, `new halo 2.1.stl`, `camera top 1.1.stl` (FPV camera pod),
+plus — **Gate B front resolved 2026-07-10** —
+`FRONTNOSE2024.stl` (129×42×128, **PLA white/grey**, painted silver; drawing `[5]`
+"Revised Front Nose"; the 2024-body READ ME bolts the nose to the front floor) and
+`2024 Revised Front Wing.stl` (72×181×28; drawing `[5]` "Revised Front Wing"; its
+181 mm span exceeds the FRONT shell bbox — cannot be integrated. ⚠ crash-prone:
+treat as consumable; consider PETG via an MD entry if it keeps breaking).
+Shell mounts with 3× M3 into tight self-threading holes (per its READ ME).
+⚠ Final slicer visual confirm of shell+nose+wing together before printing (no
+duplicated geometry).
 
 ### Group 07 — Brake-light diffuser · **PLA white-transparent** (1)
 
@@ -106,43 +125,68 @@ comes from firmware). Your PLA white-transparent spool matches the spec exactly.
 (⚠ 1.9 mm thin — fragile; confirm the 2024 body even wants one), `sidewingdeco.stl`
 (⚠ 1 mm thin; confirm fitment). All PLA, any color under paint.
 
-## UNCERTAIN (16) — blocked on human gates, do NOT print
+## UNCERTAIN (20) — blocked on human gates, do NOT print
 
-**Gate A — rear rocker vs 68 mm shock** (decides 8 files): open
-`Spring mount 2 REVISION 1.stl` in Bambu Studio next to the 68 mm coilover dimensions.
-- Fits → hybrid rocker path: print `Spring mount 2 REVISION 1` + `Spring Block` + the
-  3× `Rear * Motor Cover REVISION 1` (all ASA); skip `RearSpringMountREV4` + `springblock`.
-- Doesn't fit → original rear mount; skip all of the above.
-- `Diffuser backplate.stl` — verify against drawing `[7]` whether the chosen rear
-  assembly needs it at all (ASA or PETG if yes).
+**Gate A — rear stack: rocker vs 68 mm shock** (decides 8 files, now coupled to the
+rear-wing gate): open `Spring mount 2 REVISION 1.stl` in Bambu Studio next to the
+68 mm coilover dimensions.
+- Fits → Rev-1/hybrid rear stack per drawing `[7]`: print `Spring mount 2 REVISION 1`
+  + `Spring Block` + the 3× `Rear * Motor Cover REVISION 1` + `Diffuser backplate`
+  (all ASA); skip `RearSpringMountREV4` + `springblock`. ⚠ On this path drawing `[7]`
+  seats the **bearings in the Motor Covers** and bolts the **rear wing to the
+  Diffuser backplate** — verify whether `Left/Rightrearaxle` are then replaced, and
+  identify which small STL is `[7]`'s "Light Cover" vs "Diffuser" (we only have
+  `rearbacklightdiffuser`, `Diffuser backplate`, and the floor `Diffuser`).
+- Doesn't fit → original rear stack per drawing `[2]` (axle holders on the rear floor,
+  original spring mounts); skip the Rev-1 pieces above.
+- **Resolve together with the rear-wing gate below** — the wing mounts to whichever
+  rear stack is chosen, not to the body shell.
 
-**Gate B — body completeness** (3 files): open `NEW BODY 2024 FRONT 1` in the slicer
-and check whether nose + front wing are integrated. If not: `FRONTNOSE2024.stl` is
-almost certainly the separate **silver-nose piece** (print PLA white/grey per spec) and
-`2024 Revised Front Wing.stl` is needed. `pin.stl` — check whether the M3-bolted 2024
-body still uses body pins anywhere.
+**Gate B — rear wing + DRS** (7 files; **user decision 2026-07-10: DRS wing planned**,
+BOM v2 orders an MG90S for DRS, wiring atlas drives it on CH6). The *front* half of
+Gate B is **resolved** — nose + front wing moved to REQUIRED group 06; only `pin.stl`
+remains (M3-bolted 2024 body probably needs no pins — confirm in slicer). The rear
+wing is chassis-mounted (drawings `[2]`/`[7]`), so pick it with Gate A:
+
+| Candidate | Pairs with | Evidence | Risk |
+|---|---|---|---|
+| `2021Rearwing with DRS.stl` (105×82×60) + `DRS Arm for 2021 Rear Wing.stl` (58 mm) + optional `2021Rearwingflapdeco.stl` | **original** rear stack | fully documented: drawings `[0]`/`[2]` show it mounted with a DRS-servo pocket + metal-rod linkage | 2021-era tall-wing styling — least W17-like |
+| `MCL60 2023 Rear Wing.stl` (108×41×75) + `DRS Arm for 2023 Rear Wing.stl` (64 mm) | **Rev-1** rear stack | very likely `[7]`'s "Revised rear wing" (the only rear-wing STL in the Rev-1 release); bolts to the Diffuser backplate | McLaren-shaped (painted black anyway); DRS-servo placement not drawn |
+| `Print_In_Place DRSv2.stl` (120×50×83) | unknown | newest DRS design by name ("v2") | no drawing covers it; print-in-place hinge is a beginner printability risk; mounting unverified |
+
+`DRS Diffuser.stl` (68×50×45) — floor-diffuser variant for a DRS install; compare
+against the required `Diffuser.stl` once the wing is chosen. **Human call in Bambu
+Studio: pick by W17 realism + mount compatibility; keep all files parked until then.**
 
 **Gate C — camera measurement** (4 files): `camera_blower_duct.scad` is parametric
-SOURCE (not printable) — measure the real OpenIPC camera + ACP2006 blower, set the 9
-parameters, render an STL, then it joins group 08. `cameranose.stl`,
-`camera 2 colour.stl`, `f104camera.stl` are probably unneeded (camera top 1.1 selected)
-— confirm after the camera is in hand.
+SOURCE (not printable). The **camera is on hand** (owned + flashed per BOM v2) — its
+half of the measurement can happen now; the ACP2006-class blower is in transit.
+Measure both, set the 9 parameters, render an STL, then it joins group 08.
+`cameranose.stl`, `camera 2 colour.stl`, `f104camera.stl` are probably unneeded
+(camera top 1.1 selected) — confirm after the blower arrives.
 
-**Gate D:** `Servoholder.stl` — check drawing `[3]` whether the oil-shock front uses it.
+**Gate D — RESOLVED 2026-07-10:** `Servoholder.stl` moved to REQUIRED group 05.
+Drawing `[2]` labels it "Servo Holder" on the rear floor; drawing `[3]`'s note "mount
+this hole with a rod to the steering servo motor" confirms the servo sits mid-chassis
+driving the servo-saver through a long rod (the Rev-1.1 "direct front facing servo"
+README corroborates: the *original* method was different, i.e. this rod layout).
+Residual check: DS3235SG fitment when the servo arrives — do **not** print the floor
+batch before that.
 
-## REJECTED (73) — keep on disk, never print
+## REJECTED (66) — keep on disk, never print
 
-- **Livery/era (42):** Ferrari SF24 shells, all 14 McLaren MCL38 files, MCL60 wing,
-  SF23 set (top body, horn, sharkfin, camera top, pin), RB19 + 2023 top bodies,
-  sidepods, 2021/2023 wings, noses, decos, turning vanes, 2021 side vent. We paint W17
-  on the generic 2024 shell.
+- **Livery/era (39):** Ferrari SF24 shells, all 14 McLaren MCL38 files, SF23 set
+  (top body, horn, sharkfin, camera top, pin), RB19 + 2023 top bodies, sidepods,
+  2021/2023 front wings, noses, decos, turning vanes, 2021 side vent. We paint W17
+  on the generic 2024 shell. *(MCL60 wing + the two 2021 rear-wing files moved to
+  UNCERTAIN 2026-07-10 — rear-wing/DRS gate.)*
 - **Wrong chassis (18):** the entire `New 1.1 Steering Upgrades` ball-joint set, all
   Revision-1 `Front Axle Upgrades` (ARM1 variants, Armblock, servomounts, steering
   arms/blocks), the three Revision-1 suspension floors + Rev-1.1 front floor.
-- **Superseded (13):** non-"tighter" tyre-slot adapters, both old rear covers,
+- **Superseded (9):** non-"tighter" tyre-slot adapters, both old rear covers,
   `2024 halo` (→ new halo 2.1), `cameratop` (→ camera top 1.1), `Mirrors 2024`
-  (→ NEW BODY Mirror), old invert-axle parts, and the whole DRS system (Print_In_Place
-  DRSv2, DRS diffuser, both DRS arms — DRS was dropped from the v2 build).
+  (→ NEW BODY Mirror), old invert-axle parts. *(The four DRS files moved to UNCERTAIN
+  2026-07-10 — DRS is back in the build.)*
 
 Full per-file list with reasons: `09_rejected_or_uncertain/REVIEW.md` and the CSV.
 
@@ -178,3 +222,22 @@ where this inventory deliberately differs or adds:
   to the PLA white-transparent spool on hand.
 - **Quantities:** their guide guesses tyre-slot adapter counts ("possibly 2") — carried
   here as an explicit check, not a fact.
+
+---
+
+## Change note — 2026-07-10 second pass (gate review)
+
+Evidence: supplier drawings `[0][1][2][3][5][7]` visually reviewed (Claude can read
+the PDFs; findings mapped in `ASSEMBLY_NOTES.md`), `docs/bill_of_materials_v2.md` +
+`docs/w17_wiring_assembly_atlas.html` added, user decisions of 2026-07-10.
+
+- **+3 REQUIRED (37→40):** `FRONTNOSE2024` + `2024 Revised Front Wing` (Gate B front —
+  drawing `[5]`, body README, bbox math) and `Servoholder` (Gate D — drawing `[2]`).
+  Staged with MANIFEST rows.
+- **7 files rejected→UNCERTAIN:** rear-wing/DRS candidates (`2021Rearwing with DRS`,
+  `2021Rearwingflapdeco`, `MCL60 2023 Rear Wing`, both `DRS Arm`s, `Print_In_Place
+  DRSv2`, `DRS Diffuser`) — the user reinstated DRS; BOM v2 orders an MG90S for it.
+- **Gate A expanded:** drawing `[7]` shows the Rev-1 rear seating bearings in the
+  Motor Covers and bolting the rear wing to the Diffuser backplate — the axle-holder
+  files may be path-dependent; Gate A and the rear-wing gate resolve together.
+- CSV regenerated via `01_inventory/build_inventory.py` (210 files, tiers sum checked).

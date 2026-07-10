@@ -17,8 +17,13 @@ target** — quality over speed.
 - **Chassis:** RC-01, **oil-shock** suspension — original floor + original front
   suspension/steering. NOT the Revision-1.1 ball-joint steering, NOT the Rev-1.1 front floor.
 - **Body:** generic **2024 body** (`NEW BODY 2024 FRONT 1` + `REAR` + `Mirror` +
-  `new halo 2.1` + `camera top 1.1`), painted as W17. Skip Ferrari SF24 / McLaren MCL38 /
-  SF23 / RB19 team shells.
+  `new halo 2.1` + `camera top 1.1` + separate `FRONTNOSE2024` (silver-painted) +
+  `2024 Revised Front Wing` — nose/wing are separate parts per drawing `[5]` and the
+  body READ ME), painted as W17. Skip Ferrari SF24 / McLaren MCL38 / SF23 / RB19 team shells.
+- **Rear wing + DRS (decision 2026-07-10):** a **DRS wing is planned** (MG90S servo on
+  CH6 per BOM v2 + wiring atlas). The wing mounts to the **chassis rear stack, not the
+  body shell** (drawings `[2]`/`[7]`); the file is an open gate coupled to the rear-stack
+  choice — candidates in `MODEL_INVENTORY.md` Gate B.
 - **Wheels:** printed rims + hubs + locking nuts + tyre-slot adapters
   (Thingiverse 5414118 set + "tighter" Rev-1.1 adapters); **bare Tamiya tyres glued on**.
 - **Drive:** belt drive; printed motor locks, axle holders, spacers (metal sleeves protect
@@ -47,14 +52,15 @@ Materials and full slicer settings live in `MATERIAL_DECISION_MATRIX.md` and
 |---|---|---|---|
 | 0 | **Test coupons** (bearing-seat + tyre-bead + tolerance coupons) | one per material in use | none — start here |
 | 1 | **1 rim + 1 hub + adapters** → test-fit one Tamiya tyre + bearing | PETG | coupons measured OK; **tyres purchased** |
-| 2 | Remaining 3 rims, hubs (mirror the Right hub for Left!), nuts, adapters | PETG (+ASA rear hub) | tyre + bearing fit confirmed |
+| 2 | Remaining 3 rims, hubs (mirror the Right hub for Left!), nuts, adapters | PETG | tyre + bearing fit confirmed |
 | 3 | **Rear axle + drivetrain** (axle holders, motor locks, spacers, 68 mm shock mount) | ASA | ⚠ **spring-mount rocker slicer check** (below) |
 | 4 | **Front suspension + steering** (original oil-shock set) | PETG | — |
-| 5 | **Floor** (original front floor + back floor + floorboard + diffuser + side vents) | PETG | — |
-| 6 | **Body shell** (front + rear + mirror + halo + camera top) — start early, paint is the long pole | PLA matte black | fine-layer profile test on a body offcut region first |
-| 7 | **Brake-light diffuser** (`rearbacklightdiffuser`) | white/translucent, lens unpainted | — |
-| 8 | **Camera cooling duct** (from `camera_blower_duct.scad`) | PETG | ⚠ camera + ACP2006 blower measured |
-| 9 | Extras (wall mount display, driver figure, DRS arm if used) | any | explicitly optional |
+| 5 | **Floor** (original front floor + back floor + floorboard + diffuser + side vents + servo holder) | PETG | ⚠ DS3235SG servo fit-check on arrival (holder pocket) |
+| 6 | **Body shell** (front + rear + mirror + halo + camera top + **nose** (white/grey) + **front wing**) — start early, paint is the long pole | PLA matte black | fine-layer profile test on a body offcut region first; slicer visual confirm shell+nose+wing |
+| 7 | **Rear wing + DRS arm** (file per rear-wing gate) | PLA/PETG per gate | ⚠ rear-wing gate resolved together with step-3 gate; MG90S in hand for pocket fit |
+| 8 | **Brake-light diffuser** (`rearbacklightdiffuser`) | white/translucent, lens unpainted | — |
+| 9 | **Camera cooling duct** (from `camera_blower_duct.scad`) | PETG | ⚠ camera (on hand) + blower (in transit) measured |
+| 10 | Extras (wall mount display, driver figure) | any | explicitly optional |
 
 **Golden rule (from v1/v2, unchanged):** layer lines are the weak axis — orient every
 stressed part so the load runs **along** the layers, not across them. This matters more
@@ -62,15 +68,25 @@ than infill percentage.
 
 ## Open gates (must be resolved by a human before the affected print)
 
-1. ⚠ **Rear shock mount:** confirm in Bambu Studio that `Spring mount 2 REVISION 1`'s
-   rocker seats the **68 mm** coilover. Yes → hybrid rocker + revised rear motor covers.
-   No → original rear mount; skip `RearSpringMountREV4` + `springblock`.
-2. ⚠ **Camera duct:** render `camera_blower_duct.scad` only after measuring the real
-   camera + blower; the .scad parameters are placeholders.
-3. ⚠ **Front wheel hub:** only a **Right** hub STL exists — mirror it in Bambu Studio
+1. ⚠ **Rear stack (Gate A, expanded 2026-07-10):** confirm in Bambu Studio that
+   `Spring mount 2 REVISION 1`'s rocker seats the **68 mm** coilover.
+   Yes → Rev-1 stack per drawing `[7]` (motor covers carry the bearings — check whether
+   `Left/Rightrearaxle` are then replaced; wing bolts to `Diffuser backplate`).
+   No → original stack per drawing `[2]`. **Resolve together with gate 2.**
+2. ⚠ **Rear wing + DRS:** pick the wing file with Gate A — candidates + pros/cons in
+   `MODEL_INVENTORY.md` Gate B (2021 DRS wing ↔ original stack; MCL60-style ↔ Rev-1
+   stack; PIP DRSv2 undocumented).
+3. ⚠ **Camera duct:** render `camera_blower_duct.scad` only after measuring the camera
+   (on hand) + blower (in transit); the .scad parameters are placeholders.
+4. ⚠ **Front wheel hub:** only a **Right** hub STL exists — mirror it in Bambu Studio
    for the Left. Verify the mirrored bearing seat too.
-4. ⚠ **Tyre purchase:** Tamiya 54198 + 51400 status unknown; needed by step 1.
-5. ⚠ **Battery purchase:** buy to **≤75×45×25 mm** (see appendix), carry 2.
+5. ⚠ **Servo fitment:** DS3235SG (in transit) into `Servoholder` pocket + MG90S (in
+   transit) into the chosen wing's DRS pocket — measure on arrival, before the floor
+   batch / wing print. Ordered hardware in transit: tyres (54198+51400), bearings,
+   shocks (52 F / 68 R), servos — fit tests wait for arrival.
+6. ⚠ **Battery:** not final. Keep the **≤75×45×25 mm** envelope (see appendix) unless
+   measuring the printed floor tub + body proves more room; select after the geometry
+   check, carry 2.
 
 ## Finishing (summary — full method in `FINISHING_GUIDE.md`)
 
@@ -100,3 +116,15 @@ v3 changes only the shop→home-printer assumption and scopes out electronics.
 Unresolved items intentionally carried forward: spring-mount rocker check (open in both
 v1 and v2), camera-duct measurements. Nothing has been physically printed as of
 2026-07-10 — see `05_printed_parts_log/PRINT_LOG.md` for live status.
+
+**Audit correction (2026-07-10):** print-order step 2 previously said "+ASA rear hub",
+inherited from v2 — but no rear-hub STL exists anywhere in the corpus; rear wheels
+mount via the tyre-slot adapters (see `MODEL_INVENTORY.md` group 04 note). Removed.
+
+**Config change (2026-07-10, second pass):** DRS reinstated by Vitaliy (BOM v2 orders
+3× MG90S for pan/tilt/DRS; wiring atlas drives DRS on CH6) → rear wing becomes a
+chassis-mounted DRS wing, file gated (candidates in the inventory). Gate B front
+resolved from drawing `[5]` + body READ ME: `FRONTNOSE2024` + `2024 Revised Front
+Wing` added to the body group (37→40 required). Gate D resolved from drawing `[2]`:
+`Servoholder` added to the floor group. Supplier drawings `[0][1][2][3][5][7]`
+visually reviewed; findings in `ASSEMBLY_NOTES.md`.

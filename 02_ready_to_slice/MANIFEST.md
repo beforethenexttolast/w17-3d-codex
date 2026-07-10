@@ -5,8 +5,9 @@ Hashes verified at copy time (source == copy). Regenerate/extend only via script
 no copies without a row here. Uncertain/optional parts are staged only after their
 gate is resolved / explicitly approved (see MODEL_INVENTORY.md).
 
-Staged: 2026-07-10 · 37 required files · copies verified against
-01_inventory/inventory.csv SHA-256.
+Staged: 2026-07-10 · 40 required files (37 initial + 3 added after the gate-review
+pass the same day: FRONTNOSE2024, 2024 Revised Front Wing, Servoholder) · copies
+verified against 01_inventory/inventory.csv SHA-256.
 
 | Group | File | Original location | SHA-256 (first 16) | Material |
 |---|---|---|---|---|
@@ -34,6 +35,7 @@ Staged: 2026-07-10 · 37 required files · copies verified against
 | 04_PETG_wheels | `Front_Rim_F1_2022.stl` | `unsorted_stl_raw/OpenRC F1 2022 F104 Rims + Wheelfin - 5414118/Front_Rim_F1_2022.stl` | `ae41b3cd9834dbd5` | PETG |
 | 04_PETG_wheels | `Rear_Locking_Nut_F1_2022.stl` | `unsorted_stl_raw/OpenRC F1 2022 F104 Rims + Wheelfin - 5414118/Rear_Locking_Nut_F1_2022.stl` | `289de4843dfe8739` | PETG |
 | 04_PETG_wheels | `Rear_Rim_F1_2022.stl` | `unsorted_stl_raw/OpenRC F1 2022 F104 Rims + Wheelfin - 5414118/Rear_Rim_F1_2022.stl` | `db1fae93eb0d7aa4` | PETG |
+| 05_PETG_floor | `Servoholder.stl` | `unsorted_stl_raw/Ryans Creations Open RC F1 Car/Floor/Servoholder.stl` | `46619b8b4d8238ca` | PETG |
 | 05_PETG_floor | `2023NEWSideVent1.stl` | `unsorted_stl_raw/Ryans Creations Open RC F1 Car/Floor/2023NEWSideVent1.stl` | `c96bd69361ec6136` | PETG |
 | 05_PETG_floor | `2023NEWSideVent2.stl` | `unsorted_stl_raw/Ryans Creations Open RC F1 Car/Floor/2023NEWSideVent2.stl` | `d96d263cb5de14f4` | PETG |
 | 05_PETG_floor | `2023NewBackFloorLargerPart2.stl` | `unsorted_stl_raw/Ryans Creations Open RC F1 Car/Floor/2023NewBackFloorLargerPart2.stl` | `36a3b497a72fb97c` | PETG |
@@ -41,6 +43,8 @@ Staged: 2026-07-10 · 37 required files · copies verified against
 | 05_PETG_floor | `2023NewFrontFloorLargerParts.stl` | `unsorted_stl_raw/Ryans Creations Open RC F1 Car/Floor/2023NewFrontFloorLargerParts.stl` | `b907e791fe1d41a2` | PETG |
 | 05_PETG_floor | `Diffuser.stl` | `unsorted_stl_raw/Ryans Creations Open RC F1 Car/Floor/Diffuser.stl` | `a2195f611325207f` | PETG |
 | 05_PETG_floor | `FloorBoard2.stl` | `unsorted_stl_raw/Ryans Creations Open RC F1 Car/Floor/FloorBoard2.stl` | `6da24f3e91f7e4b4` | PETG |
+| 06_PLA_body_shell | `2024 Revised Front Wing.stl` | `unsorted_stl_raw/RC-01 Revision 1.1/Original + Revision 1 Files pre-released to fully build the car/RC-01 Revision 1 Files/Body Parts/2024 Revised Front Wing.stl` | `1f4f20c8fd5632cd` | PLA matte black |
+| 06_PLA_body_shell | `FRONTNOSE2024.stl` | `unsorted_stl_raw/RC-01 Revision 1 Files/Body Upgrades/FRONTNOSE2024.stl` | `497c6856ca98c649` | PLA white/grey |
 | 06_PLA_body_shell | `NEW BODY 2024 FRONT 1.stl` | `unsorted_stl_raw/RC-01 Revision 1.1/New 2024 Body/NEW BODY 2024 FRONT 1.stl` | `7878e85849a7cd95` | PLA matte black |
 | 06_PLA_body_shell | `NEW BODY 2024 Mirror.stl` | `unsorted_stl_raw/RC-01 Revision 1.1/New 2024 Body/NEW BODY 2024 Mirror.stl` | `02e6463c1b8bf56f` | PLA matte black |
 | 06_PLA_body_shell | `NEW BODY 2024 REAR.stl` | `unsorted_stl_raw/RC-01 Revision 1.1/New 2024 Body/NEW BODY 2024 REAR.stl` | `42f04dbb17c563ea` | PLA matte black |
