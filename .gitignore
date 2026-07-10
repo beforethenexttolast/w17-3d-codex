@@ -1,0 +1,22 @@
+# Raw model bundles stay on disk, out of git (large binaries).
+# Traceability is provided by MODEL_INVENTORY.md and 02_ready_to_slice/MANIFEST.md (SHA-256).
+unsorted_stl_raw/
+
+# Binary model/CAD/print files anywhere in the repo
+*.stl
+*.STL
+*.3mf
+*.ipt
+*.step
+*.stp
+*.obj
+*.gcode
+
+# Images and PDFs (reference photos, drawings) — referenced by path instead
+*.jpeg
+*.jpg
+*.png
+*.pdf
+
+# macOS metadata
+.DS_Store
