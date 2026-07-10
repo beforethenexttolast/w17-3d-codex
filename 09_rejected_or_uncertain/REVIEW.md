@@ -13,6 +13,12 @@ the 2024-body README. Seven rear-wing/DRS files moved IN from the rejected tiers
 the user reinstated DRS (BOM v2 orders an MG90S for it). Gate A text expanded after
 reading drawing [7].)*
 
+*(2026-07-10 third pass: `newgearmotorlock` moved IN from REQUIRED — belt-drive lock
+is primary. The 2021 wing marked PREFERRED. **Diagnostic-print policy** applies here:
+rows flagged "diagnostic-TP candidate" may be test-printed (TP-NNN, labelled, never
+installed) to resolve their gate — see `MODEL_INVENTORY.md` for the policy; tiers
+change only when the gate is resolved.)*
+
 | File | Location | Material if selected | Uncertainty | Gate / required check |
 |---|---|---|---|---|
 | `Diffuser backplate.stl` | `unsorted_stl_raw/RC-01 Revision 1.1/Original + Revision 1 Files pre-released to fully build the car/RC-01 Revision 1 Files/Rear Axle Upgrades` | ASA or PETG | medium | needed iff Gate A resolves to the Rev-1 stack — drawing [7] bolts diffuser + rear wing + backplate together |
@@ -23,15 +29,16 @@ reading drawing [7].)*
 | `Spring Block.stl` | `unsorted_stl_raw/RC-01 Revision 1.1/Original + Revision 1 Files pre-released to fully build the car/RC-01 Revision 1 Files/Rear Axle Upgrades` | ASA if selected | high | GATE A (same as above) |
 | `Spring mount 2 REVISION 1.stl` | `unsorted_stl_raw/RC-01 Revision 1.1/Original + Revision 1 Files pre-released to fully build the car/RC-01 Revision 1 Files/Rear Axle Upgrades` | ASA if selected | high | GATE A (same as above) |
 | `springblock.stl` | `unsorted_stl_raw/Ryans Creations Open RC F1 Car/Rear Suspension` | ASA if selected | high | GATE A (same as above) — only if the rocker does NOT fit |
-| `2021Rearwing with DRS.stl` | `unsorted_stl_raw/Ryans Creations Open RC F1 Car/Car Body/2021 Upgrades` | PLA or PETG | medium | REAR-WING/DRS GATE: pairs with the ORIGINAL rear stack — drawings [0]/[2] show it mounted with a DRS-servo pocket + metal-rod linkage; pick wing together with Gate A in Bambu Studio |
+| `newgearmotorlock.stl` | `unsorted_stl_raw/Ryans Creations Open RC F1 Car/Rear Suspension` | ASA if selected | medium | demoted from REQUIRED 2026-07-10: build uses the original belt-drive solution, `beltdrivemotorlock` is primary (BOM v2 lists only it). Diagnostic-TP candidate for comparison; REQUIRED again only if [7]/photos/assembly show it used. Does not block coupons/wheel-fit |
+| `2021Rearwing with DRS.stl` | `unsorted_stl_raw/Ryans Creations Open RC F1 Car/Car Body/2021 Upgrades` | PLA or PETG | medium | REAR-WING/DRS GATE — **PREFERRED candidate (user 2026-07-10)**: pairs with the ORIGINAL rear stack — drawings [0]/[2] show it mounted with a DRS-servo pocket + metal-rod linkage; gate stays open until wing + mount + DRS arm + diffuser/backplate + rear stack are checked together |
 | `2021Rearwingflapdeco.stl` | `unsorted_stl_raw/Ryans Creations Open RC F1 Car/Car Body/2021 Upgrades/DECO Painting Parts` | PLA | medium | REAR-WING/DRS GATE: colour-split flap deco — only if the 2021 wing is chosen |
-| `MCL60 2023 Rear Wing.stl` | `unsorted_stl_raw/RC-01 Revision 1.1/Original + Revision 1 Files pre-released to fully build the car/RC-01 Revision 1 Files/Body Parts` | PLA or PETG | medium | REAR-WING/DRS GATE: very likely drawing [7]'s "Revised rear wing" (only rear-wing STL in the Rev-1 release); pairs with the Rev-1 stack + DRS Arm for 2023; McLaren-shaped but painted black anyway |
+| `MCL60 2023 Rear Wing.stl` | `unsorted_stl_raw/RC-01 Revision 1.1/Original + Revision 1 Files pre-released to fully build the car/RC-01 Revision 1 Files/Body Parts` | PLA or PETG | medium | REAR-WING/DRS GATE — fallback (user prefers the 2021 wing): very likely drawing [7]'s "Revised rear wing" (only rear-wing STL in the Rev-1 release); pairs with the Rev-1 stack + DRS Arm for 2023; McLaren-shaped but painted black anyway |
 | `DRS Arm for 2021 Rear Wing.stl` | `unsorted_stl_raw/Ryans Creations Open RC F1 Car/Experimental Parts` | PETG | medium | REAR-WING/DRS GATE: 58mm actuation arm for the 2021 wing |
 | `DRS Arm for 2023 Rear Wing.stl` | `unsorted_stl_raw/Ryans Creations Open RC F1 Car/Experimental Parts` | PETG | medium | REAR-WING/DRS GATE: 63.8mm actuation arm for the 2023-style wing |
 | `Print_In_Place DRSv2.stl` | `unsorted_stl_raw/Ryans Creations Open RC F1 Car/Car Body/2023 Upgrades` | PLA or PETG | high | REAR-WING/DRS GATE: newest DRS design by name, but no drawing covers it; PIP hinge = printability risk; mounting unverified |
 | `DRS Diffuser.stl` | `unsorted_stl_raw/Ryans Creations Open RC F1 Car/Floor` | PETG | high | REAR-WING/DRS GATE: floor-diffuser variant for a DRS install — compare against required Diffuser.stl once the wing is chosen |
 | `camera 2 colour.stl` | `unsorted_stl_raw/Ryans Creations Open RC F1 Car/Car Body/Decoration Parts` | PETG or PLA | low | GATE C: camera on hand (owned+flashed); measure it now, blower in transit — probably unneeded (camera top 1.1 selected) |
-| `camera_blower_duct.scad` | `unsorted_stl_raw` | PETG | high | GATE C: measure camera (on hand) + ACP2006-class blower (in transit), set the 9 params, render STL |
+| `camera_blower_duct.scad` | `unsorted_stl_raw` | PETG | high | GATE C (research/design task): measure the REAL camera (SSC338Q+IMX335, on hand) + blower (in transit) with calipers — never product-page dims; checklist in FIRST_PRINT_DECISION.md §6; then set the 9 params and render |
 | `cameranose.stl` | `unsorted_stl_raw/Ryans Creations Open RC F1 Car/Car Body/Decoration Parts` | PETG or PLA | low | GATE C (same as camera 2 colour) |
 | `f104camera.stl` | `unsorted_stl_raw/Ryans Creations Open RC F1 Car/Car Body/Decoration Parts` | PETG or PLA | low | GATE C (same as camera 2 colour) |
 | `pin.stl` | `unsorted_stl_raw/Ryans Creations Open RC F1 Car/Car Body/General Parts` | PLA or PETG | low | 2024 body mounts with 3x M3 bolts (README) — pins probably unneeded; confirm no pin holes remain when shells are in the slicer |

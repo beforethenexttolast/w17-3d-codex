@@ -5,9 +5,10 @@ Hashes verified at copy time (source == copy). Regenerate/extend only via script
 no copies without a row here. Uncertain/optional parts are staged only after their
 gate is resolved / explicitly approved (see MODEL_INVENTORY.md).
 
-Staged: 2026-07-10 · 40 required files (37 initial + 3 added after the gate-review
-pass the same day: FRONTNOSE2024, 2024 Revised Front Wing, Servoholder) · copies
-verified against 01_inventory/inventory.csv SHA-256.
+Staged: 2026-07-10 · 39 required files (37 initial + 3 added after the gate-review
+pass: FRONTNOSE2024, 2024 Revised Front Wing, Servoholder; − 1 unstaged the same day:
+newgearmotorlock demoted REQUIRED→UNCERTAIN, belt-drive lock is the primary — see
+MODEL_INVENTORY.md) · copies verified against 01_inventory/inventory.csv SHA-256.
 
 | Group | File | Original location | SHA-256 (first 16) | Material |
 |---|---|---|---|---|
@@ -19,7 +20,6 @@ verified against 01_inventory/inventory.csv SHA-256.
 | 02_ASA_rear_drivetrain | `Right Spacer for long axle.stl` | `unsorted_stl_raw/Ryans Creations Open RC F1 Car/Rear Suspension/Right Spacer for long axle.stl` | `843d4426ff7d894e` | ASA black |
 | 02_ASA_rear_drivetrain | `Rightrearaxle.stl` | `unsorted_stl_raw/Ryans Creations Open RC F1 Car/Rear Suspension/Rightrearaxle.stl` | `4713f34c0805e157` | ASA black |
 | 02_ASA_rear_drivetrain | `beltdrivemotorlock.stl` | `unsorted_stl_raw/Ryans Creations Open RC F1 Car/Rear Suspension/beltdrivemotorlock.stl` | `87d14235d46ff3f2` | ASA black |
-| 02_ASA_rear_drivetrain | `newgearmotorlock.stl` | `unsorted_stl_raw/Ryans Creations Open RC F1 Car/Rear Suspension/newgearmotorlock.stl` | `ff541e5e38abded5` | ASA black |
 | 03_PETG_front_suspension_steering | `2023WheelHubsSuspension5.stl` | `unsorted_stl_raw/Ryans Creations Open RC F1 Car/Front Suspension/2023WheelHubsSuspension5.stl` | `0296aeadfe045a46` | PETG |
 | 03_PETG_front_suspension_steering | `2023WheelHubsSuspension5mir.stl` | `unsorted_stl_raw/Ryans Creations Open RC F1 Car/Front Suspension/2023WheelHubsSuspension5mir.stl` | `a73f5a11a4dab621` | PETG |
 | 03_PETG_front_suspension_steering | `Arm4.stl` | `unsorted_stl_raw/Ryans Creations Open RC F1 Car/Front Suspension/Arm4.stl` | `b890bbfa49689461` | PETG |

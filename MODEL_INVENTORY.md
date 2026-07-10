@@ -10,19 +10,29 @@ READMEs, 6 Inventor `.ipt` sources, 1 OpenSCAD, 1 `.3mf`.
 
 | Tier | Count | Meaning |
 |---|---|---|
-| REQUIRED | **40** | print for the locked build (grouped 02–07 below) |
+| REQUIRED | **39** | print for the locked build (grouped 02–07 below) |
 | OPTIONAL | 5 | cosmetic/display extras, print if desired |
-| UNCERTAIN | 20 (19 STL + 1 .scad) | blocked on a human gate — do NOT print yet |
+| UNCERTAIN | 21 (20 STL + 1 .scad) | blocked on a human gate — no *production* print yet (diagnostic TP prints allowed where flagged) |
 | REJECTED_LIVERY | 39 | wrong team/era shells & aero (Ferrari, McLaren, SF23, RB19, 2021/2023) |
 | REJECTED_WRONG_CHASSIS | 18 | Revision 1/1.1 front & floor parts — we run the original oil-shock config |
 | REJECTED_SUPERSEDED | 9 | older versions of parts we print differently |
 | DUPLICATE | 22 | identical file at a second path (canonical copy noted in CSV) |
 | REFERENCE | 57 | PDFs, photos, READMEs, CAD sources — keep, never print |
 
-*(Counts revised 2026-07-10 second pass: +3 required — FRONTNOSE2024, 2024 Revised
-Front Wing, Servoholder — resolved by reading drawings [2]/[3]/[5]; 7 rear-wing/DRS
-files moved from rejected to UNCERTAIN after the user's DRS decision. See the
-change note at the bottom.)*
+*(Counts revised 2026-07-10: second pass +3 required — FRONTNOSE2024, 2024 Revised
+Front Wing, Servoholder — resolved via drawings [2]/[3]/[5]; 7 rear-wing/DRS files
+un-rejected to UNCERTAIN. Third pass: `newgearmotorlock` demoted REQUIRED→UNCERTAIN
+(belt-drive lock is primary). See the change notes at the bottom.)*
+
+**Diagnostic vs production prints (policy, user decision 2026-07-10).** UNCERTAIN
+parts flagged "diagnostic print candidate" *may* be printed early as **TP-NNN test
+prints** (draft settings, any suitable material, physically labelled TP, never
+installed on the final car) to resolve fit/assembly questions — preferring a cheap
+diagnostic print over rejecting a part too early. This does **not** change the tier:
+a part becomes REQUIRED (and gets a production **P-NNN** print from a staged copy)
+only when its gate is resolved. Diagnostic prints of unstaged parts may be sliced
+directly from the raw file (read-only — never modify raw); record the source path in
+the TP entry.
 
 **How to read the tables.** Dims are the authored-frame bounding box in mm (X×Y×Z) —
 NOT print orientation; orientation is decided in the slicer per `PRINT_SPEC.md`.
@@ -34,9 +44,9 @@ still gets a human slicer check before printing.
 
 ---
 
-## REQUIRED (40) — the locked build
+## REQUIRED (39) — the locked build
 
-### Group 02 — Rear axle + drivetrain · **ASA black, 100% rectilinear** (9)
+### Group 02 — Rear axle + drivetrain · **ASA black, 100% rectilinear** (8)
 
 Hot + torque-loaded; the documented failure point of this design (Ryan added metal
 axle sleeves because printed parts melted). ASA kept after re-evaluation: 2 spools on
@@ -47,8 +57,7 @@ except Axle Main (nested Rev-1 tree).
 |---|---|---|---|
 | `Leftrearaxle.stl` | 81×25×10 | **medium** | use the STL (a `.3mf` twin exists — ignore it). ⚠ **do NOT print before Gate A**: drawing `[7]` shows the Rev-1 rear seating the bearings in the Motor Covers instead — these holders may be replaced on that path |
 | `Rightrearaxle.stl` | 81×35×10 | **medium** | ⚠ same Gate A caveat |
-| `beltdrivemotorlock.stl` | 32×3.5×32 | high | belt-drive motor lock |
-| `newgearmotorlock.stl` | 38×3.5×38 | **medium** | ⚠ BOM v2 print list names only `beltdrivemotorlock` — confirm via `[7]`/photos whether both locks are used |
+| `beltdrivemotorlock.stl` | 32×3.5×32 | high | **primary motor lock** — the build uses the original belt-drive solution (user 2026-07-10). `newgearmotorlock` demoted to UNCERTAIN (diagnostic candidate) |
 | `Axle Main no grubs.stl` | 11×115×15 | **medium** | ⚠ confirm role vs drawing `[7]` before printing (note: BOM v2 says the belt set *includes* the metal rear output shaft) |
 | `Left/Right Spacer for long axle.stl` | 44/26×21×21 | **medium** | ⚠ verify spacer pairing at assembly |
 | `NewSpacerleft/right.stl` | 30/18×21×21 | **medium** | ⚠ same — four spacer files, unclear which pair the long axle needs |
@@ -125,11 +134,11 @@ comes from firmware). Your PLA white-transparent spool matches the spec exactly.
 (⚠ 1.9 mm thin — fragile; confirm the 2024 body even wants one), `sidewingdeco.stl`
 (⚠ 1 mm thin; confirm fitment). All PLA, any color under paint.
 
-## UNCERTAIN (20) — blocked on human gates, do NOT print
+## UNCERTAIN (21) — blocked on human gates (production prints; diagnostic TPs allowed where flagged)
 
-**Gate A — rear stack: rocker vs 68 mm shock** (decides 8 files, now coupled to the
-rear-wing gate): open `Spring mount 2 REVISION 1.stl` in Bambu Studio next to the
-68 mm coilover dimensions.
+**Gate A — rear stack: rocker vs 68 mm shock** (now decides 9 files incl.
+`newgearmotorlock`, coupled to the rear-wing gate): open
+`Spring mount 2 REVISION 1.stl` in Bambu Studio next to the 68 mm coilover dimensions.
 - Fits → Rev-1/hybrid rear stack per drawing `[7]`: print `Spring mount 2 REVISION 1`
   + `Spring Block` + the 3× `Rear * Motor Cover REVISION 1` + `Diffuser backplate`
   (all ASA); skip `RearSpringMountREV4` + `springblock`. ⚠ On this path drawing `[7]`
@@ -141,29 +150,47 @@ rear-wing gate): open `Spring mount 2 REVISION 1.stl` in Bambu Studio next to th
   original spring mounts); skip the Rev-1 pieces above.
 - **Resolve together with the rear-wing gate below** — the wing mounts to whichever
   rear stack is chosen, not to the body shell.
+- **Unresolved as of 2026-07-10 (user confirmed):** whether the Motor Covers replace
+  `Left/Rightrearaxle`, and which STL is `[7]`'s "Light Cover". Per the diagnostic
+  policy above, the small candidates (motor covers, spring mounts, backplate,
+  `newgearmotorlock` — all ≲40 g) **may be TP-printed for a diagnostic dry-fit**
+  rather than rejected early; production rear-stack prints stay blocked until the
+  stack is confirmed as a whole.
+- `newgearmotorlock.stl` (38×3.5×38) — demoted from REQUIRED (belt-drive
+  `beltdrivemotorlock` is the primary; BOM v2 lists only it). Diagnostic print
+  candidate for comparison; REQUIRED again only if `[7]`/photos/assembly show it used.
+  Does **not** block coupons or wheel-fit prints.
 
-**Gate B — rear wing + DRS** (7 files; **user decision 2026-07-10: DRS wing planned**,
-BOM v2 orders an MG90S for DRS, wiring atlas drives it on CH6). The *front* half of
-Gate B is **resolved** — nose + front wing moved to REQUIRED group 06; only `pin.stl`
-remains (M3-bolted 2024 body probably needs no pins — confirm in slicer). The rear
-wing is chassis-mounted (drawings `[2]`/`[7]`), so pick it with Gate A:
+**Gate B — rear wing + DRS** (7 files; **user decisions 2026-07-10: DRS wing planned;
+the OLD 2021 wing is the preferred candidate** — "as far as I can see, only the old
+rear wing fits"). BOM v2 orders an MG90S for DRS, wiring atlas drives it on CH6. The
+*front* half of Gate B is **resolved** — nose + front wing moved to REQUIRED group 06;
+only `pin.stl` remains (M3-bolted 2024 body probably needs no pins — confirm in
+slicer). The rear wing is chassis-mounted (drawings `[2]`/`[7]`), so pick it with
+Gate A. **The gate stays open until the old wing + mount + DRS arm +
+diffuser/backplate + selected rear stack are checked together**; questionable small
+interface parts (arms, flap deco, DRS diffuser) are diagnostic-TP candidates, not
+production parts, until that combined check passes:
 
 | Candidate | Pairs with | Evidence | Risk |
 |---|---|---|---|
-| `2021Rearwing with DRS.stl` (105×82×60) + `DRS Arm for 2021 Rear Wing.stl` (58 mm) + optional `2021Rearwingflapdeco.stl` | **original** rear stack | fully documented: drawings `[0]`/`[2]` show it mounted with a DRS-servo pocket + metal-rod linkage | 2021-era tall-wing styling — least W17-like |
-| `MCL60 2023 Rear Wing.stl` (108×41×75) + `DRS Arm for 2023 Rear Wing.stl` (64 mm) | **Rev-1** rear stack | very likely `[7]`'s "Revised rear wing" (the only rear-wing STL in the Rev-1 release); bolts to the Diffuser backplate | McLaren-shaped (painted black anyway); DRS-servo placement not drawn |
-| `Print_In_Place DRSv2.stl` (120×50×83) | unknown | newest DRS design by name ("v2") | no drawing covers it; print-in-place hinge is a beginner printability risk; mounting unverified |
+| **PREFERRED:** `2021Rearwing with DRS.stl` (105×82×60) + `DRS Arm for 2021 Rear Wing.stl` (58 mm) + optional `2021Rearwingflapdeco.stl` | **original** rear stack | fully documented: drawings `[0]`/`[2]` show it mounted with a DRS-servo pocket + metal-rod linkage; user judged it the only wing that visibly fits | 2021-era tall-wing styling — least W17-like |
+| fallback: `MCL60 2023 Rear Wing.stl` (108×41×75) + `DRS Arm for 2023 Rear Wing.stl` (64 mm) | **Rev-1** rear stack | very likely `[7]`'s "Revised rear wing" (the only rear-wing STL in the Rev-1 release); bolts to the Diffuser backplate | McLaren-shaped (painted black anyway); DRS-servo placement not drawn |
+| fallback: `Print_In_Place DRSv2.stl` (120×50×83) | unknown | newest DRS design by name ("v2") | no drawing covers it; print-in-place hinge is a beginner printability risk; mounting unverified |
 
 `DRS Diffuser.stl` (68×50×45) — floor-diffuser variant for a DRS install; compare
-against the required `Diffuser.stl` once the wing is chosen. **Human call in Bambu
-Studio: pick by W17 realism + mount compatibility; keep all files parked until then.**
+against the required `Diffuser.stl` once the wing is chosen (diagnostic-TP candidate).
 
-**Gate C — camera measurement** (4 files): `camera_blower_duct.scad` is parametric
-SOURCE (not printable). The **camera is on hand** (owned + flashed per BOM v2) — its
-half of the measurement can happen now; the ACP2006-class blower is in transit.
-Measure both, set the 9 parameters, render an STL, then it joins group 08.
+**Gate C — camera integration** (4 files; **reframed 2026-07-10 as a research/design
+task, not a ready-to-print task**). Camera on hand: OpenIPC-style **SSC338Q + IMX335
+5 MP** (user 2026-07-10; note the frozen BOM/atlas say IMX415 — sensor is irrelevant
+to the mount, board/heatsink/lens dims are what matter). **Never assume dimensions
+from product links or similar cameras — the mount is designed only from the real
+camera measured with calipers.** Full measurement + design checklist:
+`FIRST_PRINT_DECISION.md` §6. `camera_blower_duct.scad` is parametric SOURCE (not
+printable) — render only after camera *and* blower (in transit) are measured.
 `cameranose.stl`, `camera 2 colour.stl`, `f104camera.stl` are probably unneeded
-(camera top 1.1 selected) — confirm after the blower arrives.
+(camera top 1.1 selected) — confirm during the mount design.
 
 **Gate D — RESOLVED 2026-07-10:** `Servoholder.stl` moved to REQUIRED group 05.
 Drawing `[2]` labels it "Servo Holder" on the rear floor; drawing `[3]`'s note "mount
@@ -241,3 +268,20 @@ the PDFs; findings mapped in `ASSEMBLY_NOTES.md`), `docs/bill_of_materials_v2.md
   Motor Covers and bolting the rear wing to the Diffuser backplate — the axle-holder
   files may be path-dependent; Gate A and the rear-wing gate resolve together.
 - CSV regenerated via `01_inventory/build_inventory.py` (210 files, tiers sum checked).
+
+## Change note — 2026-07-10 third pass (human answers)
+
+- **Rear wing:** the 2021 wing marked **preferred** (user: only one that visibly
+  fits); MCL60 + PIP DRSv2 kept as fallbacks; gate stays open until wing + mount +
+  DRS arm + diffuser/backplate + rear stack are checked together.
+- **Diagnostic-print policy added** (top of this file): uncertain small parts may be
+  TP-printed to resolve gates instead of being rejected early; tiers unchanged by
+  diagnostics; production prints still gate-blocked.
+- **`newgearmotorlock` demoted REQUIRED→UNCERTAIN** (39 required): build uses the
+  original belt-drive solution; `beltdrivemotorlock` is primary. Staged copy removed
+  from `02_ready_to_slice/` (manifest updated); raw original untouched.
+- **Gate C reframed** as a research/design task (camera = SSC338Q + IMX335; measure
+  the real hardware only); checklist added to `FIRST_PRINT_DECISION.md`.
+- **Dry printed-part assembly allowed as diagnostic** before hardware arrives;
+  hardware-dependent fitment stays blocked (see `ASSEMBLY_NOTES.md`).
+- CSV regenerated; 39 staged copies re-verified.

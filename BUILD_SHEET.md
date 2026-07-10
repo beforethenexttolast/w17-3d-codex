@@ -20,14 +20,18 @@ target** — quality over speed.
   `new halo 2.1` + `camera top 1.1` + separate `FRONTNOSE2024` (silver-painted) +
   `2024 Revised Front Wing` — nose/wing are separate parts per drawing `[5]` and the
   body READ ME), painted as W17. Skip Ferrari SF24 / McLaren MCL38 / SF23 / RB19 team shells.
-- **Rear wing + DRS (decision 2026-07-10):** a **DRS wing is planned** (MG90S servo on
-  CH6 per BOM v2 + wiring atlas). The wing mounts to the **chassis rear stack, not the
-  body shell** (drawings `[2]`/`[7]`); the file is an open gate coupled to the rear-stack
-  choice — candidates in `MODEL_INVENTORY.md` Gate B.
+- **Rear wing + DRS (decision 2026-07-10, updated same day):** a **DRS wing is
+  planned** (MG90S servo on CH6 per BOM v2 + wiring atlas). The wing mounts to the
+  **chassis rear stack, not the body shell** (drawings `[2]`/`[7]`). **Preferred
+  candidate: the old `2021Rearwing with DRS`** (user: the only one that visibly
+  fits); gate stays open until wing + mount + DRS arm + diffuser/backplate + rear
+  stack are checked together — candidates in `MODEL_INVENTORY.md` Gate B.
 - **Wheels:** printed rims + hubs + locking nuts + tyre-slot adapters
   (Thingiverse 5414118 set + "tighter" Rev-1.1 adapters); **bare Tamiya tyres glued on**.
-- **Drive:** belt drive; printed motor locks, axle holders, spacers (metal sleeves protect
-  printed spacers from heat).
+- **Drive:** belt drive — the **original belt-drive solution** (user 2026-07-10);
+  `beltdrivemotorlock` is the primary printed lock (`newgearmotorlock` demoted to a
+  diagnostic candidate); axle holders, spacers (metal sleeves protect printed spacers
+  from heat).
 
 ## Key numbers (tape-to-the-bench)
 
@@ -73,20 +77,31 @@ than infill percentage.
    Yes → Rev-1 stack per drawing `[7]` (motor covers carry the bearings — check whether
    `Left/Rightrearaxle` are then replaced; wing bolts to `Diffuser backplate`).
    No → original stack per drawing `[2]`. **Resolve together with gate 2.**
-2. ⚠ **Rear wing + DRS:** pick the wing file with Gate A — candidates + pros/cons in
-   `MODEL_INVENTORY.md` Gate B (2021 DRS wing ↔ original stack; MCL60-style ↔ Rev-1
-   stack; PIP DRSv2 undocumented).
-3. ⚠ **Camera duct:** render `camera_blower_duct.scad` only after measuring the camera
-   (on hand) + blower (in transit); the .scad parameters are placeholders.
+   Unresolved sub-questions (user-confirmed open): covers-vs-holders, "Light Cover"
+   STL identity. **Diagnostic TP prints of the small candidates are allowed** to
+   settle this; production rear prints stay blocked until the stack is confirmed.
+2. ⚠ **Rear wing + DRS:** **preferred = old `2021Rearwing with DRS`** (user
+   2026-07-10); MCL60-style + PIP DRSv2 remain fallbacks. Gate open until wing +
+   mount + DRS arm + diffuser/backplate + rear stack pass a combined check (slicer
+   and/or diagnostic TP dry-fit).
+3. ⚠ **Camera integration (research/design task):** camera = SSC338Q + IMX335
+   OpenIPC-style (on hand). **No dimensions from product pages** — design the mount
+   only from calipers measurements of the real camera + blower (in transit).
+   Checklist: `FIRST_PRINT_DECISION.md` §6. Duct render blocked until both measured.
 4. ⚠ **Front wheel hub:** only a **Right** hub STL exists — mirror it in Bambu Studio
    for the Left. Verify the mirrored bearing seat too.
 5. ⚠ **Servo fitment:** DS3235SG (in transit) into `Servoholder` pocket + MG90S (in
    transit) into the chosen wing's DRS pocket — measure on arrival, before the floor
    batch / wing print. Ordered hardware in transit: tyres (54198+51400), bearings,
-   shocks (52 F / 68 R), servos — fit tests wait for arrival.
-6. ⚠ **Battery:** not final. Keep the **≤75×45×25 mm** envelope (see appendix) unless
-   measuring the printed floor tub + body proves more room; select after the geometry
-   check, carry 2.
+   shocks (52 F / 68 R), servos — **hardware-dependent fitment blocked until arrival;
+   printed-part-to-printed-part dry assembly may proceed as diagnostic** (see
+   `ASSEMBLY_NOTES.md`).
+6. ⚠ **Battery:** not final. Keep the **≤75×45×25 mm** envelope (see appendix). A
+   2026-07-10 mesh probe of the shells suggests width/height clear with margin near
+   the shells' junction (~50–120 mm width, ~42–70 mm ceiling, shell-only, approximate);
+   usable **length** + internal bosses unmeasurable without assembly — final choice
+   blocked until slicer-assembly measure and/or printed dry-fit. Details:
+   `FIRST_PRINT_DECISION.md` §7.
 
 ## Finishing (summary — full method in `FINISHING_GUIDE.md`)
 
@@ -128,3 +143,11 @@ resolved from drawing `[5]` + body READ ME: `FRONTNOSE2024` + `2024 Revised Fron
 Wing` added to the body group (37→40 required). Gate D resolved from drawing `[2]`:
 `Servoholder` added to the floor group. Supplier drawings `[0][1][2][3][5][7]`
 visually reviewed; findings in `ASSEMBLY_NOTES.md`.
+
+**Config change (2026-07-10, third pass — human answers):** old 2021 DRS wing marked
+preferred; diagnostic-vs-production print policy adopted (TP = diagnostic, P =
+production; see `MODEL_INVENTORY.md`); `newgearmotorlock` demoted REQUIRED→UNCERTAIN
+(40→39; original belt-drive solution confirmed, belt lock primary); Gate C reframed
+as a camera-integration research task (SSC338Q + IMX335, real measurements only);
+dry printed-part assembly allowed as diagnostic before hardware arrives; approximate
+battery-cavity probe recorded (envelope unchanged).

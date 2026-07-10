@@ -1,93 +1,111 @@
 # First Print Decision — do this before anything touches the printer
 
-Working checklist from the 2026-07-10 pre-print audit, **revised the same day after
-the gate-review pass** (drawings `[0][1][2][3][5][7]` read, `docs/bill_of_materials_v2.md`
-+ wiring atlas added, DRS reinstated, hardware ordered). Sources of truth stay where
-they are (`PRINT_SPEC.md`, `MODEL_INVENTORY.md`, `MATERIAL_DECISION_MATRIX.md`,
-`BUILD_SHEET.md`) — this file is the execution order. Check items off here; record
-outcomes in `GENERAL_PLAN.md` open questions and the logs.
+Working checklist from the 2026-07-10 pre-print audit, revised twice the same day:
+second pass (drawings read, BOM v2 + atlas, DRS reinstated, hardware ordered) and
+**third pass (human answers: preferred rear wing, diagnostic-print policy, motor-lock
+demotion, camera research task, dry-assembly allowance, battery probe)**. Sources of
+truth stay where they are (`PRINT_SPEC.md`, `MODEL_INVENTORY.md`,
+`MATERIAL_DECISION_MATRIX.md`, `BUILD_SHEET.md`) — this file is the execution order.
+Check items off here; record outcomes in `GENERAL_PLAN.md` open questions and the logs.
 
-## Status snapshot (2026-07-10, second pass)
+## Status snapshot (2026-07-10, third pass)
 
-- **Resolved on paper:** Gate B *front* (nose + front wing are separate REQUIRED
-  parts), Gate D (`Servoholder` is the floor-mounted steering-servo holder).
-  Required count now **40**, all staged with manifest rows.
-- **Open:** Gate A (rear stack) ⟷ rear-wing/DRS gate — one coupled slicer decision;
-  Gate C (camera on hand, blower in transit); final battery choice.
-- **Hardware:** tyres, bearings, shocks, servos, king pins, sleeves, inserts, belt set
-  **ordered — in transit**. Calipers **on hand**. Camera **on hand** (flashed).
-  Battery **not selected** (envelope ≤75×45×25 mm holds until geometry says otherwise).
+- **Resolved:** Gate B front (nose + wing REQUIRED), Gate D (`Servoholder`), motor
+  lock (belt-drive `beltdrivemotorlock` primary; `newgearmotorlock` demoted to
+  diagnostic candidate). Required count **39**, staged and hash-verified.
+- **Directional:** rear wing — **old `2021Rearwing with DRS` preferred** (user);
+  DRS remains a goal. Gate stays open until wing + mount + DRS arm +
+  diffuser/backplate + rear stack pass a **combined** check.
+- **Open:** Gate A sub-questions (covers vs axle holders; "Light Cover" identity),
+  Gate C (camera integration = research/design task), battery (approximate probe done,
+  final blocked).
+- **Hardware:** everything ordered, **in transit**. Calipers + camera (SSC338Q +
+  IMX335) on hand. **New allowance:** diagnostic TP prints of uncertain small parts
+  + printed-part-to-printed-part dry assembly may proceed before hardware arrives.
+
+## Diagnostic vs production prints (the new policy, short form)
+
+- **TP-NNN = diagnostic/test print.** Draft settings OK, any suitable filament,
+  physically labelled TP, logged in `04_test_prints/`, **never installed on the
+  final car**. Uncertain parts flagged "diagnostic candidate" may be TP-printed to
+  resolve their gate — better a cheap print than a premature rejection (user
+  decision 2026-07-10). Unstaged/uncertain parts may be sliced straight from the raw
+  file (read-only; record source path in the TP entry).
+- **P-NNN = production print.** Only for REQUIRED parts, only from staged copies in
+  `02_ready_to_slice/`, only after the part's gate is closed.
+- A diagnostic print never changes a tier by itself — the gate decision does.
+
+**Approved diagnostic candidates (all small/cheap):** `newgearmotorlock` (compare
+with belt lock) · Rev-1 rear-stack pieces (`Spring mount 2 REVISION 1`,
+`Spring Block`, 3× Motor Covers, `Diffuser backplate`) and/or original pieces
+(`RearSpringMountREV4`, `springblock`) · DRS interface parts (`DRS Arm for 2021`,
+flap deco, `DRS Diffuser`) · the wing itself if a slicer check isn't conclusive.
+Use PETG or PLA drafts for shape/fit diagnostics — save the ASA for production.
 
 ## The decision (TL;DR)
 
-1. **Print now (nothing blocks these):** Bambu demo → **PLA coupon** → **PETG coupon**
-   (dry the spool first). Calipers are here — measure and log both as TP entries.
-2. **Do the coupled rear decision in Bambu Studio** (§1) — Gate A + rear wing + DRS in
-   one sitting. Zero filament, unblocks the whole ASA batch plan.
-3. **Print after coupons measure OK:** the wheel fit set (§3) — the *print* isn't
-   blocked, but its verdict (FIT entries) **waits for tyres + bearings to arrive**.
-4. **Everything ASA, the floor batch, and the wing wait** — on the rear gate, the
-   servo fit-check, and the wing choice respectively.
-5. **Battery:** decide only after the floor tub + body interior can be measured
-   (slicer measure now, printed parts later). Keep ≤75×45×25 mm as the constraint.
+1. **Print now:** Bambu demo → **PLA coupon** → **PETG coupon** (dry the spool).
+   Measure with calipers, log as TP.
+2. **Slicer sitting (§1):** Gate A + rear wing combined check, centred on the
+   preferred 2021 wing. Where the slicer can't settle it — **TP-print the small
+   candidates and dry-fit them** (diagnostic wave).
+3. **After coupons:** wheel fit set (print unblocked; FIT verdicts wait for tyres +
+   bearings).
+4. **Camera:** research/design task — start the §6 measurement checklist with the
+   real camera now; duct/mount design waits for the blower.
+5. **Battery:** approximate probe done (§7) — final choice stays blocked until a
+   slicer-assembly measure / printed dry-fit.
+6. **Still no production prints of:** ASA rear batch, floor batch (servo fit-check
+   pending), body shells, wing.
 
 ---
 
 ## 1 · Slicer inspection checklist (no filament, ~1 evening)
 
-Import from `02_ready_to_slice/` (never from `unsorted_stl_raw/`, except view-only
-peeks at gated candidates). Use **Measure** or the size panel; write outcomes down.
+Import from `02_ready_to_slice/` (production parts) or raw paths view-only (gated
+candidates). Use **Measure**; write outcomes down.
 
 **The coupled rear decision — Gate A + rear wing + DRS (one sitting):**
-- [ ] Open `Spring mount 2 REVISION 1.stl` (view-only from raw). Does its rocker seat
-      the **68 mm** coilover (compare the ordered HSP shock's eye-to-eye)?
-- [ ] **If yes (Rev-1 stack, drawing `[7]`):** plan = `Spring mount 2` + `Spring
-      Block` + 3× `Motor Cover REVISION 1` + `Diffuser backplate`. ⚠ Check whether
-      the Motor Covers **replace** `Left/Rightrearaxle` (the bearings seat in the
-      covers in `[7]` — don't print the holders if so). Identify which small STL is
-      `[7]`'s "Light Cover" vs "Diffuser" (we have `rearbacklightdiffuser`, the floor
-      `Diffuser`, `Diffuser backplate`). Wing candidate: **`MCL60 2023 Rear Wing`**
-      (+ `DRS Arm for 2023`).
-- [ ] **If no (original stack, drawing `[2]`):** plan = `RearSpringMountREV4` +
-      `springblock` + `Left/Rightrearaxle` as staged. Wing candidate:
-      **`2021Rearwing with DRS`** (+ `DRS Arm for 2021`, optional flap deco), which
-      `[2]` shows with its DRS-servo pocket and metal-rod linkage.
-- [ ] **Wing beauty contest:** also open `Print_In_Place DRSv2` (newest DRS design,
-      but undocumented + print-in-place hinge risk). Pick by W17 realism + mount
-      compatibility with your chosen stack. Check `DRS Diffuser` vs the required
-      `Diffuser` once the wing is picked. **Escalation rule: the wing file only moves
-      to REQUIRED after you've eyeballed the mount interfaces mate.**
-- [ ] While there: confirm from `[7]`/photos whether both motor locks
-      (`beltdrivemotorlock` + `newgearmotorlock`) are used — BOM v2 names only the
-      belt one. And `Axle Main no grubs` role — note the belt set already **includes
-      a metal rear output shaft** (BOM v2 §8), so a printed axle part may be redundant.
+- [ ] Open `Spring mount 2 REVISION 1.stl` (view-only). Does its rocker seat the
+      **68 mm** coilover (ordered HSP shock, eye-to-eye)?
+- [ ] Open the **preferred wing `2021Rearwing with DRS.stl`** next to the chosen
+      stack (drawing `[2]` shows it on the original spring-mount tower with the DRS
+      pocket): do the mount interfaces mate? Where does the MG90S sit; where does the
+      metal rod run (drawing `[2]`)?
+- [ ] Combined check before anything is final: **wing + mount + `DRS Arm for 2021` +
+      diffuser/backplate + selected rear stack together.** Fallbacks if the 2021 wing
+      disappoints: MCL60-style (Rev-1 stack, drawing `[7]`) or PIP DRSv2 (undocumented).
+- [ ] Rev-1 sub-questions (user-confirmed open): do the Motor Covers replace
+      `Left/Rightrearaxle` (bearings seat in the covers in `[7]`)? Which small STL is
+      `[7]`'s "Light Cover" vs "Diffuser"?
+- [ ] **Where the slicer can't settle any of the above → TP-print the small
+      candidates** (see diagnostic list) and dry-fit. Log TP + ASM-diagnostic entries.
+- [ ] Motor lock: `beltdrivemotorlock` is the build's lock (original belt-drive
+      solution). Optionally TP-print `newgearmotorlock` alongside for comparison —
+      neither this nor any rear question blocks coupons or wheel-fit prints.
+- [ ] `Axle Main no grubs` role vs `[7]` — the belt set includes a metal output
+      shaft (BOM v2 §8), so a printed axle part may be redundant.
 
-**Body group confirms (fast — the decisions are already made):**
-- [ ] Shell + `FRONTNOSE2024` + `2024 Revised Front Wing` together in the slicer: no
-      duplicated geometry, mounting holes line up (nose bolts to the front floor per
-      the body READ ME).
-- [ ] `camera top 1.1` mates with the 2024 shell (it's a Rev-1-era part).
-- [ ] `pin.stl`: confirm no pin holes remain anywhere (M3-bolted body) → then it can
-      be formally rejected.
-- [ ] Mirror `Front_Right_Wheel_Hub_2022_F104`, measure the mirrored bearing seat
+**Body group confirms (fast — decisions already made):**
+- [ ] Shell + `FRONTNOSE2024` + `2024 Revised Front Wing` together: no duplicated
+      geometry; nose bolts to the front floor (body READ ME).
+- [ ] `camera top 1.1` mates with the 2024 shell (Rev-1-era part).
+- [ ] `pin.stl`: no pin holes anywhere → formally reject it.
+- [ ] Mirror `Front_Right_Wheel_Hub_2022_F104`; measure the mirrored bearing seat
       (Ø12 pocket for 8×12×3.5).
-- [ ] Floor: all 8 group-05 files (incl. `Servoholder`) against drawing `[2]` — the
-      drawing shows Front Floor, Rear Floor, Rear Floor 2, Floorboard, 2 Side Vents,
-      Diffuser, Servo Holder. Anything unmatched?
+- [ ] Floor: all 8 group-05 files (incl. `Servoholder`) against drawing `[2]`.
 - [ ] King-pin knuckle bore ≈ 3 mm (M3×30 dowel pins ordered).
-- [ ] Battery tub: measure the floor's battery bay in the slicer — does ≤75×45×25 mm
-      hold? Record the real numbers for the battery purchase.
+- [ ] Battery bay: assemble floor + FRONT/REAR shells visually (bolt holes align) and
+      measure the clear pocket — this supersedes the §7 single-shell probe.
 - [ ] Slicer error check on every staged file; note anything red in the inventory.
 
-Gate outcomes → update `MODEL_INVENTORY.md` + `inventory.csv` (via
-`01_inventory/build_inventory.py`) + `REVIEW.md` together; stage newly-required files
-with MANIFEST rows.
+Gate outcomes → update `MODEL_INVENTORY.md` + CSV (via `build_inventory.py`) +
+`REVIEW.md` together; stage newly-required files with MANIFEST rows.
 
 ## 2 · Hardware — ordered, in transit, on hand
 
-Everything from BOM v2 is **ordered** (AliExpress ~40 lines + rcMart tyres). Nothing
-left to buy except the **battery** (deliberately last — see §1 battery-tub measure)
-and paint/decal consumables (Phase 8-9, not urgent).
+Everything from BOM v2 is **ordered**. Nothing left to buy except the **battery**
+(deliberately last) and paint/decal consumables (Phase 8–9).
 
 | Arrives → unblocks | Items |
 |---|---|
@@ -95,71 +113,135 @@ and paint/decal consumables (Phase 8-9, not urgent).
 | Gate A physical confirm + rear assembly | 68 mm HSP rear shock, 52 mm front shocks, belt set (incl. metal output shaft), pinion + spur, aluminium tube (cut 4× 14 mm spacers) |
 | Servo fit-checks (floor batch + DRS pocket) | DS3235SG steering servo, 3× MG90S (pan/tilt/DRS) |
 | Steering assembly | king pins, ball studs, rod ends, turnbuckles, M4 rods, M3 kit, inserts, sleeves |
-| Camera duct render (Gate C, other half) | ACP2006-class 5 V blower (camera itself is on hand — measure it now) |
+| Camera duct render (Gate C, other half) | ACP2006-class 5 V blower (camera on hand — measure it now, §6) |
 
-**On hand already:** digital calipers ✓ · camera (flashed) ✓ · all filament ✓ ·
-printer ✓. **On arrival:** measure front shocks (51 vs 52 mm question), verify
-spur ↔ belt-pulley bolt pattern (BOM v2 open confirmation #1).
+**On hand:** digital calipers ✓ · camera (flashed) ✓ · filament ✓ · printer ✓.
+**On arrival:** measure front shocks (51 vs 52 mm), spur ↔ belt-pulley bolt pattern,
+both servo fit-checks. **Until then:** hardware-dependent fitment is blocked, but
+printed-part-to-printed-part **diagnostic dry assembly may proceed**
+(`ASSEMBLY_NOTES.md`).
 
 ## 3 · First prints, in order (what to open in Bambu Studio)
 
-Workflow details per step: `PRINT_SPEC.md`. Log every one: TP-NNN in `04_test_prints/`.
+Workflow per step: `PRINT_SPEC.md`. Log every one: TP-NNN in `04_test_prints/`.
 
-0. **Bambu demo print** (pre-sliced, from the printer's own menu/SD). Proves the
-   machine itself. **Nothing blocks this — today.**
+0. **Bambu demo print** (pre-sliced). Proves the machine. **Today.**
 1. **TP: PLA coupon** — 25×25×10 mm cube + Ø12 negative cylinder 4 mm deep (bearing
-   seat) + Ø3 negative through-hole (M3). 0.20 mm, 4 walls, 40% gyroid. Measure with
-   the calipers, write numbers down. **Nothing blocks this.**
-2. **TP: PETG coupon** — same model, PETG HF spool: **dry first** (60–65 °C, 6–8 h),
-   cap outer walls ~150 mm/s. This one calibrates the wheel prints. **Nothing blocks
-   this.**
-3. **TP: wheel fit set (PETG)** — 1× front rim + 1× front hub + 1× front locking nut
-   (thread axis vertical) + 1× rear rim + 1× of each tyreslot adapter. Print once the
-   PETG coupon measures sane; the **FIT verdicts wait for tyres + bearings to arrive**
-   (note: per drawing `[7]` the adapters were designed against Tamiya F104 rim
-   geometry — the printed rims emulate it; that's exactly what the fit test checks).
-4. **TP: body wall slice** (2–3 cm slicer-cut of a shell, 0.12 mm PLA matte) — the
-   look test + later the primer/paint test card. Printable any time; needed before
-   Phase 8.
-5. **TP: ASA coupon** — immediately before the group-02 batch (which itself waits on
-   the resolved rear gate). Ventilation drill: enclosed, room door closed, ventilate
-   during + after, parts cool in the chamber. Fallback if ASA fights you twice: PETG
-   + metal sleeves + heat check, logged as an MD deviation.
+   seat) + Ø3 through-hole (M3). 0.20 mm, 4 walls, 40% gyroid. Measure, log.
+2. **TP: PETG coupon** — same model; **dry the spool first** (60–65 °C, 6–8 h), cap
+   outer walls ~150 mm/s. Calibrates the wheel prints.
+3. **TP: diagnostic wave (optional, as needed from §1)** — small rear-stack / DRS /
+   motor-lock candidates in PETG/PLA draft; dry-fit; record TP + ASM-diagnostic
+   entries. This is how the rear gate closes if the slicer alone can't.
+4. **TP: wheel fit set (PETG)** — 1× front rim + hub + locking nut (thread axis
+   vertical) + 1× rear rim + 1× of each tyreslot adapter. Print after the PETG
+   coupon measures sane; **FIT verdicts wait for tyres + bearings** (adapters were
+   designed against Tamiya F104 rim geometry per `[7]` — exactly what the test checks).
+5. **TP: body wall slice** (2–3 cm slicer-cut, 0.12 mm PLA matte) — look test +
+   primer/paint card. Any time; needed before Phase 8.
+6. **TP: ASA coupon** — immediately before the group-02 *production* batch (which
+   waits on the resolved rear gate). Ventilation drill applies. Fallback if ASA
+   fights you twice: PETG + metal sleeves + heat check, logged as an MD deviation.
 
 ## 4 · Blocked / unblocked map
 
-**Print now:** demo print · PLA coupon · PETG coupon · body wall slice.
+**Print now:** demo · PLA coupon · PETG coupon · body wall slice.
+**Diagnostic prints now (TP, draft, labelled):** rear-stack candidates · DRS
+interface parts · `newgearmotorlock` comparison · preferred wing if slicer is
+inconclusive.
+**Print after coupons:** wheel fit set (verdicts wait on parts).
+**Dry assembly now (diagnostic):** printed↔printed fits only; nothing final.
 
-**Print after coupons only:** wheel fit set (its *verdict* still waits on parts).
-
-**Blocked until the slicer sitting (§1):** the whole ASA rear batch (Gate A decides
-*which files* — possibly not the staged axle holders!) · rear wing + DRS arm (file
-choice) · `Diffuser backplate` · formal rejection of `pin.stl`.
-
-**Blocked until parts arrive:** wheel/bearing/tyre FIT entries · floor batch
-(DS3235SG fit-check into `Servoholder` pocket) · DRS pocket check (MG90S) ·
-Gate A physical confirmation (68 mm shock in hand) · spacer cutting (aluminium tube).
-
-**Blocked until measured:** camera duct render (camera measurable **now**, blower in
-transit) · battery purchase (slicer-measure the tub in §1, confirm with printed floor).
-
-**Not yet, regardless:** body shells / halo / nose / front wing (after wall-slice test
-+ paint plan, watched first hour) · remaining 3 rims + mirrored hub (after fit set
-passes) · optionals (driver figure etc. — after the car).
+**Blocked until the slicer sitting + diagnostic dry-fits:** the ASA rear
+*production* batch (Gate A decides which files — possibly not the staged axle
+holders) · rear wing + DRS arm *production* print · `Diffuser backplate` ·
+formal rejection of `pin.stl`.
+**Blocked until parts arrive:** all FIT entries with real hardware · floor batch
+(DS3235SG fit-check into `Servoholder`) · DRS pocket check (MG90S) · Gate A physical
+confirm (68 mm shock) · spacer cutting.
+**Blocked until measured:** camera mount/duct design (§6 — camera measurable now,
+blower in transit) · battery purchase (§7 → slicer-assembly measure → physical fit).
+**Not yet, regardless:** body shells / halo / nose / front wing production prints
+(after wall-slice + paint plan) · remaining rims + mirrored hub (after fit set
+passes) · optionals.
 
 ## 5 · Top open risks
 
-1. **The rear stack ambiguity now includes required files:** if Gate A lands on the
-   Rev-1 path, the staged `Left/Rightrearaxle` may be replaced by the Motor Covers
-   (drawing `[7]`) — don't print any group-02 part before the §1 sitting.
-2. **Wing choice is aesthetic + mechanical at once** — a wrong pick costs a reprint
-   and possibly a DRS re-rig; do the beauty contest with the mount interfaces visible.
-3. **Servo fitment is assumed, not confirmed** (DS3235SG is the same size class as
-   Ryan's DSServo 35KG; MG90S is the classic micro) — measure both on arrival before
-   the floor batch and the wing print.
-4. **HF PETG at speed is weaker** — the ~150 mm/s wall cap in `PRINT_SPEC.md` §2 is
+1. **Rear stack ambiguity includes required files** — don't production-print any
+   group-02 part before the combined rear check; use diagnostic TPs to de-risk.
+2. **Wing choice is aesthetic + mechanical at once** — the 2021 wing is preferred
+   but unverified against the stack; the combined check (slicer + TP dry-fit) is
+   the gate, not preference.
+3. **Servo fitment is assumed, not confirmed** — measure DS3235SG + MG90S on arrival
+   before the floor batch and the wing production print.
+4. **HF PETG at speed is weaker** — the ~150 mm/s wall cap (`PRINT_SPEC.md` §2) is
    mandatory for suspension parts.
-5. **Atlas caveats:** `docs/w17_wiring_assembly_atlas.html` predates BOM v2 — its
-   "12 mm hex" wheel note and "51 mm" front shocks are stale (printed rims use
-   tyreslot adapters + M4 bolt; 52 mm shocks ordered). Trust BOM v2 + this repo's
-   docs for mechanics; the atlas for wiring.
+5. **Atlas staleness** — `docs/w17_wiring_assembly_atlas.html` predates BOM v2
+   ("12 mm hex" wheels, "51 mm" shocks, IMX415 sensor are stale). Trust BOM v2 +
+   this repo for mechanics; the atlas for wiring topology.
+6. **Diagnostic prints masquerading as production** — every TP part gets a physical
+   TP label; nothing labelled TP goes on the final car.
+
+## 6 · Camera integration — research/design checklist (Gate C)
+
+Camera on hand: OpenIPC-style **SSC338Q + IMX335 5 MP** (similar to
+hobbyt.com.ua "OpenIPC mapping mini" — **reference only; take zero dimensions from
+product pages or similar cameras**). The mount/duct is designed exclusively from
+calipers measurements of **your** board. Blower (ACP2006-class) in transit.
+This is a design task, not a ready-to-print task.
+
+**Measure (calipers, record in a Gate C note under `07_assembly_notes/`):**
+- [ ] Board width / height / thickness
+- [ ] Heatsink width / height / thickness (is one fitted at all?)
+- [ ] Total depth including lens
+- [ ] Lens barrel diameter
+- [ ] Lens center offset from each board edge
+- [ ] Mounting holes: present? positions/diameters
+- [ ] Cable/connector exit direction + required wire clearance
+
+**Thermal:**
+- [ ] Does it need forced airflow (run it on the bench, feel/measure temperature)?
+- [ ] Is the existing heatsink adequate, or is the ducted blower load-bearing?
+- [ ] Blower placement + duct path (never trap heat in a closed pocket; inlet/outlet
+      per `BUILD_SHEET.md` packing note: vents front-in / rear-out)
+
+**Design constraints (all mandatory):**
+- [ ] Lens fully unobstructed (FOV check against the body opening)
+- [ ] No clamping stress on the lens barrel — grip the board/heatsink, never the lens
+- [ ] Service access: camera removable without destroying the mount
+- [ ] No paint near lens, heatsink, connectors, or airflow openings (mask them)
+
+**Decisions to make (write them down as an MD/Gate note):**
+- [ ] Fixed, adjustable-tilt, or servo pan/tilt mount? (pan/tilt servos are ordered;
+      the *firmware* side of gimbal control lives in the firmware repos with its own
+      safety gates — this repo only decides the mechanical mount)
+- [ ] Placement: behind a body opening, above the body (camera top 1.1 pod), or
+      inside a protective duct?
+- [ ] Does `camera top 1.1` still fit the chosen scheme, or does the duct/mount
+      replace it? (then cameranose/f104camera/camera 2 colour get their verdicts)
+
+**Gate C stays blocked for printing until:** real camera measured ✓ AND blower
+measured ✓ AND placement decision made ✓ → then set the 9 `.scad` parameters,
+render the STL, TP-print, verify fit, only then production print.
+
+## 7 · Battery-fit estimate (approximate — 2026-07-10 mesh probe)
+
+Method: ray-cast probe of the two body-shell STLs alone (authored frames, no floor
+offset, no assembly transform, no internal bosses). **Approximate only — a slicer
+mesh measure is NOT battery compatibility.**
+
+- `NEW BODY 2024 REAR` (forward half): interior clear width ≈ **99–120 mm**,
+  centerline ceiling ≈ **61–70 mm** above the shell's bottom edge.
+- `NEW BODY 2024 FRONT 1` (cockpit region, rear 40%): interior clear width ≈
+  **50–105 mm**, ceiling ≈ **42 mm**.
+- The floor is flat (8 mm bbox) — there is no deep printed "tub"; the bay is the
+  shell interior above the floor.
+
+**Reading:** the required **≤75×45×25 mm** pack clears width and height with margin
+near the shells' junction (the "central floor tub" of the v2 packing plan). What the
+probe **cannot** tell: usable bay **length** (bulkheads/bosses), wiring + XT60
+connector clearance, retention (strap/velcro), and body install/removal path.
+**Final battery choice stays blocked** until: (a) the §1 slicer assembly measure of
+the actual pocket, then (b) physical confirmation on the printed floor + body.
+Envelope ≤75×45×25 mm stands (designer's own limit in the body READ ME) unless the
+assembled measure proves more room.

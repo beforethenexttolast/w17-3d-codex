@@ -103,6 +103,15 @@ see `docs/00_BUILD_SHEET_v2.md`).
 Order follows the print order in `BUILD_SHEET.md`. Do a **dry fit (no glue, loose
 screws) of every stage first**, then final assembly after painting.
 
+> **Diagnostic assembly while hardware is in transit (2026-07-10).** Printed-part-to-
+> printed-part dry assembly **may proceed early** where useful — treat it as a
+> *diagnostic* assembly (record as ASM notes, expect to take it apart), not final
+> assembly. Anything whose fit depends on real tyres, bearings, shocks, servos,
+> pulley/spur hardware, camera, blower, or battery must **not** be marked final
+> until the real item is measured/fitted. Diagnostic TP prints (see
+> `MODEL_INVENTORY.md` policy) may be used in these dry-fits; they are labelled TP
+> and never stay on the car.
+
 ### Stage 1 — Wheels
 - [ ] Bearings press into hubs (from test-fit gate) — snug, seated square
 - [ ] Tyre-slot adapters (tighter Rev 1.1 versions) onto rims

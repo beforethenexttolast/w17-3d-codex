@@ -41,10 +41,7 @@ add(["Leftrearaxle.stl", "Rightrearaxle.stl"], REQ, G02, "medium",
     "Original rear axle holders (bearing carriers); motor heat + torque; 100% rectilinear",
     "do NOT print before Gate A: drawing [7] shows the Rev-1 rear stack seating the bearings in the Motor Covers instead - confirm these holders are still used on the chosen path")
 add(["beltdrivemotorlock.stl"], REQ, G02, "low",
-    "Belt-drive motor lock; 100% rectilinear")
-add(["newgearmotorlock.stl"], REQ, G02, "medium",
-    "Second motor lock - v2 lists both; 100% rectilinear",
-    "BOM v2 print list names only beltdrivemotorlock - confirm via drawing [7]/photos whether both locks are used")
+    "Primary motor lock - the build is the original belt-drive solution (user 2026-07-10); 100% rectilinear")
 add(["Left Spacer for long axle.stl", "Right Spacer for long axle.stl",
      "NewSpacerleft.stl", "NewSpacerright.stl"], REQ, G02, "medium",
     "Rear axle spacer; rides inside 14mm metal sleeves",
@@ -113,7 +110,10 @@ add(["sidewingdeco.stl"], OPT, ("optional", "PLA"), "medium",
     "Side wing decoration; 1mm thin", "confirm fitment on 2024 body")
 
 # ---- UNCERTAIN (rocker gate) ----
-rocker_check = "GATE A: confirm Spring mount 2 REVISION 1 seats the 68mm coilover in slicer; fits -> Rev-1/hybrid rear stack (drawing [7]: bearings seat in the Motor Covers, wing bolts to Diffuser backplate), else original stack (drawing [2]). Resolve TOGETHER with the rear-wing gate"
+rocker_check = "GATE A: confirm Spring mount 2 REVISION 1 seats the 68mm coilover in slicer; fits -> Rev-1/hybrid rear stack (drawing [7]: bearings seat in the Motor Covers, wing bolts to Diffuser backplate), else original stack (drawing [2]). Resolve TOGETHER with the rear-wing gate. Diagnostic TP prints of small candidates are allowed to resolve this (user 2026-07-10); production rear-stack prints stay blocked until confirmed"
+add(["newgearmotorlock.stl"], UNC, ("pending_rear_gate", "ASA if selected"), "medium",
+    "Second motor lock - v2 listed both, but the build uses the original belt-drive solution and BOM v2 names only beltdrivemotorlock (demoted from REQUIRED, user 2026-07-10)",
+    "diagnostic print candidate: OK to TP-print for comparison; becomes REQUIRED only if drawing [7]/photos/assembly show it is used; does NOT block coupons or wheel-fit prints")
 add(["Spring mount 2 REVISION 1.stl", "Spring Block.stl"], UNC,
     ("pending_rear_gate", "ASA if selected"), "high",
     "Hybrid rocker candidate for 68mm rear shock", rocker_check)
@@ -129,13 +129,13 @@ add(["Diffuser backplate.stl"], UNC, ("pending_rear_gate", "ASA or PETG"), "medi
     "needed iff Gate A resolves to the Rev-1 stack (drawing [7])")
 
 # ---- UNCERTAIN (rear wing + DRS gate; DRS reinstated by user 2026-07-10, BOM v2 has MG90S for DRS) ----
-wing_gate = "GATE (rear wing + DRS): pick the wing in Bambu Studio together with Gate A - Rev-1 stack pairs with the MCL60-style wing (drawing [7]), original stack pairs with the 2021 DRS wing (drawing [2]); PIP DRSv2 is the undocumented third option"
+wing_gate = "GATE (rear wing + DRS): user 2026-07-10 - the OLD 2021 wing is the PREFERRED candidate (only one that visibly fits); DRS remains a goal; small interface parts may be diagnostic-printed (TP) to verify fit; nothing is production-final until wing + mount + DRS arm + diffuser/backplate + chosen rear stack are checked together"
 add(["2021Rearwing with DRS.stl"], UNC, ("pending_rear_wing", "PLA or PETG"), "medium",
-    "Rear wing shown in drawings [0]/[2] with built-in DRS-servo pocket + metal-rod linkage; mounts on the original spring-mount tower", wing_gate)
+    "PREFERRED rear-wing candidate (user 2026-07-10). Shown in drawings [0]/[2] with built-in DRS-servo pocket + metal-rod linkage; mounts on the original spring-mount tower", wing_gate)
 add(["2021Rearwingflapdeco.stl"], UNC, ("pending_rear_wing", "PLA"), "medium",
     "Colour-split deco of the 2021 wing flap - only if the 2021 wing is chosen", wing_gate)
 add(["MCL60 2023 Rear Wing.stl"], UNC, ("pending_rear_wing", "PLA or PETG"), "medium",
-    "Very likely the 'Revised rear wing' of drawing [7] (only rear-wing STL in the Rev-1 release); McLaren-shaped but painted black anyway", wing_gate)
+    "FALLBACK candidate (user prefers the 2021 wing). Very likely the 'Revised rear wing' of drawing [7] (only rear-wing STL in the Rev-1 release); McLaren-shaped but painted black anyway", wing_gate)
 add(["DRS Arm for 2021 Rear Wing.stl"], UNC, ("pending_rear_wing", "PETG"), "medium",
     "DRS actuation arm (58mm) for the 2021 wing", wing_gate)
 add(["DRS Arm for 2023 Rear Wing.stl"], UNC, ("pending_rear_wing", "PETG"), "medium",
@@ -149,8 +149,8 @@ add(["DRS Diffuser.stl"], UNC, ("pending_rear_wing", "PETG"), "high",
 add(["pin.stl"], UNC, ("pending_body_check", "PLA or PETG"), "low",
     "Body mounting pin", "2024 body mounts with 3x M3 bolts (README) - pins probably unneeded; confirm no pin holes remain when shells are in the slicer")
 
-# ---- UNCERTAIN (camera/duct - wait for measurements) ----
-cam_check = "GATE: measure real camera + ACP2006 blower before choosing/rendering"
+# ---- UNCERTAIN (camera/duct - research/design task, user 2026-07-10) ----
+cam_check = "GATE C (research/design task): measure the REAL camera (SSC338Q+IMX335, on hand) and blower (in transit) with calipers - never trust product-page dims; full measurement checklist in FIRST_PRINT_DECISION.md"
 add(["camera_blower_duct.scad"], UNC, ("pending_camera", "PETG"), "high",
     "Parametric OpenSCAD duct - SOURCE, not sliceable; render STL after measuring", cam_check)
 add(["cameranose.stl", "camera 2 colour.stl", "f104camera.stl"], UNC,
