@@ -116,10 +116,20 @@ Tracked here until resolved; details in `MODEL_INVENTORY.md`:
    remains open.**
 4. **Gate D — RESOLVED 2026-07-10:** `Servoholder` is the floor servo mount (drawing
    `[2]`) → REQUIRED. Residual: DS3235SG fit-check on arrival, before the floor batch.
-5. Hardware **ordered, in transit** (tyres 54198/51400, bearings, 52/68 mm shocks,
-   servos, king pins, belt set…). On arrival: measure front shocks (51 vs 52 mm),
-   spur↔pulley bolt pattern, both servo fit-checks. Until then: hardware-dependent
-   fitment blocked; **printed↔printed diagnostic dry assembly allowed**
+5. Hardware **partially delivered 2026-07-17:** MR128ZZ 8×12×3.5 front bearings ×10
+   (need 4 + spares), metal 3×32 mm turnbuckles **×2 (count confirmed — matches the
+   wanted 2; closes the ×1-vs-×2 doubt in `learning-manual/open_questions.md` #22)**,
+   plastic M4 rod-end linkage balls ×10, M3 tie-rod-end ball joint caps, steel
+   fully-threaded rods, aluminium tube **OD 16 × ID 14 mm, 300 mm — the rear-axle
+   spacer stock (ID matches the 14 mm-ID metal-spacer spec in `ASSEMBLY_NOTES.md`;
+   cut 4 spacers, 2/side — heat protection, do not omit; spacer cut length TBD at
+   rear-axle dry assembly)**.
+   **Still in transit:** tyres 54198/51400, 52/68 mm shocks, servos (DS3235SG + MG90S),
+   king pins, belt set, rear 6801 bearings, blower. On arrival: measure front shocks
+   (51 vs 52 mm), spur↔pulley bolt pattern, both servo fit-checks. Delivered bearings
+   unblock the **Stage-1 wheel test-fit gate** (coupons → rim/hub print → press-fit)
+   once the first hub is printed. Until the rest arrives:
+   hardware-dependent fitment blocked; **printed↔printed diagnostic dry assembly allowed**
    (`ASSEMBLY_NOTES.md`). **Battery not final** — approximate shell probe done
    (`FIRST_PRINT_DECISION.md` §7: width/height clear with margin, length unproven);
    keep ≤75×45×25 mm; slicer-assembly measure next, physical fit final.
