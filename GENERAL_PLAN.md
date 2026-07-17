@@ -90,20 +90,30 @@ filament on hand, nothing printed yet.
 
 Tracked here until resolved; details in `MODEL_INVENTORY.md`:
 
-1. **Gate A + rear wing/DRS (coupled)** — rocker vs 68 mm shock in the slicer decides
-   the rear stack (Rev-1 path may replace the L/R axle holders — drawing `[7]`).
+1. **Gate A + rear wing/DRS (coupled)** — check the selected rear rocker /
+   spring-mount / rear-stack configuration correctly **seats and articulates with
+   the 68 mm rear shocks** (rear length confirmed 2026-07-10; 51/52 mm are
+   front-only). Rev-1 path may replace the L/R axle holders — drawing `[7]`.
    **Preferred wing: old `2021Rearwing with DRS`** (Vitaliy 2026-07-10); DRS remains
-   a goal. Gate open until wing + mount + DRS arm + diffuser/backplate + rear stack
-   pass a combined check — small candidates may be **diagnostic-TP printed** to
-   settle it (policy in `MODEL_INVENTORY.md`). `newgearmotorlock` demoted to
-   diagnostic candidate (belt lock primary).
+   a goal. Gate open until: 68 mm path checked (slicer/dry assembly) + rear stack
+   confirmed + wing mount confirmed + 2021 wing checked with mount/DRS arm/
+   diffuser-backplate + remaining doubts settled by **diagnostic TPs** (policy in
+   `MODEL_INVENTORY.md`). `newgearmotorlock` demoted to diagnostic candidate (belt
+   lock primary).
 2. **Gate B front — RESOLVED 2026-07-10:** `FRONTNOSE2024` + `2024 Revised Front Wing`
    → REQUIRED (drawing `[5]`, body README, bbox math). Residual: slicer visual confirm
    of shell+nose+wing together; formally reject `pin.stl` once no pin holes are seen.
 3. **Gate C (research/design task)** — camera integration is undecided. Camera =
-   SSC338Q + IMX335 (on hand); blower in transit. Design only from real calipers
-   measurements — checklist in `FIRST_PRINT_DECISION.md` §6; duct render blocked
-   until both measured + placement decided.
+   SSC338Q + IMX335 (on hand); blower in transit. `camera_blower_duct.scad` = duct
+   design candidate (fully parameterized, placeholder defaults — inspected
+   2026-07-10); a diagnostic default-render for visual check is allowed now. Design
+   only from real calipers measurements — checklist in `FIRST_PRINT_DECISION.md` §6;
+   production duct blocked until camera + blower measured, placement decided,
+   airflow/lens-clearance/service-access checked. **Placement requirements + the
+   driver-seat vs halo-height trade study now live in `CAMERA_GIMBAL_PLACEMENT.md`
+   (2026-07-14, source of truth — includes VR/head-tracking requirements and the
+   hard-stop geometry the firmware safety gate needs); the placement decision itself
+   remains open.**
 4. **Gate D — RESOLVED 2026-07-10:** `Servoholder` is the floor servo mount (drawing
    `[2]`) → REQUIRED. Residual: DS3235SG fit-check on arrival, before the floor batch.
 5. Hardware **ordered, in transit** (tyres 54198/51400, bearings, 52/68 mm shocks,

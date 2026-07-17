@@ -91,8 +91,8 @@ see `docs/00_BUILD_SHEET_v2.md`).
 | King pins | M3×30 mm dowel + circlip | 2 (+spares) (BOM v2) | knuckle pivots — ⚠ confirm 3 mm bore in slicer |
 | Steering servo | DS3235SG (standard size), 25T horn | 1 (in transit) | into `Servoholder` on the rear floor — ⚠ fit-check on arrival |
 | DRS servo | MG90S micro, positional | 1 of 3 (in transit) | into the chosen rear wing's pocket + metal rod to horn (drawing `[2]`) |
-| Front shocks | 52 mm ordered (BOM v2) | 2 (+spares) | ⚠ 51 (Ryan) vs 52 mm (v2) — measure on arrival |
-| Rear shock | 68 mm (HSP, ordered) | 1 (+spare) | rear stack — gate #1 in `BUILD_SHEET.md` |
+| Front shocks | 52 mm ordered (BOM v2) — **front only** | 2 (+spares) | ⚠ 51 (Ryan) vs 52 mm (v2) — measure on arrival; these numbers never apply to the rear |
+| Rear shock | **68 mm** (HSP, ordered) — confirmed 2026-07-10 | 1 (+spare) | single central damper; rear stack must seat **and articulate** with it — gate #1 in `BUILD_SHEET.md` |
 | Pinion / spur | 28T / HPI 75T, both 48-pitch | 1+1 | belt drive |
 | Heat-set inserts (optional, recommended) | brass **M3 × 5 mm** | pack | high-wear screw bosses — install per `BEGINNER_3D_PRINTING_GUIDE.md`, safety in `FINISHING_GUIDE.md` |
 | Metal sleeves (optional) | 5 mm OD × M3, 5 mm long | 4 | replaces printed `GuideRod` in front suspension |
@@ -123,7 +123,8 @@ screws) of every stage first**, then final assembly after painting.
 - [ ] Bearing carriers per resolved Gate A: original path = axle holders (L/R);
       Rev-1 path = bearings seat in the Motor Covers (drawing `[7]`)
 - [ ] Motor lock, spur/pinion mesh (48P both, slight backlash)
-- [ ] 68 mm shock into chosen mount (per resolved gate #1)
+- [ ] 68 mm rear shock into chosen mount — seats fully AND articulates through
+      travel without binding (per resolved gate #1)
 - [ ] Rear wing onto the chosen stack (+ DRS servo in pocket, metal rod to horn)
 - [ ] Rear wheels onto axle via tyre-slot adapters (M4 bolt through tyreslot into
       axle per `[7]`) — there is **no separate rear-hub part** (v2's "ASA rear hub"

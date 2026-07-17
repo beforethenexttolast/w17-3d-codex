@@ -41,7 +41,7 @@ target** — quality over speed.
 | Tyres | **Tamiya 54198** (front, 30 mm wide) + **Tamiya 51400** (rear, 35 mm), 64 mm OD |
 | Front bearings | 8×12×3.5 mm ×4 |
 | Rear bearings | 6801 (12×21×5) ×2 |
-| Shocks | 52 mm front / 68 mm rear (v1 said 51 mm front — see appendix) |
+| Shocks | **front: 2× 52 mm** (v1 said 51 — see appendix; front only) · **rear: 1× 68 mm central** (confirmed 2026-07-10; the 51/52 figures never apply to the rear) |
 | Gears | 28T pinion / 75T spur, both **48-pitch** |
 | Battery envelope | **≤75×45×25 mm 2S** (governs — see appendix on the 115 mm conflict) |
 | King-pin bore | 3 mm (verify in slicer) |
@@ -72,22 +72,29 @@ than infill percentage.
 
 ## Open gates (must be resolved by a human before the affected print)
 
-1. ⚠ **Rear stack (Gate A, expanded 2026-07-10):** confirm in Bambu Studio that
-   `Spring mount 2 REVISION 1`'s rocker seats the **68 mm** coilover.
-   Yes → Rev-1 stack per drawing `[7]` (motor covers carry the bearings — check whether
-   `Left/Rightrearaxle` are then replaced; wing bolts to `Diffuser backplate`).
-   No → original stack per drawing `[2]`. **Resolve together with gate 2.**
-   Unresolved sub-questions (user-confirmed open): covers-vs-holders, "Light Cover"
-   STL identity. **Diagnostic TP prints of the small candidates are allowed** to
-   settle this; production rear prints stay blocked until the stack is confirmed.
+1. ⚠ **Rear stack (Gate A, restated 2026-07-10):** *check whether the selected rear
+   rocker / spring-mount / rear-stack configuration correctly seats **and
+   articulates** with the **68 mm rear shocks*** (rear length confirmed; 51/52 mm
+   are front-only numbers). Rocker seats it → Rev-1 stack per drawing `[7]` (motor
+   covers carry the bearings — check whether `Left/Rightrearaxle` are then replaced;
+   wing bolts to `Diffuser backplate`). No → original stack per drawing `[2]`.
+   **Resolve together with gate 2.** Unresolved sub-questions (user-confirmed open):
+   covers-vs-holders, "Light Cover" STL identity. **Diagnostic TP prints of the
+   small candidates are allowed**; production rear prints stay blocked until the
+   stack is confirmed.
 2. ⚠ **Rear wing + DRS:** **preferred = old `2021Rearwing with DRS`** (user
-   2026-07-10); MCL60-style + PIP DRSv2 remain fallbacks. Gate open until wing +
-   mount + DRS arm + diffuser/backplate + rear stack pass a combined check (slicer
-   and/or diagnostic TP dry-fit).
+   2026-07-10); MCL60-style + PIP DRSv2 remain fallbacks. Gates 1+2 close only when
+   ALL of: 68 mm shock path checked (slicer or diagnostic dry assembly) · rear stack
+   confirmed · wing mount confirmed · 2021 wing checked with mount + DRS arm +
+   diffuser/backplate · remaining doubts settled by diagnostic TP prints.
 3. ⚠ **Camera integration (research/design task):** camera = SSC338Q + IMX335
    OpenIPC-style (on hand). **No dimensions from product pages** — design the mount
    only from calipers measurements of the real camera + blower (in transit).
-   Checklist: `FIRST_PRINT_DECISION.md` §6. Duct render blocked until both measured.
+   `camera_blower_duct.scad` is the duct design candidate — fully parameterized,
+   placeholder defaults (inspected 2026-07-10). A diagnostic default-render for
+   visual check is fine; **production duct blocked** until camera + blower measured,
+   placement decided, airflow/lens-clearance/service-access checked. Checklist:
+   `FIRST_PRINT_DECISION.md` §6.
 4. ⚠ **Front wheel hub:** only a **Right** hub STL exists — mirror it in Bambu Studio
    for the Left. Verify the mirrored bearing seat too.
 5. ⚠ **Servo fitment:** DS3235SG (in transit) into `Servoholder` pocket + MG90S (in

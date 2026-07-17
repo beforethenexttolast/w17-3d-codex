@@ -136,9 +136,13 @@ comes from firmware). Your PLA white-transparent spool matches the spec exactly.
 
 ## UNCERTAIN (21) — blocked on human gates (production prints; diagnostic TPs allowed where flagged)
 
-**Gate A — rear stack: rocker vs 68 mm shock** (now decides 9 files incl.
-`newgearmotorlock`, coupled to the rear-wing gate): open
-`Spring mount 2 REVISION 1.stl` in Bambu Studio next to the 68 mm coilover dimensions.
+**Gate A — rear stack vs 68 mm rear shocks** (decides 9 files incl.
+`newgearmotorlock`, coupled to the rear-wing gate). **Precise statement (user
+2026-07-10): check whether the selected rear rocker / spring-mount / rear-stack
+configuration correctly seats AND articulates with 68 mm rear shocks.** The rear
+shock length is **confirmed: 68 mm** — the 51/52 mm figures are the *front* shocks
+only; they play no role at the rear. Open `Spring mount 2 REVISION 1.stl` in Bambu
+Studio next to the 68 mm coilover dimensions.
 - Fits → Rev-1/hybrid rear stack per drawing `[7]`: print `Spring mount 2 REVISION 1`
   + `Spring Block` + the 3× `Rear * Motor Cover REVISION 1` + `Diffuser backplate`
   (all ASA); skip `RearSpringMountREV4` + `springblock`. ⚠ On this path drawing `[7]`
@@ -156,6 +160,11 @@ comes from firmware). Your PLA white-transparent spool matches the spec exactly.
   `newgearmotorlock` — all ≲40 g) **may be TP-printed for a diagnostic dry-fit**
   rather than rejected early; production rear-stack prints stay blocked until the
   stack is confirmed as a whole.
+- **The gate (with the rear-wing gate) closes only when ALL of:** ① the 68 mm shock
+  path is checked in the slicer or a diagnostic dry assembly, ② the selected rear
+  stack is confirmed, ③ the wing mount is confirmed, ④ `2021Rearwing with DRS` is
+  checked together with mount + DRS arm + diffuser/backplate, ⑤ any remaining
+  questionable small parts are diagnostic-TP printed where the slicer wasn't enough.
 - `newgearmotorlock.stl` (38×3.5×38) — demoted from REQUIRED (belt-drive
   `beltdrivemotorlock` is the primary; BOM v2 lists only it). Diagnostic print
   candidate for comparison; REQUIRED again only if `[7]`/photos/assembly show it used.
@@ -187,8 +196,19 @@ task, not a ready-to-print task**). Camera on hand: OpenIPC-style **SSC338Q + IM
 to the mount, board/heatsink/lens dims are what matter). **Never assume dimensions
 from product links or similar cameras — the mount is designed only from the real
 camera measured with calipers.** Full measurement + design checklist:
-`FIRST_PRINT_DECISION.md` §6. `camera_blower_duct.scad` is parametric SOURCE (not
-printable) — render only after camera *and* blower (in transit) are measured.
+`FIRST_PRINT_DECISION.md` §6.
+
+`camera_blower_duct.scad` is the **current duct source/design candidate** (source
+inspected 2026-07-10): fully **parameterized**, not hard-coded — 9 labelled
+"MEASURE THESE" dimensions (blower outlet w/h, blower face w/h, collar depth, mouth
+w/h, duct length) plus wall/clearance and an optional M3 tab; the shipped values are
+**placeholder defaults** ("a sane STARTING geometry, not a guaranteed fit" — its own
+words), and its header carries a print spec (PETG, 0.2 mm, 3 walls, 20%) matching our
+matrix. **Diagnostic step allowed:** render the defaults to a temporary STL and
+inspect in Bambu Studio — visual/design validation only, never a production print.
+**Production duct/mount stays blocked** until: camera measured with calipers ✓,
+blower arrived + measured ✓, placement decided ✓, airflow path checked ✓, lens
+clearance checked ✓, service/removal access checked ✓.
 `cameranose.stl`, `camera 2 colour.stl`, `f104camera.stl` are probably unneeded
 (camera top 1.1 selected) — confirm during the mount design.
 

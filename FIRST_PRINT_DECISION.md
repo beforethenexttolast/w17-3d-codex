@@ -14,8 +14,9 @@ Check items off here; record outcomes in `GENERAL_PLAN.md` open questions and th
   lock (belt-drive `beltdrivemotorlock` primary; `newgearmotorlock` demoted to
   diagnostic candidate). Required count **39**, staged and hash-verified.
 - **Directional:** rear wing — **old `2021Rearwing with DRS` preferred** (user);
-  DRS remains a goal. Gate stays open until wing + mount + DRS arm +
-  diffuser/backplate + rear stack pass a **combined** check.
+  DRS remains a goal. **Rear shocks confirmed 68 mm** (the 51/52 mm numbers are
+  front-only). Gate stays open until wing + mount + DRS arm + diffuser/backplate +
+  rear stack pass a **combined** check.
 - **Open:** Gate A sub-questions (covers vs axle holders; "Light Cover" identity),
   Gate C (camera integration = research/design task), battery (approximate probe done,
   final blocked).
@@ -65,9 +66,14 @@ Use PETG or PLA drafts for shape/fit diagnostics — save the ASA for production
 Import from `02_ready_to_slice/` (production parts) or raw paths view-only (gated
 candidates). Use **Measure**; write outcomes down.
 
-**The coupled rear decision — Gate A + rear wing + DRS (one sitting):**
+**The coupled rear decision — Gate A + rear wing + DRS (one sitting).**
+Gate A, precisely (user 2026-07-10): *check whether the selected rear rocker /
+spring-mount / rear-stack configuration correctly seats **and articulates** with the
+**68 mm rear shocks**.* Rear length is confirmed at 68 mm — the 51/52 mm figures are
+front shocks only, never the rear.
 - [ ] Open `Spring mount 2 REVISION 1.stl` (view-only). Does its rocker seat the
-      **68 mm** coilover (ordered HSP shock, eye-to-eye)?
+      **68 mm** coilover (ordered HSP shock, eye-to-eye) — and can it articulate
+      through travel, not just fit statically?
 - [ ] Open the **preferred wing `2021Rearwing with DRS.stl`** next to the chosen
       stack (drawing `[2]` shows it on the original spring-mount tower with the DRS
       pocket): do the mount interfaces mate? Where does the MG90S sit; where does the
@@ -80,6 +86,10 @@ candidates). Use **Measure**; write outcomes down.
       `[7]`'s "Light Cover" vs "Diffuser"?
 - [ ] **Where the slicer can't settle any of the above → TP-print the small
       candidates** (see diagnostic list) and dry-fit. Log TP + ASM-diagnostic entries.
+- [ ] **Closure check — the rear gates close only when ALL of:** 68 mm shock path
+      checked (slicer or diagnostic dry assembly) ✓ · rear stack confirmed ✓ · wing
+      mount confirmed ✓ · 2021 wing checked with mount + DRS arm +
+      diffuser/backplate ✓ · remaining doubts settled by diagnostic TPs ✓.
 - [ ] Motor lock: `beltdrivemotorlock` is the build's lock (original belt-drive
       solution). Optionally TP-print `newgearmotorlock` alongside for comparison —
       neither this nor any rear question blocks coupons or wheel-fit prints.
@@ -149,6 +159,8 @@ Workflow per step: `PRINT_SPEC.md`. Log every one: TP-NNN in `04_test_prints/`.
 **Diagnostic prints now (TP, draft, labelled):** rear-stack candidates · DRS
 interface parts · `newgearmotorlock` comparison · preferred wing if slicer is
 inconclusive.
+**Design validation now (no printing):** default-render `camera_blower_duct.scad`
+to a temp STL and inspect it in Bambu Studio (§6 — visual only).
 **Print after coupons:** wheel fit set (verdicts wait on parts).
 **Dry assembly now (diagnostic):** printed↔printed fits only; nothing final.
 
@@ -216,13 +228,32 @@ This is a design task, not a ready-to-print task.
       the *firmware* side of gimbal control lives in the firmware repos with its own
       safety gates — this repo only decides the mechanical mount)
 - [ ] Placement: behind a body opening, above the body (camera top 1.1 pod), or
-      inside a protective duct?
+      inside a protective duct? → requirements + the driver-seat vs halo-height
+      trade study live in `CAMERA_GIMBAL_PLACEMENT.md` (source of truth; includes
+      the VR/head-tracking requirements and the hard-stop geometry the firmware
+      safety gate needs)
 - [ ] Does `camera top 1.1` still fit the chosen scheme, or does the duct/mount
       replace it? (then cameranose/f104camera/camera 2 colour get their verdicts)
 
-**Gate C stays blocked for printing until:** real camera measured ✓ AND blower
-measured ✓ AND placement decision made ✓ → then set the 9 `.scad` parameters,
-render the STL, TP-print, verify fit, only then production print.
+**Duct source (inspected 2026-07-10):** `camera_blower_duct.scad` is the current
+duct design candidate and it is **fully parameterized, not hard-coded** — 9 labelled
+"MEASURE THESE" dimensions (blower outlet w/h, blower face w/h, collar depth, camera
+mouth w/h, duct length) plus `wall`/`clearance` fit params and an optional M3
+mounting tab. The shipped values are **placeholder defaults** — the file itself says
+"a sane STARTING geometry, not a guaranteed fit". Its header print spec (PETG,
+0.2 mm, 3 walls, 20%) matches our material matrix.
+
+**Diagnostic step (allowed now, no printing):** open the `.scad` in OpenSCAD, render
+the defaults (F6), export a temporary STL (keep it out of `02_ready_to_slice/`;
+`*.stl` is gitignored anyway), and inspect it in Bambu Studio — purely
+**visual/design validation** of the duct concept, never a production print. Record
+observations in a Gate C note.
+
+**Gate C stays blocked for production printing until ALL of:** real camera measured
+with calipers ✓ · blower arrived + measured ✓ · camera placement decided ✓ · airflow
+path checked ✓ · lens clearance checked ✓ · service/removal access checked ✓ → then
+set the `.scad` parameters from the real measurements, render, **TP-print and verify
+fit**, and only then production print.
 
 ## 7 · Battery-fit estimate (approximate — 2026-07-10 mesh probe)
 

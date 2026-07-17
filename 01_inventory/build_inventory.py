@@ -110,7 +110,7 @@ add(["sidewingdeco.stl"], OPT, ("optional", "PLA"), "medium",
     "Side wing decoration; 1mm thin", "confirm fitment on 2024 body")
 
 # ---- UNCERTAIN (rocker gate) ----
-rocker_check = "GATE A: confirm Spring mount 2 REVISION 1 seats the 68mm coilover in slicer; fits -> Rev-1/hybrid rear stack (drawing [7]: bearings seat in the Motor Covers, wing bolts to Diffuser backplate), else original stack (drawing [2]). Resolve TOGETHER with the rear-wing gate. Diagnostic TP prints of small candidates are allowed to resolve this (user 2026-07-10); production rear-stack prints stay blocked until confirmed"
+rocker_check = "GATE A: check whether the selected rear rocker / spring-mount / rear-stack configuration correctly SEATS AND ARTICULATES with the 68mm REAR shocks (rear length confirmed by user 2026-07-10; the 51/52mm figures are FRONT shocks only). Fits -> Rev-1/hybrid rear stack (drawing [7]: bearings seat in the Motor Covers, wing bolts to Diffuser backplate), else original stack (drawing [2]). Resolve TOGETHER with the rear-wing gate; diagnostic TP prints of small candidates allowed; production rear-stack prints stay blocked until the stack + wing mount are confirmed"
 add(["newgearmotorlock.stl"], UNC, ("pending_rear_gate", "ASA if selected"), "medium",
     "Second motor lock - v2 listed both, but the build uses the original belt-drive solution and BOM v2 names only beltdrivemotorlock (demoted from REQUIRED, user 2026-07-10)",
     "diagnostic print candidate: OK to TP-print for comparison; becomes REQUIRED only if drawing [7]/photos/assembly show it is used; does NOT block coupons or wheel-fit prints")
@@ -150,9 +150,9 @@ add(["pin.stl"], UNC, ("pending_body_check", "PLA or PETG"), "low",
     "Body mounting pin", "2024 body mounts with 3x M3 bolts (README) - pins probably unneeded; confirm no pin holes remain when shells are in the slicer")
 
 # ---- UNCERTAIN (camera/duct - research/design task, user 2026-07-10) ----
-cam_check = "GATE C (research/design task): measure the REAL camera (SSC338Q+IMX335, on hand) and blower (in transit) with calipers - never trust product-page dims; full measurement checklist in FIRST_PRINT_DECISION.md"
+cam_check = "GATE C (research/design task): measure the REAL camera (SSC338Q+IMX335, on hand) and blower (in transit) with calipers - never trust product-page dims; full measurement checklist in FIRST_PRINT_DECISION.md; a diagnostic render (default params -> temp STL -> Bambu Studio visual check) is allowed as design validation only"
 add(["camera_blower_duct.scad"], UNC, ("pending_camera", "PETG"), "high",
-    "Parametric OpenSCAD duct - SOURCE, not sliceable; render STL after measuring", cam_check)
+    "Current duct source/design candidate (inspected 2026-07-10): FULLY PARAMETERIZED OpenSCAD - 9 'MEASURE THESE' dims + wall/clearance + optional M3 tab; shipped values are placeholder defaults, header carries its own print spec (PETG 0.2mm/3 walls/20%)", cam_check)
 add(["cameranose.stl", "camera 2 colour.stl", "f104camera.stl"], UNC,
     ("pending_camera", "PETG or PLA"), "low",
     "Dummy/alternative camera pod - probably unneeded (camera top 1.1 selected)", cam_check)
