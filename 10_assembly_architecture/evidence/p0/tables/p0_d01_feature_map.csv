@@ -1,0 +1,45 @@
+part,X,L,w,h,kind,shape,edge_probes_at_-2mm,area_mm2
+ff,159.99,0.02,3.27,3.27,THROUGH(edge),M3-sq,0,8.3
+ff,134.40,7.79,3.26,3.26,THROUGH(edge),M3-sq,0,8.3
+ff,134.39,-7.80,3.29,3.29,THROUGH(edge),M3-sq,0,8.4
+ff,129.39,0.00,3.25,3.25,THROUGH(edge),M3-sq,0,8.2
+ff,119.39,0.00,3.25,3.25,THROUGH(edge),M3-sq,0,8.2
+ff,78.11,0.00,12.06,12.08,THROUGH(edge),slot/pocket,4,114.1
+ff,64.24,0.00,3.04,3.09,THROUGH,M3-sq,0,7.4
+ff,57.50,0.00,3.00,3.00,THROUGH,M3-sq,0,7.0
+ff,43.55,-41.51,3.18,3.18,THROUGH(edge),M3-sq,0,8.0
+ff,43.55,41.40,3.18,3.18,THROUGH(edge),M3-sq,0,8.0
+ff,39.18,-55.71,13.08,10.29,THROUGH(edge),slot/pocket,0,50.0
+ff,39.18,55.71,13.08,10.29,THROUGH(edge),slot/pocket,0,50.0
+ff,37.15,-41.51,3.36,3.36,THROUGH(edge),M3-sq,0,8.7
+ff,37.12,41.50,3.30,3.30,THROUGH(edge),M3-sq,0,8.4
+ff,34.36,-0.00,68.72,44.44,UNDERSIDE(bottom -2.0),slot/pocket,4,1469.4
+ff,28.71,-63.67,57.41,9.67,UNDERSIDE(bottom -0.7),slot/pocket,0,198.8
+ff,28.71,63.67,57.41,9.67,UNDERSIDE(bottom -0.7),slot/pocket,0,198.8
+ff,22.69,0.00,3.00,3.00,THROUGH(edge),M3-sq,4,7.0
+ff,14.26,0.00,3.10,3.10,THROUGH(edge),M3-sq,4,7.5
+ff,7.50,0.00,3.00,3.00,THROUGH(edge),M3-sq,4,7.0
+bf,-27.76,-13.50,3.00,3.00,THROUGH,M3-sq,0,7.0
+bf,-27.76,16.50,3.00,3.00,THROUGH,M3-sq,0,7.0
+bf,-39.94,17.14,3.10,3.10,THROUGH,M3-sq,0,7.5
+bf,-39.99,-32.86,3.00,3.00,THROUGH(edge),M3-sq,0,7.0
+bf,-46.55,0.00,92.76,66.33,UNDERSIDE(bottom -2.0),slot/pocket,4,3703.1
+bf,-51.53,-63.23,73.08,10.55,UNDERSIDE(bottom -1.5),slot/pocket,1,282.1
+bf,-51.57,63.20,73.16,10.59,UNDERSIDE(bottom -1.5),slot/pocket,1,282.5
+bf,-70.64,-50.38,3.30,3.30,THROUGH(edge),M3-sq,0,8.5
+bf,-70.64,-45.25,3.30,3.30,THROUGH(edge),M3-sq,0,8.5
+bf,-70.64,45.25,3.30,3.30,THROUGH(edge),M3-sq,0,8.5
+bf,-70.64,50.37,3.30,3.30,THROUGH(edge),M3-sq,0,8.5
+bf,-70.65,40.25,3.30,3.30,THROUGH(edge),M3-sq,0,8.5
+bf,-70.65,-40.25,3.30,3.30,THROUGH(edge),M3-sq,0,8.5
+b2,-80.18,-30.75,3.30,3.30,THROUGH(edge),M3-sq,0,8.5
+b2,-80.18,30.75,3.30,3.30,THROUGH(edge),M3-sq,0,8.5
+bf,-85.76,-13.50,3.00,3.00,THROUGH,M3-sq,0,7.0
+bf,-85.76,16.50,3.00,3.00,THROUGH,M3-sq,0,7.0
+bf,-85.93,-5.00,3.00,3.00,THROUGH(edge),M3-sq,4,7.0
+bf,-85.93,5.00,3.00,3.00,THROUGH(edge),M3-sq,4,7.0
+b2,-85.93,-5.00,3.00,3.00,THROUGH,M3-sq,0,7.0
+b2,-85.93,5.00,3.00,3.00,THROUGH,M3-sq,0,7.0
+b2,-129.43,-29.00,3.30,3.30,THROUGH(edge),M3-sq,0,8.5
+b2,-129.43,29.00,3.30,3.30,THROUGH(edge),M3-sq,0,8.5
+b2,-136.68,-0.00,3.30,3.30,THROUGH,M3-sq,0,8.5

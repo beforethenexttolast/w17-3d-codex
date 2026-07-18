@@ -1,0 +1,14 @@
+X,zone,ceil_L0,ceil_L20,ceil_L30,ceil_L40,ceil_L50,w_Z15,w_Z25,w_Z35,w_Z45
+150,nose beam / front axle,37,,,,,,,,
+120,"nose beam, tower zone",42,37/37,,,,,,,
+90,front shell fwd taper,42,42/42,3/3,29/29,,52,52,88,
+60,cockpit hump,42,42/42,40/40,40/40,41/41,103,115,124,27
+40,front bay / shell joint zone,,,,,7/7,109,122,,
+20,Z2 rear (front bay),53,41/41,33/33,32/32,9/9,110,122,59,34
+0,junction Z3 (joint plane),71,40/40,30/29,28/28,33/33,115,121,59,33
+-20,Z3 core (battery/UBEC),68,39/39,26/26,25/24,2/2,115,60,59,28
+-40,Z3/Z5 boundary,65,38/38,23/22,22/21,6/6,109,59,59,17
+-60,Z5 / airbox mid,62,37/37,19/19,19/19,12/12,72,49,48,17
+-80,ESC bay Z5R,58,,,,,,,33,15
+-100,motor / rear axle,55,,,,,,,26,11
+-120,tail,52,,,,,,,,10

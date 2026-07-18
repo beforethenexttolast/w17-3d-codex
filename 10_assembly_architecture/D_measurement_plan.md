@@ -31,8 +31,26 @@ the real part arrives. Confidence tags per [`README.md`](README.md).
 | **D-21** | **CG + L/R + F/R mass balance** | assembled rolling chassis | scale (per-corner if possible) | ±5 g | F1 handling; battery/electronics placement drives it | component placement | partial | F |
 | **D-22** | **Mirrored front hub** bearing seat Ø12 (for 8×12×3.5) | Bambu-mirrored `Front_Right_Wheel_Hub` | slicer + calipers on print | ±0.1 mm | left hub only exists as a mirror | wheel print | no | P, F |
 | **D-23** | Tyre-slot adapter **qty (1 vs 2/side)** + heat-soften watch | at rear-axle assembly + after first drives | trial + IR after run | — | qty + PETG→ASA fallback | wheel print qty, material | no | F |
-| **D-24** | **Rail A + Rail B peak current** vs the 5 A UBEC ratings (LED full-white, servo stall transients, WiFi at max power) — *added 1.5* | bench: inline ammeter / shunt at each UBEC output | ±0.2 A | no rail budget exists; worst-case sums can approach/exceed 5 A (B.2 note, E-23) | UBEC sizing, firmware LED cap, harness wire gauge | no | W, F |
+| **D-24** | **Rail A + Rail B peak current** vs the 5 A UBEC ratings — state matrix (S3): idle · normal running peak · cold-boot inrush · steering stall · LED full-white · WiFi max bitrate · audio peak · combined plausible peak · pathological all-load; **plus accessory-branch input current at PS-15** (the DN-01 fuse rates on the 7.4 V input side, ≈ ΣP_out/V_bat/η), Rail A hold-up through WiFi bursts (scope, L.5), Rail B voltage *at the servo connector* under stall, and one deliberate rail-output overload observation (does the UBEC current-limit or not — L.3.1). **Requires the real VID-WIFI (RST-06).** — *added 1.5, scope extended S3* | bench: CN-23 ammeter loops at each UBEC output + a PS-15 input-side loop; PSU/scope grounds tied to the PS-15 star only (test-equipment grounding) | inline DC ammeter + oscilloscope for <10 ms transients (S3 — the Tool cell was missing; row was column-shifted) | ±0.2 A; scope for transients | no rail budget exists; worst-case sums can approach/exceed 5 A (B.2 note, E-23); the fuse cannot be rated from output-side numbers alone | UBEC sizing, firmware LED cap (DN-04), fuse rating (DN-01), harness wire gauge | no | W, F |
 | **D-25** | **`FRONTNOSE2024` nose-cone interior** cross-sections (width/height at 3+ stations) — *added 1.5* | slicer Measure on the raw STL (view-only) | ±1 mm | the nose was never probed (authored on end; roof method inapplicable); "camera/WiFi in nose" is undecidable without it | camera placement, duct route, E-24 crash exposure | n/a | C |
+| **D-26** | **Steering push-rod line height above floor top at 3 stations + lock-to-lock sweep band** — *added S2* | servo horn (mid-chassis) ↔ `servosaverv7` atop the 71 mm tower; measure in the slicer assembly, re-verify at ASM-08 dry-fit | slicer + calipers/rule | ±2 mm | drawings imply a **rising diagonal (~35→~70 mm) over the central zone** (H §1.2, risk E-25) — deck inboard edge, battery overhead clearance, and both crossing stations X1/X2 depend on it | PS-01/PS-04/PS-06 geometry, N routing, KO-01 vertical extent | partial (rod mock) | C, W, F |
+| **D-27** | **Floor M3 slot-map: which of the 12 slot-nut positions remain free** after the mechanical build, + their coordinates | drawing `[2]` slot pattern ↔ assembled floor | slicer + dry assembly | ±1 mm | every printed support (K) mounts only via existing slots — no new holes in donor parts | PS-01/02/03/05/06/07/08/15 mounting, T CAD tasks | yes | C, F |
+
+## P0 digital-stage results (Session 4A, 2026-07-18 — tagged (P0); details + reproduction in `V_P0_geometry_measurement_results.md`, evidence in `evidence/p0/`)
+
+| ID | Digital-stage result | Status | Physical residual |
+|---|---|---|---|
+| **D-01** | DAT-F = one flat plane (verified); P0 vehicle frame + all part transforms fixed; joint measured (x_ff = x_bf − 90.15 ± 0.2); full feature/thickness map; **battery bay length ≈ 78 mm > 75 — length fits**. **NEW: S0 (shell bottom edge above floor top) bounded 0…~11 — replaces the P1 assumption, which had the sign backwards (shell edge is AT or ABOVE the floor top, not below)** | DIGITALLY CONFIRMED (plane/frame/length) · S0 PARTIALLY RESOLVED | S0 pin at first body-on (P1) — **highest-value measurement on the car**; assembled flatness at ASM-05 |
+| **D-02** | Full 13-station × 5-lateral profile at S0=0 (lower bound): P2c = 65–71 (Session-1 ~72 confirmed); **P2s = 26–41** (37–52 if S0≈11) — low half of the H.1.1 range | DIGITALLY CONFIRMED (S0=0 profile) · absolute PARTIALLY RESOLVED | S0; shell-seated gauge check at P3 (D-04 procedure) |
+| **D-03** | Both sidepods: pocket band \|L\| 30…54, ceilings 22–30 (X +20…−40); Ø28–40×6–12 speaker fits either side; left-side install quantified for the I.4 balance path | DIGITALLY CONFIRMED (S0=0) | audibility/port at dry-fit; DN-07 owner call |
+| **D-04** | Tall-channel (≥45) width stationed: 38→32→26→16→14 (X +30→−80); chimney continuous and viable; **ESP32 fallback F-2 fails its own ≥16 mm condition at the stack stations (module ≠ PCB)** | DIGITALLY CONFIRMED (S0=0) | P8 flow tell-tale + temps (unchanged) |
+| **D-25** | Nose oriented + verified; 16 interior sections: enclosed cavity ONLY in the occupied rear installation ring (39–47 w × ~29–32 h × ~40 long); cowl-only forward, solid tip — **no protected camera volume** | DIGITALLY CONFIRMED (relative) · vertical map SLICER-ESTIMATED ±2 | nose dry-fit for the ±2; E-24/DN-05 unchanged |
+| **D-26** | Slicer stage delivered: rod is a HIGH near-level line Z ≈ 42–58 (NOT 35→70); saver arm radius 18.0 measured; **KO-01 band = Z 35–62, \|L\| ≤ 18 rear → 12 fwd**; deck inboard edge \|L\| ≥ 26 (rear)…20 (fwd), i.e. L ≤ −26/−20 on the architecture-right belt side; X1 crossing must pass below Z 35 | GEOMETRICALLY DERIVED (relative) · SLICER-ESTIMATED (absolute) | ASM-08 physical stage (unchanged, two-stage) |
+| **D-27** | Complete fastener map in vehicle coords (±0.2): **35 part-level M3 rows = 33 unique assembled coordinates** (two coaxial back-floor/rear-2 pairs); **the 12-slot free grid does not exist** — deck-side bay has ONE free M3 feature (−40.0, −32.9), PS-15 patch has none; supports need shared donor screws / free singles / plate-clamp feet (no new holes rule unchanged) | DIGITALLY CONFIRMED (positions) · occupancy PARTIALLY RESOLVED | P1 dry-fit occupancy pass (two-stage, unchanged) |
+
+Side-naming note (P0): architecture-RIGHT = belt side = L<0 in the P0 frame (fully
+determines all relative placements); the driver-left/right *name* is a one-glance
+check at P1 (`V` §3).
 
 ## Start-now vs blocked
 
@@ -40,7 +58,9 @@ the real part arrives. Confidence tags per [`README.md`](README.md).
   the WiFi module is confirmed in hand** — 1.5), D-13 (read the 4 un-reviewed drawings),
   D-14/D-15/D-17 (slicer + diagnostic-TP wave), D-05/D-22 (slicer bore/seat checks),
   D-25 (slicer nose-cone sections), D-01/D-02/D-03/D-04/D-11 (slicer-assembly of
-  floor + shells → then dummy-block dry-fit).
+  floor + shells → then dummy-block dry-fit), **D-26/D-27 (S2: rod line + slot map —
+  both start in the same slicer sitting; they gate the Gate-P1 dry-fit and the T CAD
+  tasks)**.
 - **Blocked until parts arrive:** D-08, D-09, D-12, D-16, D-23 (measure on arrival);
   D-19, D-20, D-21, D-24 (need powered hardware); **D-18 is additionally gated behind
   the firmware A2 + Phase-B safety milestone** (`CAMERA_GIMBAL_PLACEMENT.md §4`).
