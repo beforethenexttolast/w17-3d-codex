@@ -26,7 +26,10 @@ executed the P0 digital/slicer-stage measurements — results in
 reproducible evidence under `evidence/`; the S0 shell-seat pin at Gate P1 is the
 decisive physical residual.** **The independent Session 4A checkpoint review (`W`)
 reproduced the evidence, corrected findings F4A-01…05, and issued `P0 VERIFIED WITH
-MINOR CORRECTIONS — READY FOR CHECKPOINT`.** Nothing here
+MINOR CORRECTIONS — READY FOR CHECKPOINT`.** **The recovered diagnostic-CAD final review
+(`cad/reports/X_diagnostic_cad_review.md`, 2026-07-19) corrected fit/evidence defects,
+reproduced all authorized CAD-01/02/04/06/08 outputs and issued `DIAGNOSTIC CAD VERIFIED
+WITH MINOR CORRECTIONS`; mandatory slicer preflight and physical P1 remain open.** Nothing here
 supersedes the authoritative print-side docs (`../BUILD_SHEET.md`,
 `../MODEL_INVENTORY.md`, `../MATERIAL_DECISION_MATRIX.md`, `../FIRST_PRINT_DECISION.md`,
 `../CAMERA_GIMBAL_PLACEMENT.md`) — it *consumes* them and adds the mechanical-integration
@@ -59,6 +62,8 @@ lens they do not carry.
 | [`U_session3_review_findings.md`](U_session3_review_findings.md) | **Session 3 skeptical review**: findings register F3-01…F3-18, corrections applied in place (tagged "(S3)"), subsystem readiness matrix, verdict **APPROVED FOR P0 + CAD-01** |
 | [`V_P0_geometry_measurement_results.md`](V_P0_geometry_measurement_results.md) | **Session 4A P0 measurements**: P0 vehicle frame + datums (DAT-F verified; S0 residual), D-01/02/03/04/25/26/27 digital results, ten P0 conclusions, physical hand-off list — registers carry the deltas tagged "(P0)"; reproducible via `evidence/scripts/p0_0N_*.py` (evidence in `evidence/p0/`) |
 | [`W_session4A_P0_verification.md`](W_session4A_P0_verification.md) | **Independent Session 4A checkpoint review**: scripts/determinism/STL-integrity checks, high-impact measurement reproductions, evidence-asset inspection, findings F4A-01…05 corrected in place; verdict **P0 VERIFIED WITH MINOR CORRECTIONS — READY FOR CHECKPOINT** |
+| [`cad/`](cad/) | **(CAD-01/P0-CAD)** reproducible diagnostic CAD for authorized CAD-01/02/04/06/08 only: authoritative parameter CSV, dependency-free Python sources, ignored STL/render outputs, automated validation report and exact P1 dry-fit checklist; no production or blocked geometry |
+| [`cad/reports/X_diagnostic_cad_review.md`](cad/reports/X_diagnostic_cad_review.md) | **Independent recovered-CAD final review**: inventory, deterministic reproduction, mesh/plate/visual/scope audit, findings XCAD-01…10 corrected; verdict **DIAGNOSTIC CAD VERIFIED WITH MINOR CORRECTIONS** |
 
 **Authority map (one home per subject):** measurements → `D` (updated in place, S2 adds
 D-26/D-27) · risks → `E` (S2 adds E-25) · decisions → `S` · zones → `I` · placements →

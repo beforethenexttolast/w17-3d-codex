@@ -42,3 +42,26 @@ CAD-02/03/04/06/08 (lower layer, after P0 numbers land) → CAD-05/07/09 (deck +
 periphery, after P1) → CAD-10/11/12 (after their gates). Every task's "unresolved"
 column is a hard stop for that dimension — model it parametric, print it diagnostic,
 never guess it into production.
+
+## P0-CAD implementation result `(CAD-01/P0-CAD)`
+
+CAD-01, CAD-02, CAD-04, CAD-06 and CAD-08 now have dependency-free parametric Python
+sources under [`cad/`](cad/), controlled by one traceable CSV. Twenty individual
+diagnostic STLs and six rational build-plate groups regenerate deterministically into
+the repository-ignored diagnostic output folder. CAD-01 includes installed connector,
+cable-bend, cooling/mount/access geometry; the Wi-Fi output is only the authorized P9
+maximum and is marked `UNCONFIRMED ENVELOPE`. CAD-02 tests the 78 mm span, open
+insertion/XT60/strap/balance provisions and reversible plate clamps. CAD-04 combines
+the verified X=-39.99/L=-32.86 single with a clamp. CAD-06 provides H20/H26/H32 posts
+without CAD-05 geometry. CAD-08 uses an open vent-safe L-frame, reversible clamps and
+removable DN-01/DN-02 `OPEN` blanks. **(X review)** Its recovered fixed PS-05 shoulder
+positions overlapped connector gauges; they are removed from diagnostic CAD and remain
+a P1/S0-dependent placement input. CAD-06 interface fit is still exercised on PS-03.
+
+Automated validation and visual-inspection results are in
+[`cad/reports/generated_part_validation.md`](cad/reports/generated_part_validation.md)
+and [`cad/reports/diagnostic_cad_manifest.md`](cad/reports/diagnostic_cad_manifest.md).
+The exact physical checklist is
+[`cad/reports/P1_dry_fit_checklist.md`](cad/reports/P1_dry_fit_checklist.md). No TP has
+been printed, no right-deck decision has been taken, and no production row is unlocked.
+CAD-03/05/07 and every explicitly gated row remain unchanged and absent.

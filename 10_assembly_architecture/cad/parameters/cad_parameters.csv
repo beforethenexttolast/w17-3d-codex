@@ -1,0 +1,149 @@
+parameter_id,related_cad_task,related_part,value,units,status,source_report_table,uncertainty,physical_dependency,selected_diagnostic_variant
+SH-DAT-F-Z,ALL,all supports,0,mm,confirmed,V section 3 and V section 4,plane digitally confirmed,assembled floor flatness remains physical,DAT-F
+SH-STATIC-CLEARANCE,ALL,all supports,5,mm,minimum,I section 1 safety clearance policy,policy minimum,body-on P3 check,minimum
+SH-MOVING-CLEARANCE,ALL,all supports,8,mm,minimum,I section 1 safety clearance policy,policy minimum,physical motion sweep,minimum
+SH-FAN-CLEARANCE,ALL,ESC dummy,10,mm,minimum,B section B.1 DRV-ESC and I section 1,policy minimum,body-on P3 check,minimum
+SH-D26-Z-MIN,CAD-02/CAD-04/CAD-06/CAD-08,all supports,35,mm,derived,V section 9 and p0_d26_rod_line.md,reserved-band lower boundary,ASM-08 physical rod sweep,P0
+SH-D26-Z-MAX,CAD-02/CAD-04/CAD-06/CAD-08,all supports,62,mm,derived,V section 9 and p0_d26_rod_line.md,reserved-band upper boundary,ASM-08 physical rod sweep,P0
+SH-D26-L-REAR,CAD-04/CAD-06/CAD-08,right-side supports,18,mm,derived,V section 9 and p0_d26_rod_line.md,rear lateral exclusion,ASM-08 physical rod sweep,P0
+SH-D26-L-FWD,CAD-06/CAD-08,right-side supports,12,mm,derived,V section 9 and p0_d26_rod_line.md,forward lateral exclusion,ASM-08 physical rod sweep,P0
+SH-FLOOR-THICKNESS,ALL,plate clamp feet,4,mm,derived,V section 4 and p0_d01_floor_datum.md,plain-plate class,assembled plate edge check,P0
+SH-FLOOR-EDGE-L,ALL,plate clamp feet,68.5,mm,derived,V section 4 floor silhouette,plus or minus at wide plate,physical edge/chamfer check,P0
+SH-M3-CLEARANCE,ALL,diagnostic fastener passages,3.4,mm,provisional,T common M3 constraint,diagnostic square passage not final fastener fit,physical screw fit,diagnostic
+SH-FRAME-RIB,ALL,open-frame dummies,1.8,mm,provisional,P0-CAD diagnostic implementation,printability setting,draft-printer line-width check,diagnostic
+SH-SHELL-WALL,ALL,open-shell dummies,1.2,mm,provisional,P0-CAD diagnostic implementation,three nominal 0.4 mm lines,slicer preview,diagnostic
+SH-LABEL-CELL,ALL,embossed markings,0.65,mm,provisional,P0-CAD diagnostic implementation,bitmap-font cell size,slicer legibility,diagnostic
+SH-LABEL-HEIGHT,ALL,embossed markings,0.6,mm,provisional,P0-CAD diagnostic implementation,raised-label height,slicer legibility,diagnostic
+SH-ARROW-HEIGHT,ALL,orientation arrows,0.8,mm,provisional,P0-CAD diagnostic implementation,raised-arrow height,slicer legibility,diagnostic
+SH-CYLINDER-FACETS,ALL,cylindrical diagnostic features,24,count,provisional,P0-CAD diagnostic implementation,render and mesh resolution,visual inspection,diagnostic
+SH-BUILD-PLATE-SIZE,ALL,build plate groups,256,mm,confirmed,CLAUDE.md hardware facts,X1 Carbon square bed,slicer confirmation,confirmed
+SH-BUILD-PLATE-GAP,ALL,build plate groups,6,mm,minimum,P0-CAD diagnostic implementation,part-to-part draft spacing,slicer confirmation,diagnostic
+SH-RIGHT-FREE-X,CAD-04,right-side free-feature ear,-39.99,mm,confirmed,V section 10 and p0_d27_deckside_map.md,plus or minus 0.2 mm,physical occupancy at P1,P0
+SH-RIGHT-FREE-L,CAD-04,right-side free-feature ear,-32.86,mm,confirmed,V section 10 and p0_d27_deckside_map.md,plus or minus 0.2 mm,physical occupancy at P1,P0
+SH-BAT-FREE-X,CAD-02,battery-tray free-feature ear,-39.94,mm,confirmed,V section 10 and p0_d01_feature_map.csv,plus or minus 0.2 mm,physical occupancy at P1,P0
+SH-BAT-FREE-L,CAD-02,battery-tray free-feature ear,17.14,mm,confirmed,V section 10 and p0_d01_feature_map.csv,plus or minus 0.2 mm,physical occupancy at P1,P0
+BAT-BODY-X,CAD-01/P0-CAD,PWR-BAT dummy,75,mm,maximum,B section B.1 PWR-BAT and T CAD-01,hard pack limit,final battery selection,maximum
+BAT-BODY-Y,CAD-01/P0-CAD,PWR-BAT dummy,45,mm,maximum,B section B.1 PWR-BAT and T CAD-01,hard pack limit,final battery selection,maximum
+BAT-BODY-Z,CAD-01/P0-CAD,PWR-BAT dummy,25,mm,maximum,B section B.1 PWR-BAT and T CAD-01,hard pack limit,final battery selection,maximum
+BAT-INSTALL-X,CAD-01/P0-CAD,PWR-BAT installation envelope,95,mm,confirmed,B section B.1 PWR-BAT,includes XT60 lead and bend,final battery lead construction,maximum
+BAT-INSTALL-Y,CAD-01/P0-CAD,PWR-BAT installation envelope,50,mm,confirmed,B section B.1 PWR-BAT,includes restraint,final battery selection,maximum
+BAT-INSTALL-Z,CAD-01/P0-CAD,PWR-BAT installation envelope,30,mm,confirmed,B section B.1 PWR-BAT,includes restraint,physical S0,maximum
+BAT-XT60-X,CAD-01/P0-CAD,PWR-BAT XT60 body,16,mm,expected,B section B.1 PWR-Y and K PS-13,typical connector body,physical connector measurement,expected
+BAT-XT60-Y,CAD-01/P0-CAD,PWR-BAT XT60 body,8,mm,expected,B section B.1 PWR-Y and K PS-13,typical connector body,physical connector measurement,expected
+BAT-XT60-Z,CAD-01/P0-CAD,PWR-BAT XT60 body,8,mm,expected,B section B.1 PWR-Y and K PS-13,typical connector body,physical connector measurement,expected
+BAT-BEND-X,CAD-01/P0-CAD,PWR-BAT cable bend,20,mm,minimum,B section B.1 PWR-BAT and K PS-13,documented approximate allowance,final battery lead construction,minimum
+BAT-CABLE-D,CAD-01/P0-CAD,PWR-BAT cable exit,4,mm,provisional,P0-CAD diagnostic implementation,explicit unknown cable bundle diameter,physical connector measurement,diagnostic
+BAT-MASS-POCKET-X,CAD-01/P0-CAD,PWR-BAT balance pocket,40,mm,provisional,I section 4 and K PS-01 ballast path,diagnostic mass-pocket length,D-21 balance test,diagnostic
+BAT-MASS-POCKET-Y,CAD-01/P0-CAD,PWR-BAT balance pocket,20,mm,provisional,I section 4 and K PS-01 ballast path,diagnostic mass-pocket width,D-21 balance test,diagnostic
+BAT-MASS-POCKET-Z,CAD-01/P0-CAD,PWR-BAT balance pocket,8,mm,provisional,I section 4 and K PS-01 ballast path,diagnostic mass-pocket depth,D-21 balance test,diagnostic
+ESC-BODY-X,CAD-01/P0-CAD,DRV-ESC dummy,36,mm,expected,B section B.1 DRV-ESC and T CAD-01,estimated typical body,D-08 physical measurement,expected
+ESC-BODY-Y,CAD-01/P0-CAD,DRV-ESC dummy,32,mm,expected,B section B.1 DRV-ESC and T CAD-01,estimated typical body,D-08 physical measurement,expected
+ESC-BODY-Z,CAD-01/P0-CAD,DRV-ESC dummy,18,mm,expected,B section B.1 DRV-ESC and T CAD-01,estimated typical body,D-08 physical measurement,expected
+ESC-FAN-D,CAD-01/P0-CAD,DRV-ESC fan envelope,30,mm,expected,T CAD-01,estimated fan diameter,D-08 physical measurement,expected
+ESC-FAN-Z,CAD-01/P0-CAD,DRV-ESC fan envelope,8,mm,expected,T CAD-01,estimated fan height,D-08 physical measurement,expected
+ESC-MOUNT-ALLOW,CAD-01/P0-CAD,DRV-ESC mounting allowance,4,mm,provisional,P0-CAD diagnostic implementation,explicit diagnostic perimeter allowance,D-08 mount decision,diagnostic
+ESC-BEND-X,CAD-01/P0-CAD,DRV-ESC cable bends,15,mm,provisional,B section B.1 DRV-ESC,explicit unknown bend allowance,D-08 lead measurement,diagnostic
+ESC-BULLET-D,CAD-01/P0-CAD,DRV-ESC phase exits,4,mm,provisional,P0-CAD diagnostic implementation,explicit unknown bullet-envelope diameter,D-08 lead measurement,diagnostic
+ESC-BULLET-PITCH,CAD-01/P0-CAD,DRV-ESC phase exits,8,mm,provisional,P0-CAD diagnostic implementation,explicit diagnostic spacing,D-08 lead measurement,diagnostic
+UBEC-BODY-X,CAD-01/P0-CAD,PWR-UBEC-A/B dummies,30,mm,expected,B section B.1 PWR-UBEC-A/B and T CAD-01,estimated heatshrink body,D-24 or arrival measurement,expected
+UBEC-BODY-Y,CAD-01/P0-CAD,PWR-UBEC-A/B dummies,14,mm,expected,B section B.1 PWR-UBEC-A/B and T CAD-01,estimated heatshrink body,D-24 or arrival measurement,expected
+UBEC-BODY-Z,CAD-01/P0-CAD,PWR-UBEC-A/B dummies,10,mm,expected,B section B.1 PWR-UBEC-A/B and T CAD-01,estimated heatshrink body,D-24 or arrival measurement,expected
+UBEC-LEAD-X,CAD-01/P0-CAD,PWR-UBEC-A/B lead exits,12,mm,provisional,P0-CAD diagnostic implementation,explicit unknown initial bend volume,arrival lead measurement,diagnostic
+UBEC-LEAD-D,CAD-01/P0-CAD,PWR-UBEC-A/B lead exits,3,mm,provisional,P0-CAD diagnostic implementation,explicit unknown bundled-lead diameter,arrival lead measurement,diagnostic
+UBEC-AIR-Z,CAD-01/P0-CAD,PWR-UBEC-A/B cooling volume,5,mm,minimum,I section 1 static clearance policy,uses policy clearance,D-19 and D-24 thermal test,minimum
+UBEC-MOUNT-ALLOW,CAD-01/P0-CAD,PWR-UBEC-A/B mounting allowance,2,mm,provisional,P0-CAD diagnostic implementation,diagnostic zip and rib allowance,arrival measurement,diagnostic
+ESP-BODY-X,CAD-01/P0-CAD,CTL-E1/E2 dummies,55,mm,expected,B section B.1 CTL-E1/E2 and T CAD-01,estimated DevKit body,physical board measurement,expected
+ESP-BODY-Y,CAD-01/P0-CAD,CTL-E1/E2 dummies,28,mm,expected,B section B.1 CTL-E1/E2 and T CAD-01,estimated DevKit body,physical board measurement,expected
+ESP-BODY-Z,CAD-01/P0-CAD,CTL-E1/E2 dummies,13,mm,expected,B section B.1 CTL-E1/E2 and T CAD-01,estimated DevKit body,physical board measurement,expected
+ESP-HEADER-Y,CAD-01/P0-CAD,CTL-E1/E2 pin-header envelope,44,mm,expected,T CAD-01,body plus documented rail envelope,physical board/header measurement,expected
+ESP-USB-X,CAD-01/P0-CAD,CTL-E1/E2 occupied USB plug,10,mm,expected,K PS-13,approximate plug stub,physical pigtail measurement,expected
+ESP-USB-Y,CAD-01/P0-CAD,CTL-E1/E2 occupied USB plug,8,mm,expected,K PS-13,approximate plug stub,physical pigtail measurement,expected
+ESP-USB-Z,CAD-01/P0-CAD,CTL-E1/E2 occupied USB plug,5,mm,expected,K PS-13,approximate plug stub,physical pigtail measurement,expected
+ESP-USB-BEND-X,CAD-01/P0-CAD,CTL-E1/E2 USB cable bend,15,mm,minimum,K PS-13,documented bend allowance,DN-08 pigtail route,minimum
+ESP-MOUNT-ALLOW,CAD-01/P0-CAD,CTL-E1/E2 standoff allowance,3,mm,provisional,P0-CAD diagnostic implementation,explicit unknown mounting allowance,physical board-hole measurement,diagnostic
+WIFI-BODY-X,CAD-01/P0-CAD,VID-WIFI dummy,60,mm,maximum,T CAD-01 P9 dummy and K PS-13,maximum dummy only and not hardware measurement,D-06b plus possession,maximum
+WIFI-BODY-Y,CAD-01/P0-CAD,VID-WIFI dummy,32,mm,maximum,T CAD-01 P9 dummy and K PS-13,maximum dummy only and not hardware measurement,D-06b plus possession,maximum
+WIFI-BODY-Z,CAD-01/P0-CAD,VID-WIFI dummy,12,mm,maximum,T CAD-01 P9 dummy and K PS-13,maximum dummy only and not hardware measurement,D-06b plus possession,maximum
+WIFI-HS-X,CAD-01/P0-CAD,VID-WIFI heatsink,28,mm,confirmed,B section B.1 VID-HS,confirmed heatsink only,D-06b module measurement,maximum
+WIFI-HS-Y,CAD-01/P0-CAD,VID-WIFI heatsink,28,mm,confirmed,B section B.1 VID-HS,confirmed heatsink only,D-06b module measurement,maximum
+WIFI-HS-Z,CAD-01/P0-CAD,VID-WIFI heatsink,3,mm,confirmed,B section B.1 VID-HS,confirmed heatsink only,D-06b module measurement,maximum
+WIFI-AIR-Z,CAD-01/P0-CAD,VID-WIFI cooling allowance,5,mm,minimum,I section 1 static clearance policy,policy minimum,D-19 thermal test,minimum
+WIFI-PIGTAIL-X,CAD-01/P0-CAD,VID-WIFI aft pigtail exits,15,mm,provisional,P0-CAD diagnostic implementation,explicit unknown initial bend volume,D-06b physical measurement,diagnostic
+WIFI-PIGTAIL-D,CAD-01/P0-CAD,VID-WIFI aft pigtail exits,2,mm,provisional,P0-CAD diagnostic implementation,explicit unknown coax-envelope diameter,D-06b physical measurement,diagnostic
+WIFI-CN16-X,CAD-01/P0-CAD,VID-WIFI CN-16 boundary,15,mm,provisional,M CN-16 and N H-07,explicit diagnostic connector and bend stub,DN-11 and Gate P4,diagnostic
+WIFI-POWER-X,CAD-01/P0-CAD,VID-WIFI power exit,10,mm,provisional,B section B.2 VID-WIFI and J VID-WIFI,explicit diagnostic power-exit stub,D-06b physical measurement,diagnostic
+AMP-BODY-X,CAD-01/P0-CAD,AUD-AMP dummy,17,mm,expected,B section B.1 AUD-AMP,estimated typical body,physical amplifier measurement,expected
+AMP-BODY-Y,CAD-01/P0-CAD,AUD-AMP dummy,15,mm,expected,B section B.1 AUD-AMP,estimated typical body,physical amplifier measurement,expected
+AMP-BODY-Z,CAD-01/P0-CAD,AUD-AMP dummy,3,mm,expected,B section B.1 AUD-AMP,estimated typical body,physical amplifier measurement,expected
+AMP-MOUNT-ALLOW,CAD-01/P0-CAD,AUD-AMP mounting allowance,2,mm,provisional,P0-CAD diagnostic implementation,explicit diagnostic pad allowance,physical amplifier measurement,diagnostic
+AMP-LEAD-X,CAD-01/P0-CAD,AUD-AMP connector bends,10,mm,provisional,B section B.1 AUD-AMP,explicit unknown lead bend,physical amplifier measurement,diagnostic
+AMP-ADJUST-D,CAD-01/P0-CAD,AUD-AMP adjustment access,5,mm,provisional,P0-CAD diagnostic implementation,explicit tool-access gauge,physical amplifier measurement,diagnostic
+SERVO-BODY-X,CAD-01/P0-CAD,SRV-STEER dummy,40,mm,expected,B section B.1 SRV-STEER and T CAD-01,estimated standard servo,D-09 physical measurement,expected
+SERVO-BODY-Y,CAD-01/P0-CAD,SRV-STEER dummy,20,mm,expected,B section B.1 SRV-STEER and T CAD-01,estimated standard servo,D-09 physical measurement,expected
+SERVO-BODY-Z,CAD-01/P0-CAD,SRV-STEER dummy,40.5,mm,expected,B section B.1 SRV-STEER and T CAD-01,estimated standard servo,D-09 physical measurement,expected
+SERVO-HORN-R,CAD-01/P0-CAD,SRV-STEER horn sweep,20,mm,maximum,p0_d26_rod_line.md S1 basis,estimated horn radius band 12 to 20,D-09 and ASM-08,maximum
+SERVO-HORN-Z,CAD-01/P0-CAD,SRV-STEER horn sweep,2,mm,provisional,P0-CAD diagnostic implementation,explicit sweep-disc thickness,D-09 physical measurement,diagnostic
+SERVO-LEAD-X,CAD-01/P0-CAD,SRV-STEER lead exit,12,mm,provisional,P0-CAD diagnostic implementation,explicit unknown initial bend volume,D-09 physical measurement,diagnostic
+SERVO-LEAD-D,CAD-01/P0-CAD,SRV-STEER lead exit,3,mm,provisional,P0-CAD diagnostic implementation,explicit unknown bundled-lead diameter,D-09 physical measurement,diagnostic
+JUNC-DUMMY-X,CAD-01/P0-CAD,connector-bank dummy,55,mm,expected,K PS-15 envelope,diagnostic allocation not component measurement,DN-01 DN-02 and D-24,expected
+JUNC-DUMMY-Y,CAD-01/P0-CAD,connector-bank dummy,40,mm,expected,K PS-15 envelope,diagnostic allocation not component measurement,DN-01 DN-02 and D-24,expected
+JUNC-DUMMY-Z,CAD-01/P0-CAD,connector-bank dummy,20,mm,expected,K PS-15 envelope,diagnostic allocation not component measurement,DN-01 DN-02 and D-24,expected
+JUNC-HAND-X,CAD-01/P0-CAD,connector-bank mating-hand volume,25,mm,provisional,K PS-15 acceptance,explicit diagnostic hand-access depth,P1 finger-access observation,diagnostic
+JUNC-WIRE-X,CAD-01/P0-CAD,connector-bank wire bend,15,mm,provisional,N bend-radius rule,explicit initial bend volume,D-10 harness dry-fit,diagnostic
+JUNC-TOOL-D,CAD-01/P0-CAD,connector-bank tool access,8,mm,minimum,K all-parts service rule,hex-driver clearance gauge,P1 tool-access observation,minimum
+JUNC-EXTRACT-X,CAD-01/P0-CAD,connector-bank extraction volume,25,mm,provisional,K PS-15 acceptance,explicit diagnostic extraction distance,P1 extraction observation,diagnostic
+TRAY-BAY-X,CAD-02/PS-01,battery tray,78,mm,derived,V section 4 and V conclusion 9,approximately 78 mm usable span,P1 physical bay check,P0
+TRAY-OUTER-Y,CAD-02/PS-01,battery tray,50,mm,confirmed,B PWR-BAT install envelope and T CAD-02,P10 allocation width,physical S0 and shell wall,maximum
+TRAY-BASE-Z,CAD-02/PS-01,battery tray,3,mm,provisional,K PS-01 DAT-T approximate,diagnostic thickness only,slicer and P2 print,diagnostic
+TRAY-WALL-Z,CAD-02/PS-01,battery tray,12,mm,provisional,K PS-01,diagnostic wall height,physical S0 and P1,diagnostic
+TRAY-WALL-T,CAD-02/PS-01,battery tray,2,mm,provisional,P0-CAD diagnostic implementation,diagnostic rib thickness,P2 print,diagnostic
+TRAY-ORIGIN-X,CAD-02/PS-01,battery tray,-83,mm,derived,V section 4 battery span,usable bay aft endpoint,P1 floor alignment,P0
+TRAY-ORIGIN-L,CAD-02/PS-01,battery tray,18.5,mm,derived,V section 4 and p0_d01 floor silhouette,keeps 5 mm from KO-19 estimate and reaches plate edge,P1 floor alignment,P0
+TRAY-STRAP-W,CAD-02/PS-01,battery tray strap,20,mm,confirmed,K PS-01,documented strap width,physical strap fit,confirmed
+TRAY-STRAP-SLOT,CAD-02/PS-01,battery tray strap slot,22,mm,provisional,K PS-01 strap slot,one mm side clearance,physical strap fit,diagnostic
+TRAY-BALANCE-CLIP-GAP,CAD-02/PS-01,battery tray balance-lead park,4,mm,provisional,K PS-01 cable features,open-top diagnostic comb gap,physical balance-lead fit,diagnostic
+TRAY-TRIM-X,CAD-02/PS-01,battery tray balance trim,10,mm,expected,K PS-01 and I section 4,fore-aft adjustment each direction,D-21 balance test,expected
+TRAY-BALLAST-X,CAD-02/PS-01,battery tray ballast land,40,mm,provisional,K PS-01 S3 ballast land,diagnostic land length,D-21 balance test,diagnostic
+TRAY-BALLAST-Z,CAD-02/PS-01,battery tray ballast land,2,mm,provisional,P0-CAD diagnostic implementation,raised edge for adhesive strips,D-21 balance test,diagnostic
+CLAMP-JAW-X,CAD-02/CAD-04/CAD-08,removable plate-clamp feet,14,mm,provisional,P0 D-27 permitted strategy,diagnostic clamp length,physical plate-edge fit,diagnostic
+CLAMP-JAW-Y,CAD-02/CAD-04/CAD-08,removable plate-clamp feet,12,mm,provisional,P0 D-27 permitted strategy,diagnostic clamp width,physical plate-edge fit,diagnostic
+CLAMP-JAW-GAP,CAD-02/CAD-04/CAD-08,removable plate-clamp feet,4.4,mm,provisional,SH-FLOOR-THICKNESS plus diagnostic clearance,0.4 mm total clearance,physical plate-edge fit,diagnostic
+CLAMP-WALL,CAD-02/CAD-04/CAD-08,removable plate-clamp feet,2.2,mm,provisional,P0-CAD diagnostic implementation,diagnostic wall thickness,P2 print,diagnostic
+CLAMP-KEY-X,CAD-02/CAD-04/CAD-08,removable plate-clamp feet,8,mm,provisional,P0-CAD diagnostic implementation,replaceable support-interface key length,P2 fit test,diagnostic
+CLAMP-KEY-Y,CAD-02/CAD-04/CAD-08,removable plate-clamp feet,4,mm,provisional,P0-CAD diagnostic implementation,replaceable support-interface key width,P2 fit test,diagnostic
+CLAMP-KEY-Z,CAD-02/CAD-04/CAD-08,removable plate-clamp feet,2,mm,provisional,P0-CAD diagnostic implementation,replaceable support-interface key height,P2 fit test,diagnostic
+SHELF-X,CAD-04/PS-03,UBEC shelf,70,mm,expected,I Z3R-L0 and K PS-03,inside the 70 to 75 mm allocation,D-24 upsize check,expected
+SHELF-Y,CAD-04/PS-03,UBEC shelf,42,mm,expected,K PS-03 upper diagnostic allocation,fits two 18 mm installation dummies plus retention ribs,D-24 upsize check,expected
+SHELF-Z-MAX,CAD-04/PS-03,UBEC shelf,14,mm,maximum,K PS-03 and V conclusion 9,rod-safe diagnostic maximum,D-24 upsize check,maximum
+SHELF-BASE-Z,CAD-04/PS-03,UBEC shelf,2,mm,provisional,P0-CAD diagnostic implementation,diagnostic open base thickness,P2 print,diagnostic
+SHELF-RIB,CAD-04/PS-03,UBEC shelf,2,mm,provisional,P0-CAD diagnostic implementation,diagnostic pocket rib,P2 print,diagnostic
+SHELF-POCKET-CLEAR,CAD-04/PS-03,UBEC shelf,1,mm,provisional,P0-CAD diagnostic implementation,per-side dummy clearance,physical UBEC fit,diagnostic
+SHELF-ORIGIN-X,CAD-04/PS-03,UBEC shelf,-57.5,mm,derived,V floor map and right free feature,locates free feature within shelf,P1 floor alignment,P0
+SHELF-ORIGIN-L,CAD-04/PS-03,UBEC shelf,-68,mm,derived,V floor silhouette and D-26,0.5 mm inboard of nominal edge,P1 floor alignment,P0
+SHELF-POST-SHOULDER-D,CAD-04/CAD-06,UBEC shelf post shoulder,12,mm,expected,T CAD-06 diameter range 10 to 12,upper range for diagnostic stability,post fit test,maximum
+SHELF-LEAD-COMB-GAP,CAD-04/PS-03,UBEC shelf lead comb,4,mm,provisional,P0-CAD diagnostic implementation,explicit lead-bundle opening,D-10 harness dry-fit,diagnostic
+POST-D,CAD-06/PS-05,support-post family,12,mm,maximum,T CAD-06 and K PS-05,documented 10 to 12 range,post fit test,maximum
+POST-BORE,CAD-06/PS-05,support-post family,3.4,mm,provisional,SH-M3-CLEARANCE,diagnostic through passage,physical M3 fit,diagnostic
+POST-HEIGHT-LOW,CAD-06/PS-05,support-post family,20,mm,expected,V conclusion 2 and I DAT-D,minimum credible narrow-deck plane,physical S0,low
+POST-HEIGHT-MID,CAD-06/PS-05,support-post family,26,mm,provisional,T CAD-06 P4 range 20 to 32,midpoint diagnostic sample,physical S0,mid
+POST-HEIGHT-HIGH,CAD-06/PS-05,support-post family,32,mm,maximum,T CAD-06 and K PS-04 P4 range,maximum diagnostic sample,physical S0,high
+POST-KEY-X,CAD-06/PS-05,support-post family,8,mm,provisional,P0-CAD diagnostic implementation,replaceable shoulder key,post shoulder fit test,diagnostic
+POST-KEY-Z,CAD-06/PS-05,support-post family,2,mm,provisional,P0-CAD diagnostic implementation,replaceable shoulder key height,post shoulder fit test,diagnostic
+JUNC-SUPPORT-X,CAD-08/PS-15,junction support,40,mm,expected,K PS-15 envelope,oriented transverse to preserve extraction path,P1 floor fit,expected
+JUNC-SUPPORT-Y,CAD-08/PS-15,junction support,55,mm,expected,K PS-15 envelope,oriented lateral,P1 floor fit,expected
+JUNC-SUPPORT-Z,CAD-08/PS-15,junction support,14,mm,maximum,V conclusion 9,rod-safe diagnostic maximum,D-24 and P1,maximum
+JUNC-SUPPORT-BASE-Z,CAD-08/PS-15,junction support,2,mm,provisional,P0-CAD diagnostic implementation,diagnostic open base thickness,P2 print,diagnostic
+JUNC-SUPPORT-ORIGIN-X,CAD-08/PS-15,junction support,0,mm,provisional,I Z2R and V D-27 patch,within X 0 to 40 test patch,P1 floor alignment,diagnostic
+JUNC-SUPPORT-ORIGIN-L,CAD-08/PS-15,junction support,-68.5,mm,derived,V floor silhouette,uses reversible edge feet on wide plate,P1 plate-edge fit,P0
+JUNC-VENT-X-MIN,CAD-08/PS-15,junction support,27,mm,derived,V section 4 unusable vent zone,vent and shell-seat boundary,P1 shell-seat check,P0
+JUNC-VENT-L-ABS-MIN,CAD-08/PS-15,junction support,41,mm,derived,V section 4 unusable vent zone,vent and shell-seat boundary,P1 shell-seat check,P0
+JUNC-XT30-X,CAD-08/PS-15,junction support XT30 test seats,12,mm,expected,B section B.1 PWR-XT30,typical connector body,physical connector measurement,expected
+JUNC-XT30-Y,CAD-08/PS-15,junction support XT30 test seats,6,mm,expected,B section B.1 PWR-XT30,typical connector body,physical connector measurement,expected
+JUNC-XT30-Z,CAD-08/PS-15,junction support XT30 test seats,6,mm,expected,B section B.1 PWR-XT30,typical connector body,physical connector measurement,expected
+JUNC-FUSE-X,CAD-08/PS-15,junction support DN-01 blank seat,19,mm,provisional,P0-CAD diagnostic implementation,explicit generic mini-blade allowance,DN-01 and D-24,diagnostic blank
+JUNC-FUSE-Y,CAD-08/PS-15,junction support DN-01 blank seat,6,mm,provisional,P0-CAD diagnostic implementation,explicit generic mini-blade allowance,DN-01 and D-24,diagnostic blank
+JUNC-KEY-X,CAD-08/PS-15,junction support DN-02 blank seat,20,mm,provisional,P0-CAD diagnostic implementation,explicit generic loop-key allowance,DN-02,diagnostic blank
+JUNC-KEY-Y,CAD-08/PS-15,junction support DN-02 blank seat,12,mm,provisional,P0-CAD diagnostic implementation,explicit generic loop-key allowance,DN-02,diagnostic blank
+JUNC-POST-SHOULDER-D,CAD-08/CAD-06,junction support future post shoulder,12,mm,expected,T CAD-06 diameter range 10 to 12,deferred because recovered fixed positions overlapped diagnostic connector seats,P1 non-conflicting placement,deferred at P1
+RENDER-WIDTH,ALL,validation renders,900,px,provisional,P0-CAD validation implementation,diagnostic raster width,visual inspection,diagnostic
+RENDER-HEIGHT,ALL,validation renders,700,px,provisional,P0-CAD validation implementation,diagnostic raster height,visual inspection,diagnostic

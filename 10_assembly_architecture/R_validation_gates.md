@@ -24,3 +24,20 @@ Gate C (D-06/D-07 + blower) → prerequisite of MOD-CAM steps in P6 and of PS-10
 Gate D residual (D-09) → prerequisite of P4 servo rows and ASM-06; D-18 gimbal
 endpoints → stays behind firmware A2 + Phase B (ASM-39 only *records geometry*);
 battery purchase → after D-01 (P0), per F §6.
+
+## P0-CAD evidence available `(CAD-01/P0-CAD)`
+
+The reproducible diagnostic sources and ignored STL set for CAD-01/02/04/06/08 are now
+available under [`cad/`](cad/); this is modelling/output evidence, not a TP print and
+does not skip P1. Execute P1 with the exact item-by-item form in
+[`cad/reports/P1_dry_fit_checklist.md`](cad/reports/P1_dry_fit_checklist.md). The form
+requires body/connector/bend/hand/insertion/removal/shell/floor/D-26/neighbour/route/
+service/balance/photo observations and explicitly maps the observations controlling the
+narrow-deck continuation, fallback-A trigger, tray/shelf/junction revisions and post
+height. P2 remains locked until that physical evidence exists.
+
+Local automated validation passes deterministic regeneration, non-empty mm meshes,
+parameter-derived bboxes, bed orientation, closed/oriented primitive shells, D-26
+height and 256 mm plate fit. Because no Boolean mesh engine or Bambu Studio CLI is
+installed, strict global manifold union and slicer/layer checks are an explicit
+pre-print requirement; they are not silently counted as passed.

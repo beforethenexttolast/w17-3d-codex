@@ -24,7 +24,9 @@ not final dimensions.
 - Every part must be removable with hex drivers 1.5/2/2.5 without desoldering
   (Q, service rule).
 - Status ladder: **CONCEPT → DIAG-CAD (T) → TP diagnostic print → Gate P2/P3 →
-  production authorization (Gate P10)**. Nothing here is past CONCEPT today.
+  production authorization (Gate P10)**. **(CAD-01/P0-CAD)** CAD-01/02/04/06/08
+  have now reached reproducible **DIAG-CAD** source/output status; no TP has been
+  printed and no production authorization is implied.
 
 ---
 
@@ -32,11 +34,11 @@ not final dimensions.
 
 | ID | Name | Zone | Solves | Status | Blocking measurements |
 |---|---|---|---|---|---|
-| PS-01 | Battery tray + restraint | Z3L-L0 | E-04/E-08: locate + restrain pack, protect from floor hardware | CONCEPT — diagnostic CAD allowed | D-01, D-02, D-26, D-27 |
+| PS-01 | Battery tray + restraint | Z3L-L0 | E-04/E-08: locate + restrain pack, protect from floor hardware | **DIAG-CAD implemented (CAD-01/P0-CAD); TP not printed** | D-01, D-02, D-26, D-27 |
 | PS-02 | ESC mount | Z5R | E-01: ESC off bare floor, fan clearance, wire exits | CONCEPT — diag CAD allowed | D-08, Gate A edge |
-| PS-03 | UBEC shelf (pocket row) | Z3R-L0 | E-01: regulators located, deck understructure | CONCEPT — diag CAD allowed | D-02, D-24 (upsize risk) |
+| PS-03 | UBEC shelf (pocket row) | Z3R-L0 | E-01: regulators located, deck understructure | **DIAG-CAD implemented (CAD-01/P0-CAD); TP not printed** | D-02, D-24 (upsize risk) |
 | PS-04 | Removable electronics deck | Z3R-L1 | E-01/E-03: carries CTL-E1/E2, AUD-AMP, VID-WIFI; one-module service | CONCEPT — diag CAD allowed | D-02, D-04, D-06b, D-26 |
-| PS-05 | Deck posts (×3–4) | Z2R/Z3R | deck height + removability | CONCEPT (may merge into PS-03/PS-15) | D-02, D-27 |
+| PS-05 | Deck posts (×3–4) | Z2R/Z3R | deck height + removability | **DIAG-CAD H20/H26/H32 implemented (CAD-01/P0-CAD); no deck geometry** | D-02, D-27 |
 | PS-06 | RX carrier + antenna guide | Z2L | E-06/KO-17: RX located, antenna geometry repeatable | CONCEPT — diag CAD allowed | D-20, D-26 |
 | PS-07 | Body-disconnect bulkhead clip | cockpit rim | ZB rule: one-connector body lift-off | CONCEPT | CN-BODY family pick (M) |
 | PS-08 | Cable combs / floor clips (set) | edges | E-15: loom restraint, abrasion, moving-axis clearance | CONCEPT — diag CAD allowed | D-10 |
@@ -44,9 +46,9 @@ not final dimensions.
 | PS-10 | Gimbal module base | Z8 | common Option-A/B camera interface | CONCEPT — **gated** | D-06, D-07, halo check |
 | PS-11 | Blower/duct interface mount | Z8 | Gate C duct (from `camera_blower_duct.scad`) held to PS-10 | CONCEPT — **gated** | Gate C set |
 | PS-12 | 5.8 GHz antenna posts ×2 | deck rear | KO-17: antenna position + pigtail reach | CONCEPT (integrate into PS-04) | D-06b, D-20 |
-| PS-13 | Dummy-envelope block set | — | Gate P1 dry-fit (RST-06 WiFi dummy P9 among them) | **diagnostic print allowed now** | none (that's the point) |
+| PS-13 | Dummy-envelope block set | — | Gate P1 dry-fit (RST-06 WiFi dummy P9 among them) | **DIAG-CAD implemented (CAD-01/P0-CAD); diagnostic print remains gate-controlled** | none (that's the point) |
 | PS-14 | Speaker carrier | Z4L | AUD-SPK port + isolation | CONCEPT — **gated** | D-03, DN-07 |
-| PS-15 | Power junction block | Z2R | R-07: XT60 inlet, Y, fuse/disconnect seat, XT30 taps, test points | CONCEPT — diag CAD allowed | DN-01/02, D-24 |
+| PS-15 | Power junction block | Z2R | R-07: XT60 inlet, Y, fuse/disconnect seat, XT30 taps, test points | **DIAG-CAD open-seat support implemented (CAD-01/P0-CAD); DN-01/02 remain open** | DN-01/02, D-24 |
 | PS-16 | Hall sensor bracket | rear axle | SNS-HALL gap 1–3 mm in hot pocket | CONCEPT | D-15/Gate A, magnet station |
 | PS-17 | USB service-pigtail retainer | cockpit rim | E-09/D-11 programming access | CONCEPT — **gated** | D-11, DN-08 |
 
@@ -250,3 +252,25 @@ the chassis (one CN-BODY clip suffices; a wall adds mass and blocks airflow).
 - Parks two micro-USB pigtails (CTL-E1/E2) + camera-console lead at the cockpit rim
   for programming without body removal — only if DN-08 selects the pigtail route over
   a body port / plain body-off. No CAD before D-11.
+
+---
+
+## K.3 Diagnostic implementation hand-off `(CAD-01/P0-CAD)`
+
+Reproducible sources, the authoritative parameter CSV, generated-output manifest,
+automated bbox/topology report and exact P1 checklist now live under [`cad/`](cad/).
+The implementation preserves DAT-F, the D-26 Z 35–62 band, the one-free-feature
+finding and the permitted donor/free/clamp attachment rule. PS-01 uses reversible
+outboard clamp feet because its mirror free feature is too close to the KO-19 policy
+boundary for a useful diagnostic ear; PS-03 uses the verified right-side single plus
+a clamp; PS-15 uses clamps because Z2R has no free feature. Clamp feet are unloaded
+diagnostic coupons until P1/P2 fit and pull-off evidence exists.
+
+The locally available toolchain proves deterministic closed/oriented primitive shells
+but has no Boolean mesh/slicer engine. Strict global manifold union, label line width,
+unsupported bridges and final print repair remain mandatory Bambu Studio checks before
+any TP print. **(X review)** The PS-15 diagnostic support deliberately omits fixed
+PS-05 shoulders: the recovered positions overlapped its connector gauges, and choosing
+a replacement before physical S0/P1 would hard-code the blocked deck interface. CAD-06
+shoulder fit remains testable on PS-03; PS-15 shoulder placement is carried to P1.
+Nothing in this hand-off advances CAD-03/05/07, PS-10/11/14/17 or any production geometry.
