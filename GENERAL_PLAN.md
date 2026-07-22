@@ -116,23 +116,38 @@ Tracked here until resolved; details in `MODEL_INVENTORY.md`:
    remains open.**
 4. **Gate D — RESOLVED 2026-07-10:** `Servoholder` is the floor servo mount (drawing
    `[2]`) → REQUIRED. Residual: DS3235SG fit-check on arrival, before the floor batch.
-5. Hardware **partially delivered 2026-07-17:** MR128ZZ 8×12×3.5 front bearings ×10
-   (need 4 + spares), metal 3×32 mm turnbuckles **×2 (count confirmed — matches the
-   wanted 2; closes the ×1-vs-×2 doubt in `learning-manual/open_questions.md` #22)**,
-   plastic M4 rod-end linkage balls ×10, M3 tie-rod-end ball joint caps, steel
-   fully-threaded rods, aluminium tube **OD 16 × ID 14 mm, 300 mm — the rear-axle
-   spacer stock (ID matches the 14 mm-ID metal-spacer spec in `ASSEMBLY_NOTES.md`;
-   cut 4 spacers, 2/side — heat protection, do not omit; spacer cut length TBD at
-   rear-axle dry assembly)**.
-   **Still in transit:** tyres 54198/51400, 52/68 mm shocks, servos (DS3235SG + MG90S),
-   king pins, belt set, rear 6801 bearings, blower. On arrival: measure front shocks
-   (51 vs 52 mm), spur↔pulley bolt pattern, both servo fit-checks. Delivered bearings
-   unblock the **Stage-1 wheel test-fit gate** (coupons → rim/hub print → press-fit)
-   once the first hub is printed. Until the rest arrives:
-   hardware-dependent fitment blocked; **printed↔printed diagnostic dry assembly allowed**
-   (`ASSEMBLY_NOTES.md`). **Battery not final** — approximate shell probe done
-   (`FIRST_PRINT_DECISION.md` §7: width/height clear with margin, length unproven);
-   keep ≤75×45×25 mm; slicer-assembly measure next, physical fit final.
+5. **Hardware *arrival* status lives in `../HARDWARE_INVENTORY.md`** (workspace-level
+   delivery log, authoritative as of 2026-07-22: what arrived, when, and how each drop
+   maps to a BOM v2 line). **This item is no longer an arrival ledger** — it carries only
+   the mechanical **measure / fit** residuals this repo owns, all still **pending**
+   (nothing below has been measured or fitted yet):
+   - **Front shocks — measure 51 vs 52 mm.** The 52 mm 4-set is on hand
+     (`../HARDWARE_INVENTORY.md` §10); the real length picks the shock-mount geometry.
+   - **Spur ↔ belt-pulley bolt pattern.** Confirm the 3Racing Sakura 48P 75T spur bolt
+     holes match the belt-set pulley (BOM open confirm #1). Spur + belt set both on hand (§8).
+   - **DS3235SG steering-servo fit-check** into the `Servoholder` pocket + horn sweep
+     (Gate D residual; servo on hand, §6). **MG90S** pan/tilt/DRS fit-checks are deferred —
+     the micro servos are still in transit (§6).
+   - **King-pin 3 mm knuckle-bore check.** King pins (M3 dowel + circlip) are on hand
+     (§11); verify the printed knuckle's 3 mm bore accepts them.
+   - **Rear-axle spacer cut length.** Aluminium tube OD 16 × ID 14 mm × 300 mm is on hand
+     (§12; ID matches the 14 mm-ID metal-spacer spec in `ASSEMBLY_NOTES.md`). Cut 4
+     spacers, 2/side (heat protection — do not omit); **cut length TBD at rear-axle dry
+     assembly**.
+   - **Turnbuckles:** **2 on hand total** (1 wanted + crash-spare) per
+     `../HARDWARE_INVENTORY.md` §11 — the ×1-vs-×2 doubt in
+     `learning-manual/open_questions.md` #22 is closed there, not re-counted here. (The
+     per-delivery split — 1 on 07-17, 1 on 07-21 — is a delivery-date detail in that log,
+     not an independent count claim.)
+
+   Front bearings (MR128ZZ, on hand §9) unblock the **Stage-1 wheel test-fit gate**
+   (coupons → rim/hub print → press-fit) once the first hub is printed; the tyre-bead half
+   of that fit still waits on the Tamiya tyres (in transit, §B). Until the remaining parts
+   arrive, hardware-dependent fitment stays blocked, but **printed↔printed diagnostic dry
+   assembly is allowed** (`ASSEMBLY_NOTES.md`). **Battery not final** — approximate shell
+   probe done (`FIRST_PRINT_DECISION.md` §7: width/height clear with margin, length
+   unproven); keep the ≤75×45×25 mm envelope; slicer-assembly measure next, physical fit
+   final (pack sourcing tracked in `../HARDWARE_INVENTORY.md` §D).
 6. Tyre-slot adapter final quantity (1 or 2 per side) — at assembly.
 7. Rear tyre-slot adapters heat-watch after first drives (PETG → ASA if soft).
 8. Review this session's inventory + material matrix (Vitaliy).

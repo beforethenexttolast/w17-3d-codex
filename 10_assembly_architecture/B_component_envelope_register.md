@@ -14,6 +14,13 @@ raw part), a status, and an evidence source. Confidence tags per [`README.md`](R
 (ESTIMATED — verify on arrival); HAND = on hand, measurable now; TRANSIT = ordered, not
 yet in hand; DRW = supplier drawing; PROBE = STL/mesh probe this session.
 
+> **HAND / TRANSIT here mean *measurement-readiness*, not an arrival ledger.** They record
+> whether this repo can measure/fit the part yet — **not** when it shipped or arrived. The
+> authoritative arrival / on-hand log for the whole build is `../HARDWARE_INVENTORY.md`
+> (workspace-level, current as of 2026-07-22); if it and a flag here ever disagree on
+> arrival, that file wins. This register never asserts a part *was measured or fitted* until
+> a dated measure/fit record says so.
+
 ---
 
 ## B.1 Physical envelope table
@@ -22,8 +29,8 @@ yet in hand; DRW = supplier drawing; PROBE = STL/mesh probe this session.
 |---|---|---|---|---|---|---|
 | PWR-BAT | 2S LiPo pack | 1 (×2 **planned**, swap — none bought yet; corrected 1.5) | **≤75 × 45 × 25** (hard limit) | +XT60 lead exit ~20 & bend + strap/retention → allow ~**95 × 50 × 30** pocket | envelope CONFIRMED; pack not chosen | BOM, 2024-body README |
 | DRV-MOT | Rocket 540 V3 motor | 1 | ~Ø36 × 53 (can) **EST** | + sensor lead + 3 phase wires (rear exit) + pinion | fixed by drivetrain geometry | BOM, DS |
-| DRV-ESC | QuicRun 10BL120 ESC | 1 | ~36 × 32 × 18 + fan **EST** | + fan airflow clearance ≥10 top + 3 batt/3 motor wires + signal | TO MEASURE | BOM, DS, photo (ESC+fan mid-chassis) |
-| SRV-STEER | DS3235SG steering servo | 1 | ~40 × 20 × 40.5 **EST** (std size) | into `Servoholder` pocket + horn sweep + 3-wire lead | fit-check TO MEASURE (Gate D residual) | BOM, DRW `[2]/[3]` |
+| DRV-ESC | QuicRun 10BL120 ESC | 1 | ~36 × 32 × 18 + fan **EST** | + fan airflow clearance ≥10 top + 3 batt/3 motor wires + signal | TO MEASURE (HAND) | BOM, DS, photo (ESC+fan mid-chassis); on hand `../HARDWARE_INVENTORY.md` §3 |
+| SRV-STEER | DS3235SG steering servo | 1 | ~40 × 20 × 40.5 **EST** (std size) | into `Servoholder` pocket + horn sweep + 3-wire lead | fit-check TO MEASURE (HAND; Gate D residual) | BOM, DRW `[2]/[3]`; on hand `../HARDWARE_INVENTORY.md` §6 |
 | SRV-PAN | MG90S (pan) | 1 | ~23 × 12.2 × 29 **EST** | + horn sweep + lead; at camera gimbal | TO MEASURE | BOM, DS, CAMERA_GIMBAL_PLACEMENT |
 | SRV-TILT | MG90S (tilt) | 1 | ~23 × 12.2 × 29 **EST** | + horn sweep + lead; at camera gimbal | TO MEASURE | BOM, DS |
 | SRV-DRS | MG90S (DRS) | 1 | ~23 × 12.2 × 29 **EST** | into rear-wing DRS pocket + metal-rod link | fit-check TO MEASURE | BOM, DRW `[2]` |
@@ -32,7 +39,7 @@ yet in hand; DRW = supplier drawing; PROBE = STL/mesh probe this session.
 | CTL-E3 | ESP32 spare | 1 | — | not installed (spare) | n/a | BOM |
 | RX-ELRS | RadioMaster RP1 ELRS RX | 1 | ~20 × 12 × 3 **EST** + T-antenna | + antenna routing (keep away from metal/motor) | TO MEASURE | BOM, DS |
 | VID-CAM | Camera SSC338Q + IMX335 board | 1 | **TO MEASURE** (board + heatsink + lens) | + lens FOV cone + cable exit + service pull | TO MEASURE (Gate C) | BOM, HAND |
-| VID-WIFI | BL-M8812EU2 USB WiFi module | 1 | **TO MEASURE** (high-power USB module) | + 28×28×3 heatsink + 2× U.FL pigtails + airflow | TO MEASURE | BOM; ⚠ on-hand status **UNCONFIRMED** (1.5: only the camera is documented on hand — verify before relying on D-06b "now") |
+| VID-WIFI | BL-M8812EU2 USB WiFi module | 1 | **TO MEASURE** (high-power USB module) | + 28×28×3 heatsink + 2× U.FL pigtails + airflow | TO MEASURE (HAND) | BOM, HAND — on hand per `../HARDWARE_INVENTORY.md` §1 (arrived 07-17); measure now (D-06b) |
 | VID-ANT | 5.8 GHz U.FL omni antennas | 2 (of 5) | 70 mm whip each | + clearance from metal + mount at body edge | TO MEASURE placement | BOM |
 | VID-HS | Heatsink for WiFi module | 1 (of 2) | **28 × 28 × 3** | bonded to module; adds to VID-WIFI stack | CONFIRMED | BOM |
 | AUD-AMP | MAX98357A I2S amp | 1 | ~17 × 15 × 3 **EST** | + I2S 3-wire + 2 speaker wires | TO MEASURE | BOM, DS |
@@ -48,7 +55,7 @@ yet in hand; DRW = supplier drawing; PROBE = STL/mesh probe this session.
 | SNS-HALL | A3144 Hall sensor | 1 | TO-92 ~4 × 3 × 5 **EST** | at rear axle, gap to magnet ~1–3 mm; hot pocket | TO MEASURE mount | BOM, DS |
 | SNS-MAG | Neodymium magnet 3 × 1 mm | 1 | Ø3 × 1 | glued to rear axle | CONFIRMED spec | BOM |
 | SNS-DIV | Voltage divider (27k/10k) | 1 | 2 resistors, ~negligible | inline on battery sense wire | — | BOM |
-| COOL-BLOW | Blower 5 V 20 mm (ACP2006) | 1 | ~20 × 20 × 10 **EST** | + XH2.54 + duct interface to camera | TO MEASURE (TRANSIT) | BOM |
+| COOL-BLOW | Blower 5 V 20 mm (ACP2006) | 1 | ~20 × 20 × 10 **EST** | + XH2.54 + duct interface to camera | TO MEASURE (HAND) | BOM; on hand `../HARDWARE_INVENTORY.md` §13 |
 | COOL-DUCT | Camera cooling duct (from `.scad`) | 1 | parametric — **TO DESIGN** | wraps blower→camera; 9 "MEASURE THESE" dims | TO MEASURE (Gate C) | FIRST_PRINT_DECISION §6 |
 | SW-PWR | Power switch | 0–1 | ~15 × 8 × 12 **EST** | reference build mounts one on front floor | optional / TO DECIDE | photo `…55` |
 | PWR-BUZZ | BX100 low-voltage buzzer | 0–1 | ~30 × 12 × 8 **EST** | optional independent alarm | optional | BOM |
@@ -108,12 +115,12 @@ v2, excluded from the space plan on purpose.*
 | Component | Why it matters | How to resolve |
 |---|---|---|
 | **VID-CAM** camera board + heatsink + lens | governs the nose/pod cavity + duct + FOV | **HAND — measure with calipers now** (Gate C, D-06) |
-| **VID-WIFI** WiFi module | bulky, hot, 2 antennas — a major body | possession **UNCONFIRMED** (1.5) — verify, then measure (D-06b) |
-| **DRV-ESC** 10BL120 + fan | governs mid-chassis volume + airflow | TRANSIT — measure on arrival (D-08) |
-| **SRV-STEER** DS3235SG | must fit `Servoholder` pocket | TRANSIT — fit-check (D-09) |
-| **MG90S** ×3 | pockets + horn sweep | TRANSIT — fit-check (D-09) |
+| **VID-WIFI** WiFi module | bulky, hot, 2 antennas — a major body | HAND — on hand per `../HARDWARE_INVENTORY.md` §1 (arrived 07-17); measure now (D-06b) |
+| **DRV-ESC** 10BL120 + fan | governs mid-chassis volume + airflow | HAND — on hand per `../HARDWARE_INVENTORY.md` §3; measure now (D-08) |
+| **SRV-STEER** DS3235SG | must fit `Servoholder` pocket | HAND — on hand per `../HARDWARE_INVENTORY.md` §6; fit-check now (D-09) |
+| **MG90S** ×3 | pockets + horn sweep | TRANSIT — fit-check on arrival (D-09) |
 | **AUD-SPK** speaker | needs a sidepod pocket + port | TO MEASURE (model dims) |
-| **UBEC ×2, amp, RX, caps, blower** | sidepod/airbox pockets | mostly TRANSIT — measure on arrival |
+| **UBEC ×2, amp, RX, blower** | sidepod/airbox pockets | HAND — on hand per `../HARDWARE_INVENTORY.md` (§5 / §4 / §2 / §13); measure now. Caps = §D build-from-stock (owned, not delivery-verified) |
 | **HARNESS** loom bulk | the *dominant* real-world volume (photos) | only knowable at wiring dry-fit (D-10) |
 
 **Nothing above is allowed to disappear from the Session-2 space plan** — each is carried
