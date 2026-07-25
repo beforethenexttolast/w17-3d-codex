@@ -11,7 +11,7 @@ constraints per K (materials, orientation, walls).
 
 | CAD | Part | Parent geometry | Attach | Confirmed dims | Parameterized dims | Unresolved (blockers) | Keep-outs | Fasteners/inserts | Cable features | Diagnostic acceptance | Production gate |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| CAD-01 | **PS-13 dummy set** (print first — unblocks Gate P1) | none (free bodies) | none | battery 75×45×25; UBEC 30×14×10; ESP32 55×28×13 (+rails→44); ESC 36×32×18+fan Ø30×8; servo 40×20×40.5+horn; **(S3) every dummy carries its connector/wire-exit stubs per K PS-13: battery XT60 fwd, ESC XT60 fwd + bullets aft, UBEC leads both ends, WiFi pigtails aft, ESP32 micro-USB plug stub outboard** | WiFi dummy = **P9 60×32×12** labelled DUMMY | camera block **excluded** until D-06 | — | — | stub geometry per K PS-13 (S3) | ±0.5 mm of register values; embossed IDs | n/a — never production |
+| CAD-01 | **PS-13 dummy set** (print first — unblocks Gate P1) | none (free bodies) | none | battery 75×45×25; UBEC 30×14×10; ESP32 55×28×13 (+rails→44); ESC 36×32×18+fan Ø30×8; servo 40×20×40.5+horn (**generic dimensional/radius gauge, not the corrected installed side orientation; real servo required for D-09/D-26**); **(S3) every dummy carries its connector/wire-exit stubs per K PS-13: battery XT60 fwd, ESC XT60 fwd + bullets aft, UBEC leads both ends, WiFi pigtails aft, ESP32 micro-USB plug stub outboard** | WiFi dummy = **P9 60×32×12** labelled DUMMY | camera block **excluded** until D-06 | — | — | stub geometry per K PS-13 (S3) | ±0.5 mm of register values; embossed IDs | n/a — never production |
 | CAD-02 | PS-01 battery tray | floor top (DAT-F), Z3L slots | 2–3 M3 slot nuts | pack limit 75×45×25; pocket P10 95×50×30 | slot span (D-27); wall offset to KO-19 (D-02); fore-aft trim ±10 | rod clearance overhead (D-26) | KO-19 ≥5; KO-01 per D-26; left shell wall (D-02) | M3×8 CSK; no inserts | fwd wire notch; strap slots; balance-lead clip | dummy pack in/out no-tools; sweeps clear | P10 after P3 + D-21 |
 | CAD-03 | PS-02 ESC mount | floor, Z5R slots | 2 M3 | — (ESC EST 36×32×18) | pocket L/W/H from **D-08**; aft edge from Gate A geometry | D-08; Gate A | KO-06 ≥8; fan air ≥10 above | M3×8; strap slots | bullet groove aft; signal comb | ESC dummy seats; 10 mm gauge passes | P10 after P3/D-04 |
 | CAD-04 | PS-03 UBEC shelf (+ rear deck hooks) | floor, Z3R slots | 2 M3 | UBEC EST 30×14×10 ×2 | pocket sizes (on-arrival measure); hook height ties to P4 | D-24 upsize risk | KO-19 inboard; deck above | M3×8 | lead combs both ends; cap zip point; CN-23 park | UBEC dummies seat; leads reach PS-15 | P10 after P7 (upsize known) |
@@ -28,14 +28,17 @@ constraints per K (materials, orientation, walls).
 | — | PS-17 USB retainer | **NO CAD** — blocked by D-11 + DN-08 | | | | | | | | | |
 
 **(P0 — Session 4A measured inputs for these tasks; details `V` §13):** CAD-01
-unchanged (proceed). CAD-02: bay length **78 mm ✔**; tray + strap must clear the
-measured rod band (Z 35–62) only above Z 30; parametrize wall height for the S0
-outcome. CAD-04/CAD-08: rod-safe (≤ Z 14); **anchor via shared donor screws /
+unchanged (proceed). CAD-02: bay length **78 mm ✔**; tray + strap overlap the
+corrected provisional rod band Z22–38 vertically and must be held to the physical
+ASM-08 lateral/sweep result; parametrize wall height for S0. CAD-04/CAD-08 base
+supports remain vertically rod-safe (≤Z14); **anchor via shared donor screws /
 free singles ((−40.0, −32.9)) / plate-clamp feet** — the free slot grid does not
 exist (D-27). CAD-06 posts: parametric height unchanged, seats per the same rule.
-**CAD-05 deck: HOLD final width/height until the S0 pin at Gate P1** — inboard
-edge |L| ≥ 26 rear / 20 fwd (**L ≤ −26/−20** on the belt side); viable only as a narrow inboard deck at P4 ≈ 20 in the
-S0 ≥ ~6 world. CAD-03 unchanged (D-08 + Gate A). Gated rows unchanged.
+**CAD-05 deck: HOLD final width/height until S0 and ASM-08** — provisional inboard
+edge |L|≥30 (**L≤−30** on the belt side) wherever it overlaps KO-01 Z22–38;
+recheck viability against the shell because this is farther outboard than the old
+edge. H26/H32 CAD-06 posts overlap KO-01 vertically and are fit gauges, not selected
+placements. CAD-03 unchanged (D-08 + Gate A). Gated rows unchanged.
 
 **Recommended CAD order:** CAD-01 (dummies, immediately — unblocks Gate P1) →
 CAD-02/03/04/06/08 (lower layer, after P0 numbers land) → CAD-05/07/09 (deck +
@@ -65,3 +68,24 @@ The exact physical checklist is
 [`cad/reports/P1_dry_fit_checklist.md`](cad/reports/P1_dry_fit_checklist.md). No TP has
 been printed, no right-deck decision has been taken, and no production row is unlocked.
 CAD-03/05/07 and every explicitly gated row remain unchanged and absent.
+
+## T.2 Remaining-component CAD delta (2026-07-23)
+
+The new fit studies do not authorize production geometry. They also invalidate
+the current ESC body gauge: the documented Sensored-G2 envelope is
+43×36.8×32.3 mm / 101.5 g, not 36×32×18.
+
+| CAD | Diagnostic/support task | Allowed input | Hard blockers | Output now |
+|---|---|---|---|---|
+| **CAD-13** | exact ESC envelope/airflow gauge and PS-02 search fixtures | D-28 label/calipers only | S0, rear shock/belt, wire bends | **none until D-28**; old dummy marked obsolete |
+| **CAD-14** | pulley/shaft/spur stack gauges or removable belt guard | D-30/D-16 physical dimensions | Gate A, all rotating sweeps | none |
+| **CAD-15** | two labelled battery dummies and one-pack tray search | documented 75×45×25 + connector/strap stubs | S0 + ASM-08 + D-31 | dummies allowed; no dual-pack tray |
+| **CAD-16** | measured electronics blocks / deck search | D-32 physicals | S0 + ASM-08 + D-33 | none beyond existing diagnostic blocks |
+| **CAD-17** | PS-10/11 camera/gimbal/duct diagnostics | D-34/35 and nine SCAD fields | A/B owner decision, FOV/roll/airflow | none |
+| **CAD-18** | speaker carrier and LED anchors/lenses | D-36 actual hardware/offcuts | port, DRS/halo/body service | none |
+| **CAD-19** | non-vehicle ride/clearance gauges | D-37 shock/wheel values | none for a labelled gauge | concept only; never production car part |
+| **CAD-20** | adjustable ASA Hall bracket | final carrier + D-38 gap/runout | Gate A, reliable 1–3 mm band | none |
+
+All diagnostic outputs emboss `TP`, their CAD/PS ID and the controlling
+confidence. No camera block is guessed; no donor STL is relieved; no source
+mesh or historical document is edited.

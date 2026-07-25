@@ -329,14 +329,15 @@ def _servo_dummy(p: Parameters) -> Part:
     _label(mesh, "SRV TP", lead + bx * 0.20, radius - by * 0.10,
            bz + hz - 0.20, p, bx * 0.62)
     return Part(
-        "cad01_srv_steer.stl", "CAD-01", "PS-13", "SRV-STEER/KO-19 installation dummy",
+        "cad01_srv_steer.stl", "CAD-01", "PS-13", "SRV-STEER generic dimensional/radius gauge",
         mesh,
-        ("component ID", "orientation arrow", "body envelope", "horn sweep envelope",
+        ("component ID", "orientation arrow", "body envelope", "horn radius envelope",
          "lead exit", "initial lead bend"),
         ("SERVO-BODY-X", "SERVO-BODY-Y", "SERVO-BODY-Z", "SERVO-HORN-R",
          "SERVO-HORN-Z", "SERVO-LEAD-X", "SERVO-LEAD-D"),
         (lead + bx, 2 * radius, bz + hz + p.f("SH-LABEL-HEIGHT") - 0.20), 0.5,
-        "servo body base on bed; horn-sweep disc up", "free diagnostic body; lead exits -X")
+        "servo body base on bed; horn-radius disc up",
+        "generic gauge only—not corrected installed side orientation; lead exits -X")
 
 
 def _junction_dummy(p: Parameters) -> Part:

@@ -86,8 +86,11 @@ electronics restrict access.
 CTL-E1/E2 + AUD-AMP + VID-WIFI deck rows are now **conditional on the S0 pin**
 (P2s measured 26–41 at S0=0 — deck viable only inboard-hugged at P4≈20 in the
 S0 ≥ ~6 world; fallback-A trigger armed, not fired). PWR-BAT: bay **length 78 ✔**;
-pack body passes under the measured rod band (Z 35–62). RX-ELRS Z2L and PS-15 Z2R:
-validated with the best side-bay heights (33–41 at |L| 20–40, X +10…+55). The
+after the corrected D-26, its ~Z28 top overlaps provisional KO-01 Z22–38 and must
+clear laterally or at the ASM-08 physical sweep. The deck has the same physical
+D-26 gate; provisional adjacent boundary is |L|≥30 where heights overlap.
+RX-ELRS Z2L and PS-15 Z2R retain their measured shell envelopes, but any feature
+entering X−80…+100, |L|≤22, Z22…38 is frozen pending ASM-08. The
 ESP32 **airbox fallback F-2 is geometrically dead** (D-04); the nose remains
 unallocated with **no protected camera volume found** (D-25). D-27: the free
 slot-nut grid does not exist — mounts per K's (P0) rule update.
@@ -97,3 +100,57 @@ slot-nut grid does not exist — mounts per K's (P0) rule update.
 blower (on-arrival), HARNESS bulk (D-10) — each row carries its blocker and its
 dummy-envelope stand-in lives in PS-13 (except the camera, which is **not** dry-fitted
 from a guessed block; D-06 first).
+
+## J.3 Datum-coordinate fit-study overlay (2026-07-23)
+
+This table supersedes conflicting envelope/location claims above. Full per-item
+coordinates and mixed-axis confidence are in
+[`evidence/p0/tables/p0_d29_zone_placements.csv`](evidence/p0/tables/p0_d29_zone_placements.csv).
+
+| ID/group | X | L | Z | Orientation | Confidence / disposition |
+|---|---:|---:|---:|---|---|
+| DRV-ESC | −60 candidate | −25 | base +3 | 43 X ×36.8 L, fan up | ASSUMPTION; **fails S0=0 side fit; freeze** |
+| DRV-MOT | ≈−105 | ≈0 | axis ≈+27 | shaft lateral | ASSUMPTION; donor-family fixed |
+| rear axle/gears/bearings | −90.9 | offsets TBD | axis +26…27 | common lateral axis | X DERIVED; L/Z ASSUMPTION |
+| PWR-BAT-1 | −44 | +25 | base +3 | 75 X ×45 L ×25 Z, XT60 forward | ASSUMPTION; D-31 |
+| PWR-BAT-2 | off-car | off-car | off-car | swap/storage | DERIVED packaging conclusion |
+| UBEC-A/B | −15 / −48 | −38 | base +3 | flat, separate lanes | ASSUMPTION; remain ≤Z14 |
+| CTL-E1/E2 | +10 / −45 | −32 | deck +20 | flat, USB outboard | ASSUMPTION; S0/ASM-08 |
+| RX-ELRS | +20 body / +120 antenna | +38 / +15 | +3 / ≈+30 | T antenna clear | ASSUMPTION route; body DOCUMENTED |
+| VID-WIFI/ANT | −45 | −18 / roots ±18 | deck +20 / roots +35 | heatsink up; 70 mm longitudinal | ASSUMPTION |
+| VID-CAM | +60 A / −53 B | 0 | base +20 / +73+S0 | boresight X+, roll trim | ASSUMPTION; A preferred |
+| CAM-TOP | −61.6…−44.8 | −8.8…+8.9 | 73.35…80.27+S0 | authored with shell | DERIVED |
+| MG90S pan/tilt/DRS | camera A/B / ≈−125 | 0 | module / +55…80 | axes Z/L / wing pocket | ASSUMPTION |
+| AUD-SPK / AMP | −30 / −5 | +43 / −40 | +3 / +15 | cone out / flat | ASSUMPTION; speaker shell-plausible |
+| tyre axes | +146.1 front / −90.9 rear | ±75 / ±72.5 | +26…27 | lateral | X DERIVED; L/Z ASSUMPTION |
+| Hall + magnet | −90.9 | collar TBD | axis +26…27 | face gap local | X DERIVED; rest ASSUMPTION |
+
+**Rail allocation is unchanged:** Rail A = camera, Wi-Fi, ESP32×2, RP1, amp,
+LED and Hall; Rail B = steering, pan, tilt, DRS and blower; ESC/motor = battery
+branch. Grounds are common at one star. Any placement that forces a different
+rail route returns to Reports L/N before support CAD.
+
+## J.4 Cassette re-audit overlay (2026-07-24)
+
+Coordinates are DAT-F fit-gauge values. This overlay supersedes the failed
+cassette attempt only; it does not authorize a mount.
+
+| ID/group | X | L | Z | Orientation / service | Confidence / disposition |
+|---|---:|---:|---:|---|---|
+| CAS-CORE/WING | rear stem −31…+1 / wing +1…+42 / tongue +42…+46 | stem −18.5…+17.5 / wing ±43 / tongue ±29.5 | cell-driven 1…19 | stepped-T assumption; lift around fixed pedestal only after new external saddle | ASSUMPTION; Wi-Fi/dock/mounting open |
+| CAS-PDB | +1…+46 | ±27.5 | 1…19 | 45 X ×55 L ×18 Z TARGET; tall UBEC/cap side and exits toward dock TBD | contents FIRM; final geometry/mass ASSUMPTION; 3 mm to KO-01 |
+| CAS-CHARGE | −31…−1 | −13…+12 | 1…11 | 30×25×10 TARGET; final service/thermal faces TBD | SKU TBD / ASSUMPTION / **DEFER seat** |
+| CAS-AMP / RX-RP1 | amp −31…−13.2 / RP1 −12.2…+0.8 | amp −10.2…+9.2 / RP1 −6…+5 | 13…16 | insulated rear service deck above charge target | amp/deck ASSUMPTION; RP1 body DOCUMENTED |
+| CTL-E1-CAS | +3…+42 | −43…−30 | 1…32 | 39×31×~13 vertically on wall; micro-USB at X+42 | identity/envelope FIRM; holes/live plug/retention ASSUMPTION |
+| CTL-E2-CAS | +3…+42 | +30…+43 | 1…32 | mirrored wall seat; same access edge; pin map unchanged | same |
+| VID-WIFI-CAS | **UNPLACED** | **UNPLACED** | must clear KO-01/shell | ≤60×32×12 allocation + 28×28×3 sink; USB/U.FL/airflow exits unmeasured | ASSUMPTION; D-06b blocks full layout closure |
+| VID-CAM-PED | outer core +51…+65; camera axis TBD | core L±11; boresight centred by fit gate | floor-referenced; gimbal datum TBD | 10×18 clear conduit, 2 mm wall; fixed to floor/front structure | ASSUMPTION; MG90S **DEFER**; old Z38…98 stack retired |
+| PWR-BAT-CAS-REF | −80…−5 | +22.5…+67.5 | 1.5…26.5 | floor, off cassette; strap/removal outward | exact pack DEFER; shell/sweep candidate remains conditional |
+| DRV-ESC-CAS-REF | −49.2…−5 | −60.5…−23.5 | 1.5…25.7 | floor, fan up; natural leads/air volume TBD | body DOCUMENTED, station ASSUMPTION/conditional |
+| CAS-DOCK | straight trial +42…+58 | ±32 | local TBD | firm minimum XT60×1/XT30×2/3-pin×5/XH3×3/USB4×1; immediate R1/R2 turn | map FIRM; body/topology ASSUMPTION; straight trial overlaps pedestal |
+| CAS-BOSS-4 | former −15/+35 | ±12 | floor interface | former four points lie inside charge/PDB targets | **REJECTED implementation**; external four-point saddle/clamp dummy required, no donor drilling |
+
+Body-off service intent remains dock unplug → release a new external four-point
+saddle/clamp → lift the cassette
+around the pedestal, which remains fixed. Both micro-USB plugs face the X+42
+access edge. The mating pull, conduit and lift path remain physical gates.

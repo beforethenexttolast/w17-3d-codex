@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720" role="img" aria-labelledby="t d">
+  <title id="t">W17 system layers and module boundaries</title>
+  <desc id="d">Exploded layer diagram showing chassis, lower power layer, open spine, conditional electronics deck, optional modules, harness layer, and body shell.</desc>
+  <defs>
+    <style>
+      .bg{fill:#f7f5f0}.ink{fill:#17222b}.muted{fill:#65717a}.line{stroke:#293943;stroke-width:2;fill:none}.dash{stroke-dasharray:8 7}.c{fill:#dff3e9;stroke:#227a5c}.r{fill:#dcebf8;stroke:#2f6fad}.p{fill:#fff0cf;stroke:#d98c2b}.x{fill:#fde4df;stroke:#c9564a}.o{fill:#eee6f8;stroke:#7456a3}.box{stroke-width:2}.tag{font:700 13px system-ui}.h{font:700 26px system-ui}.sub{font:600 17px system-ui}.txt{font:15px system-ui}.small{font:13px system-ui}
+    </style>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto"><path d="M0 0L9 4.5L0 9z" fill="#293943"/></marker>
+  </defs>
+  <rect class="bg" width="1200" height="720"/>
+  <text class="h ink" x="48" y="48">System view — sparse skeleton, open centre</text>
+  <text class="txt muted" x="48" y="75">Exploded vertically for clarity · relationships only · DAT-F is the dimensional authority</text>
+
+  <path class="line dash" d="M205 142 Q600 52 995 142 L943 220 Q600 153 257 220 Z"/>
+  <text class="sub ink" x="487" y="113">BODY SHELL / MOD-BODY</text>
+  <rect class="o box" x="835" y="143" width="118" height="36" rx="9"/><text class="tag ink" x="851" y="166">OPTIONAL halo LED</text>
+  <text class="small muted" x="455" y="184">one body disconnect: CN-14 · shell seat S0 PHYSICAL CHECK REQUIRED</text>
+
+  <g transform="translate(0 10)">
+    <polygon class="p box" points="300,273 865,273 940,330 225,330"/>
+    <text class="sub ink" x="435" y="305">HARNESS / SERVICE-LOOP LAYER</text>
+    <path d="M290 315H860" stroke="#2f6fad" stroke-width="7"/><path d="M290 324H860" stroke="#d98c2b" stroke-width="7"/>
+    <text class="small ink" x="250" y="300">R1 clean + signal</text><text class="small ink" x="868" y="322">R2 power + Rail B</text>
+  </g>
+
+  <g transform="translate(0 20)">
+    <polygon class="r box" points="558,365 875,365 925,412 530,412"/>
+    <text class="sub ink" x="628" y="395">MOD-DECK — CONDITIONAL</text>
+    <rect class="r box" x="575" y="423" width="102" height="45" rx="6"/><text class="tag ink" x="592" y="451">CTL-E1/E2</text>
+    <rect class="r box" x="691" y="423" width="82" height="45" rx="6"/><text class="tag ink" x="708" y="451">AMP</text>
+    <rect class="p box" x="787" y="423" width="113" height="45" rx="6"/><text class="tag ink" x="807" y="444">Wi-Fi max</text><text class="small ink" x="809" y="460">unconfirmed</text>
+    <text class="small muted" x="550" y="490">H20 first · only if S0 + full cluster + removal path pass</text>
+  </g>
+
+  <g transform="translate(0 15)">
+    <polygon class="c box" points="224,520 935,520 1001,576 164,576"/>
+    <rect class="r box" x="250" y="480" width="205" height="66" rx="7"/><text class="sub ink" x="299" y="510">BATTERY / PS-01</text><text class="small ink" x="288" y="531">floor-left · top removable</text>
+    <rect class="r box" x="700" y="485" width="124" height="55" rx="7"/><text class="tag ink" x="721" y="510">UBEC A / B</text><text class="small ink" x="726" y="527">PS-03 ≤Z14</text>
+    <rect class="r box" x="842" y="486" width="108" height="54" rx="7"/><text class="tag ink" x="863" y="511">PS-15</text><text class="small ink" x="854" y="527">junction bank</text>
+    <rect class="p box" x="756" y="585" width="125" height="50" rx="7"/><text class="tag ink" x="787" y="609">ESC</text><text class="small ink" x="770" y="626">real D-08 open</text>
+    <rect class="c box" x="512" y="490" width="150" height="54" rx="7"/><text class="tag ink" x="535" y="514">OPEN SPINE</text><text class="small ink" x="527" y="531">servo · rod · shock</text>
+    <text class="sub ink" x="392" y="560">DAT-F FLOOR / CHASSIS — CONFIRMED DIGITAL DATUM</text>
+  </g>
+
+  <rect class="o box" x="55" y="394" width="150" height="66" rx="9"/><text class="tag ink" x="81" y="421">OPTIONAL speaker</text><text class="small ink" x="81" y="443">left sidepod candidate</text>
+  <rect class="x box" x="968" y="352" width="180" height="83" rx="9"/><text class="tag ink" x="997" y="378">CAMERA / GIMBAL</text><text class="small ink" x="988" y="400">BLOCKED: D-06, D-07,</text><text class="small ink" x="1004" y="419">Gate C + owner choice</text>
+  <path class="line" marker-end="url(#arr)" d="M1015 440L914 484"/>
+
+  <g transform="translate(48 660)"><rect class="c box" width="112" height="28" rx="5"/><text class="tag ink" x="15" y="19">CONFIRMED</text><rect class="r box" x="128" width="130" height="28" rx="5"/><text class="tag ink" x="145" y="19">RECOMMENDED</text><rect class="p box" x="274" width="120" height="28" rx="5"/><text class="tag ink" x="292" y="19">PROVISIONAL</text><rect class="x box" x="410" width="194" height="28" rx="5"/><text class="tag ink" x="425" y="19">PHYSICAL CHECK / BLOCKED</text><rect class="o box" x="620" width="95" height="28" rx="5"/><text class="tag ink" x="639" y="19">OPTIONAL</text></g>
+</svg>

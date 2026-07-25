@@ -1,0 +1,139 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; img-src data:; font-src data:">
+<title>Hall speed sensor · W17 connections</title><style>
+:root {
+  color-scheme:light dark;
+  --bg:#edf1f0; --paper:#fff; --ink:#15201f; --muted:#596866;
+  --line:#bdc9c7; --grid:#dce3e2; --ground:#d8dfde; --accent:#00857c;
+  --soft:#e7f4f2; --warn:#b05b22; --bad:#bf3f35; --assume:#687573;
+  --shadow:0 1px 2px rgba(20,32,31,.08),0 9px 25px rgba(20,32,31,.06);
+}
+@media (prefers-color-scheme: dark) {
+  :root { --bg:#0c1211; --paper:#121b1a; --ink:#e7eeed; --muted:#9aa9a6;
+    --line:#2a3a38; --grid:#263230; --ground:#1d2927; --accent:#27c9b9;
+    --soft:#163330; --warn:#e08a4f; --bad:#e06758; --assume:#9ba8a6;
+    --shadow:0 1px 2px rgba(0,0,0,.42),0 10px 30px rgba(0,0,0,.35); }
+}
+:root[data-theme="light"] { --bg:#edf1f0; --paper:#fff; --ink:#15201f; --muted:#596866;
+  --line:#bdc9c7; --grid:#dce3e2; --ground:#d8dfde; --accent:#00857c;
+  --soft:#e7f4f2; --warn:#b05b22; --bad:#bf3f35; --assume:#687573;
+  --shadow:0 1px 2px rgba(20,32,31,.08),0 9px 25px rgba(20,32,31,.06); }
+:root[data-theme="dark"] { --bg:#0c1211; --paper:#121b1a; --ink:#e7eeed; --muted:#9aa9a6;
+  --line:#2a3a38; --grid:#263230; --ground:#1d2927; --accent:#27c9b9;
+  --soft:#163330; --warn:#e08a4f; --bad:#e06758; --assume:#9ba8a6;
+  --shadow:0 1px 2px rgba(0,0,0,.42),0 10px 30px rgba(0,0,0,.35); }
+* { box-sizing:border-box; }
+html,body { margin:0; min-height:100%; }
+body { overflow-x:hidden; background:var(--bg); color:var(--ink);
+  font:15px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif; }
+a { color:var(--accent); text-underline-offset:.18em; }
+code,.mono,.tag,th,svg text { font-family:ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace; }
+header { background:var(--paper); border-bottom:1px solid var(--line); }
+.bar,.page { width:min(1420px,calc(100% - 32px)); margin:auto; }
+.bar { min-height:62px; display:flex; justify-content:space-between; align-items:center; gap:16px; }
+.brand { min-width:0; display:flex; gap:12px; align-items:baseline; }
+.brand b,.eyebrow { color:var(--accent); letter-spacing:.13em; text-transform:uppercase; }
+.brand span { color:var(--muted); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+button { border:1px solid var(--line); color:var(--ink); background:var(--paper);
+  border-radius:7px; padding:7px 10px; cursor:pointer; }
+main { padding:30px 0 58px; }
+h1 { font-size:clamp(1.8rem,4vw,3rem); line-height:1.07; margin:.15em 0 .3em; text-wrap:balance; }
+h2 { font:700 13px/1.4 ui-monospace,monospace; letter-spacing:.13em;
+  text-transform:uppercase; color:var(--muted); margin:0 0 5px; }
+h3 { margin:0 0 7px; font-size:1rem; }
+p { max-width:100ch; }
+.lede { font-size:clamp(15px,1.6vw,18px); color:var(--muted); margin-top:0; }
+.board { background:var(--paper); border:1px solid var(--line); border-radius:13px;
+  box-shadow:var(--shadow); padding:clamp(14px,2.4vw,26px); margin-top:24px; }
+.sub { color:var(--muted); margin:2px 0 14px; font-size:13.5px; }
+.drawing { width:100%; overflow-x:auto; overscroll-behavior-inline:contain;
+  border:1px solid var(--line); border-radius:9px; background:var(--paper); }
+.drawing svg { display:block; width:max(100%,var(--drawing-w,1200px)); height:auto; }
+.legend,.cards,.summary { display:grid; gap:12px; }
+.legend { grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); margin-top:13px; }
+.legend span { display:flex; align-items:center; gap:9px; color:var(--muted); font-size:12px; }
+.swatch { width:40px; height:16px; background:var(--soft); border:2px solid var(--accent); }
+.swatch.documented { border-style:dotted; }
+.swatch.assumption { border-color:var(--assume); border-style:dashed;
+  background:repeating-linear-gradient(135deg,transparent 0 5px,color-mix(in srgb,var(--assume) 20%,transparent) 5px 7px); }
+.cards,.summary { grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); }
+.card { display:block; color:var(--ink); text-decoration:none; border:1px solid var(--line);
+  border-left:5px solid var(--accent); border-radius:10px; padding:14px; background:var(--paper); }
+.card p { margin:5px 0 0; color:var(--muted); font-size:12.5px; }
+.tag { display:inline-block; border:1px solid currentColor; border-radius:4px;
+  padding:2px 6px; font-size:10px; font-weight:800; letter-spacing:.05em; color:var(--accent); }
+.tag.documented { border-style:dotted; }
+.tag.assumption { color:var(--assume); border-style:dashed; }
+.tag.defer { color:var(--bad); }
+.orderstrip { display:flex; gap:7px; overflow-x:auto; padding:10px 0 2px; }
+.orderstrip a { flex:0 0 auto; border:1px solid var(--line); border-radius:6px;
+  padding:6px 8px; text-decoration:none; font:700 10px/1.2 ui-monospace,monospace; }
+.tablewrap { width:100%; overflow-x:auto; border:1px solid var(--line); border-radius:9px; }
+table { border-collapse:collapse; width:100%; min-width:1120px; background:var(--paper); }
+th,td { padding:9px 10px; text-align:left; vertical-align:top; border-bottom:1px solid var(--grid); }
+th { color:var(--muted); font-size:10px; letter-spacing:.06em; text-transform:uppercase; }
+tr:last-child td { border-bottom:0; }
+.note { border-left:3px solid var(--accent); background:var(--soft); padding:12px 15px;
+  border-radius:0 9px 9px 0; margin:16px 0 0; color:var(--muted); font-size:13px; }
+footer { border-top:1px solid var(--line); color:var(--muted); padding:22px 0 34px; font-size:12.5px; }
+svg .gridline { stroke:var(--grid); stroke-width:.7; }
+svg .axis { stroke:var(--ink); stroke-width:1.5; fill:none; }
+svg .leader { stroke:var(--muted); stroke-width:1; fill:none; }
+svg .arrow { stroke:var(--accent); stroke-width:1.5; fill:none; marker-end:url(#arr); }
+svg .conf-verified { stroke:var(--accent); stroke-width:2; fill:color-mix(in srgb,var(--accent) 13%,transparent); }
+svg .conf-documented { stroke:var(--accent); stroke-width:1.6; stroke-dasharray:2 4; fill:color-mix(in srgb,var(--accent) 8%,transparent); }
+svg .conf-assumption { stroke:var(--assume); stroke-width:1.6; stroke-dasharray:7 5; fill:url(#hatch); }
+svg .defer { stroke:var(--bad); stroke-width:1.8; stroke-dasharray:7 5; fill:url(#deferHatch); }
+svg .balloon { fill:var(--paper); stroke:var(--line); stroke-width:1; }
+svg .label { fill:var(--ink); font-size:11px; }
+svg .small { fill:var(--muted); font-size:9.5px; }
+svg .tiny { fill:var(--muted); font-size:8px; }
+svg .accent { fill:var(--accent); }
+svg .badtext { fill:var(--bad); font-weight:800; }
+@media(max-width:640px) { .bar,.page { width:min(100% - 20px,1420px); }
+  main { padding-top:20px; } .brand span { display:none; } }
+</style></head><body>
+<header><div class="bar"><div class="brand"><b>W17 / RC-01</b><span>exploded connection atlas</span></div>
+<div><a href="../index.html">Overview</a> · <button data-theme-toggle type="button">Theme</button></div>
+</div></header><main><div class="page"><p class="eyebrow">connection atlas / assembly 11</p><h1>Hall speed sensor</h1>
+<p class="lede">3 physical joints, ordered by the existing ASM sequence. Each strip separates the two neighbours along the assembly axis, names the only authorized BOM family, and carries the weakest confidence. 3 joint(s) are DEFERRED.</p>
+<div class="board"><h2>Assembles in this order</h2><div class="orderstrip"><a href="#row-J-SNS-001">J-SNS-001<br>ASM-24</a><a href="#row-J-SNS-002">J-SNS-002<br>ASM-24</a><a href="#row-J-SNS-003">J-SNS-003<br>ASM-24</a></div></div><div class="board"><h2>Exploded connection diagram</h2>
+<p class="sub">1.5 px/mm orthographic silhouettes and a 50 mm ruler. Mesh-backed parts are real STL silhouettes; hardware without a controlled mesh is a technical outline. Installation uncertainty is overlaid dashed/hatched.</p>
+<div class="drawing"><svg style="--drawing-w:1200px" viewBox="0 0 1200 775" role="img" aria-label="Exploded connection sequence at 1.5 px/mm"><defs>
+<pattern id="grid" width="30" height="30" patternUnits="userSpaceOnUse"><path d="M30 0H0V30" class="gridline" fill="none"/></pattern>
+<pattern id="hatch" width="9" height="9" patternUnits="userSpaceOnUse" patternTransform="rotate(35)"><line x1="0" y1="0" x2="0" y2="9" stroke="var(--assume)" opacity=".45"/></pattern>
+<pattern id="deferHatch" width="9" height="9" patternUnits="userSpaceOnUse" patternTransform="rotate(35)"><line x1="0" y1="0" x2="0" y2="9" stroke="var(--bad)" stroke-width="2" opacity=".45"/></pattern>
+<marker id="arr" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L8 4L0 8Z" fill="context-stroke"/></marker>
+</defs><rect width="1200" height="775" fill="url(#grid)"/><g id="J-SNS-001"><rect class="balloon" x="15" y="20" width="1170" height="230" rx="10"/><text class="accent label" x="30" y="42">J-SNS-001 · ASM-24 · DEFER · ASSUMPTION</text><line class="arrow" x1="410" y1="164" x2="555" y2="164"/><line class="arrow" x1="645" y1="164" x2="790" y2="164"/><circle class="defer" cx="310" cy="164" r="3.0"/><circle cx="310" cy="164" r="0.8" fill="var(--paper)" stroke="var(--accent)"/><rect class="defer" x="566" y="146" width="68" height="36" rx="6"/><rect class="defer" x="803.8" y="155.0" width="172.5" height="18.0" rx="9.0"/><rect class="balloon" x="35" y="54" width="315" height="72" rx="5"/><text class="label" x="48" y="72">A · Ø3×1 magnet</text><text class="tiny" x="48" y="87">Magnet Ø3×1 DOCUMENTED; final shaft carrier, keyed</text><text class="tiny" x="48" y="99">recess/bond land and runout UNKNOWN</text><rect class="balloon" x="405" y="54" width="390" height="72" rx="5"/><text class="label" x="418" y="72">HARDWARE + SIZE</text><text class="tiny" x="418" y="87">hardware not selected / still in transit; no substitute</text><text class="tiny" x="418" y="99">authorized</text><rect class="balloon" x="850" y="54" width="315" height="72" rx="5"/><text class="label" x="863" y="72">B · belt-set output shaft</text><text class="tiny" x="863" y="87">dependency: Magnets arrive + final rear</text><text class="tiny" x="863" y="99">carrier/shaft assembled</text><line class="axis" x1="32" y1="231" x2="107" y2="231"/><line class="leader" x1="32" y1="227" x2="32" y2="236"/><line class="leader" x1="47" y1="227" x2="47" y2="236"/><line class="leader" x1="62" y1="227" x2="62" y2="236"/><line class="leader" x1="77" y1="227" x2="77" y2="236"/><line class="leader" x1="92" y1="227" x2="92" y2="236"/><line class="leader" x1="107" y1="227" x2="107" y2="236"/><text class="tiny" x="32" y="246">50 mm ruler · 1.5 px/mm</text><text class="small" x="200" y="242">assembly axis → · silhouette geometry stays to scale; unknown hardware remains dashed/hatched</text></g><g id="J-SNS-002"><rect class="balloon" x="15" y="270" width="1170" height="230" rx="10"/><text class="accent label" x="30" y="292">J-SNS-002 · ASM-24 · DEFER · ASSUMPTION</text><line class="arrow" x1="410" y1="414" x2="555" y2="414"/><line class="arrow" x1="645" y1="414" x2="790" y2="414"/><rect class="defer" x="306.0" y="411.0" width="8.0" height="6.0" rx="5"/><rect class="defer" x="566" y="396" width="68" height="36" rx="6"/><rect class="defer" x="878.8" y="405.0" width="22.5" height="18.0" rx="5"/><rect class="balloon" x="35" y="304" width="315" height="72" rx="5"/><text class="label" x="48" y="322">A · A3144 Hall sensor</text><text class="tiny" x="48" y="337">A3144 body max 4.17×3.10×1.57 DOCUMENTED;</text><text class="tiny" x="48" y="349">clip/fastener and sensitive face orientation</text><text class="tiny" x="48" y="361">physical</text><rect class="balloon" x="405" y="304" width="390" height="72" rx="5"/><text class="label" x="418" y="322">HARDWARE + SIZE</text><text class="tiny" x="418" y="337">hardware not selected / still in transit; no substitute</text><text class="tiny" x="418" y="349">authorized</text><rect class="balloon" x="850" y="304" width="315" height="72" rx="5"/><text class="label" x="863" y="322">B · PS-16 Hall bracket</text><text class="tiny" x="863" y="337">dependency: J-SNS-001 + PS-16 authorized</text><line class="axis" x1="32" y1="481" x2="107" y2="481"/><line class="leader" x1="32" y1="477" x2="32" y2="486"/><line class="leader" x1="47" y1="477" x2="47" y2="486"/><line class="leader" x1="62" y1="477" x2="62" y2="486"/><line class="leader" x1="77" y1="477" x2="77" y2="486"/><line class="leader" x1="92" y1="477" x2="92" y2="486"/><line class="leader" x1="107" y1="477" x2="107" y2="486"/><text class="tiny" x="32" y="496">50 mm ruler · 1.5 px/mm</text><text class="small" x="200" y="492">assembly axis → · silhouette geometry stays to scale; unknown hardware remains dashed/hatched</text></g><g id="J-SNS-003"><rect class="balloon" x="15" y="520" width="1170" height="230" rx="10"/><text class="accent label" x="30" y="542">J-SNS-003 · ASM-24 · DEFER · ASSUMPTION</text><line class="arrow" x1="410" y1="664" x2="555" y2="664"/><line class="arrow" x1="645" y1="664" x2="790" y2="664"/><rect class="defer" x="298.8" y="655.0" width="22.5" height="18.0" rx="5"/><rect class="defer" x="566" y="646" width="68" height="36" rx="6"/><rect class="defer" x="824.9" y="641.3" width="130.2" height="45.5" rx="5"/><image href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAUwAAABqCAYAAADX7GjAAAACPklEQVR42u3cwa3jQBBDQYXhrH13dArFKegwEJrsKoABuNfzvk97XQDAWZ/f9z45FwUEUkABkRRPQCTvyfMvBAilcAJCKZyAWIomIJTCCVAcS9EEhFI4AbEUTUAsRRMQS9EExFI0AbE00QTEUjQBsRRNQCxFExBL0QTEUjQBwTTBBLE00QTEUjSBkmCmfwbfKBDLmMiIJlAZy+bP5xsGghkXE8EExFI0gdaAbPzcvmkgltHhEE1AMIbewDcOBDM+Fm4AiKVoAgLhHoBAuAkgDG4jmCCYZVHwxwQQTNEEJgbBfQQTxHJRCEQT8OtSMAHBzAymaIJgupVggghsevh+ZYJgevSCCQhmbjBFEwTTrQQTREAw3RAE02MXTEAwE4IpmiCYbiWYIAKC6ZYgmB65YIJgeuQJwRRNEEy3EkwQAcF0UxBM/72baIJgetyCCQhmWTBFE4pD4EZuCoIpmKIJYulxT4+lYIJgCqZoghgkPu7psRRMKA+C24gmCKZgCiYI5r4HnhRL0YQFUXAXwQTBDH7kqbEUTVgSBjcRTBDMkMfeEErRhIWBcAvRBLEc9uBbQymYsDgUQimaIJYvBmBTJEUT/Koy0QSxNOEEoTThBKE04QRhNBNSRNDM/OESSzMTTbE0MxNMsTQzwRRLMxNMsTQzwRRLMxNMsTSzzmA6ipnZg2A6iJmZYJqZCaaZmWCamQmmmZlgmpkJppmZCaaZmWCamQmmmZlgmpkJppmZYJqZrQ2maJqZPYwlAAAc8Qd1WfN0hUiWsAAAAABJRU5ErkJggg==" x="828.9" y="645.3" width="122.2" height="37.5" preserveAspectRatio="xMidYMid meet"/><rect class="balloon" x="35" y="554" width="315" height="72" rx="5"/><text class="label" x="48" y="572">A · PS-16 Hall bracket</text><text class="tiny" x="48" y="587">PS-16 clips to selected bearing-carrier region;</text><text class="tiny" x="48" y="599">mount geometry depends on Gate A and magnet station</text><rect class="balloon" x="405" y="554" width="390" height="72" rx="5"/><text class="label" x="418" y="572">HARDWARE + SIZE</text><text class="tiny" x="418" y="587">hardware not selected / still in transit; no substitute</text><text class="tiny" x="418" y="599">authorized</text><rect class="balloon" x="850" y="554" width="315" height="72" rx="5"/><text class="label" x="863" y="572">B · rear axle carrier L</text><text class="tiny" x="863" y="587">dependency: J-SNS-001/002 + final rear carrier</text><line class="axis" x1="32" y1="731" x2="107" y2="731"/><line class="leader" x1="32" y1="727" x2="32" y2="736"/><line class="leader" x1="47" y1="727" x2="47" y2="736"/><line class="leader" x1="62" y1="727" x2="62" y2="736"/><line class="leader" x1="77" y1="727" x2="77" y2="736"/><line class="leader" x1="92" y1="727" x2="92" y2="736"/><line class="leader" x1="107" y1="727" x2="107" y2="736"/><text class="tiny" x="32" y="746">50 mm ruler · 1.5 px/mm</text><text class="small" x="200" y="742">assembly axis → · silhouette geometry stays to scale; unknown hardware remains dashed/hatched</text></g></svg></div></div>
+<div class="board"><h2>Confidence & deferral legend</h2><div class="legend">
+<span><i class="swatch"></i>VERIFIED · solid · measured STL/interface evidence</span>
+<span><i class="swatch documented"></i>DOCUMENTED · dotted · drawing/BOM/supplier specification</span>
+<span><i class="swatch assumption"></i>ASSUMPTION · dashed + hatched · physical ASM check required</span>
+<span><i class="swatch assumption" style="border-color:var(--bad)"></i>DEFER · in transit/unselected · no substitute authorized</span>
+</div></div>
+<div class="board"><h2>Joint-level work instructions</h2><div class="tablewrap"><table><thead><tr><th>Joint / state</th><th>Parts</th><th>Interface</th><th>BOM hardware / retention</th><th>Assembly instruction / dependency</th><th>Tool / torque</th><th>Physical closure</th></tr></thead><tbody><tr id="row-J-SNS-001"><td><code>J-SNS-001</code><br><span class="tag assumption">ASSUMPTION</span> <span class="tag defer">DEFER</span></td>
+<td>Ø3×1 magnet<br>→ belt-set output shaft</td><td>Magnet Ø3×1 DOCUMENTED; final shaft carrier, keyed recess/bond land and runout UNKNOWN</td><td>hardware not selected / still in transit; no substitute authorized<br><b>Retention:</b> DEFER — retention cannot be chosen before the named real part is measured</td>
+<td><b>ASM-24</b> · DEFER magnet bond; select a radial station with no belt/bearing conflict and key/bond only after dry-run gap proof.<br><b>First:</b> Magnets arrive + final rear carrier/shaft assembled</td>
+<td>calipers first; installation tool is selected only after hardware identity closes<br><b>Torque:</b> No torque, bonding, drilling or threadlock while DEFERRED.</td><td>ASM-57: record shaft land, keyed feature/bond, runout and retention after hand spin.</td></tr><tr id="row-J-SNS-002"><td><code>J-SNS-002</code><br><span class="tag assumption">ASSUMPTION</span> <span class="tag defer">DEFER</span></td>
+<td>A3144 Hall sensor<br>→ PS-16 Hall bracket</td><td>A3144 body max 4.17×3.10×1.57 DOCUMENTED; clip/fastener and sensitive face orientation physical</td><td>hardware not selected / still in transit; no substitute authorized<br><b>Retention:</b> DEFER — retention cannot be chosen before the named real part is measured</td>
+<td><b>ASM-24</b> · DEFER sensor retention; place the active face toward the magnet and strain-relieve leads outside the 1–3 mm adjustment.<br><b>First:</b> J-SNS-001 + PS-16 authorized</td>
+<td>calipers first; installation tool is selected only after hardware identity closes<br><b>Torque:</b> No torque, bonding, drilling or threadlock while DEFERRED.</td><td>ASM-57: identify active face, clip/fastener, lead strain relief and repeatable 1.5 mm cold setting.</td></tr><tr id="row-J-SNS-003"><td><code>J-SNS-003</code><br><span class="tag assumption">ASSUMPTION</span> <span class="tag defer">DEFER</span></td>
+<td>PS-16 Hall bracket<br>→ rear axle carrier L</td><td>PS-16 clips to selected bearing-carrier region; mount geometry depends on Gate A and magnet station</td><td>hardware not selected / still in transit; no substitute authorized<br><b>Retention:</b> DEFER — retention cannot be chosen before the named real part is measured</td>
+<td><b>ASM-24</b> · DEFER bracket joint; use a reversible M3/shared feature only after full axle play is known.<br><b>First:</b> J-SNS-001/002 + final rear carrier</td>
+<td>calipers first; installation tool is selected only after hardware identity closes<br><b>Torque:</b> No torque, bonding, drilling or threadlock while DEFERRED.</td><td>ASM-57: record carrier feature, exact BOM fastener, adjustment range and ≥8 mm belt/gear clearance.</td></tr></tbody></table></div></div>
+<div class="note"><b>Scope discipline:</b> this page specifies how neighbours connect. It does not revise fit/clearance results, placement coordinates, gates, component values, or any STL. “Snug” remains the plastic-thread rule; a row without a measured length does not authorize choosing one silently.</div></div></main><footer><div class="page">Generated by
+<code>10_assembly_architecture/evidence/scripts/p0_10_connection_visualizations.py</code>.
+Source STLs remain read-only. Dashed/hatched geometry is not production authority.</div></footer>
+<script>
+(() => {
+  const root=document.documentElement, btn=document.querySelector("[data-theme-toggle]");
+  if(!btn) return;
+  btn.addEventListener("click",()=>{
+    const current=root.dataset.theme;
+    root.dataset.theme=current==="dark"?"light":current==="light"?"dark":
+      matchMedia("(prefers-color-scheme: dark)").matches?"light":"dark";
+    btn.textContent=root.dataset.theme==="dark"?"Light":"Dark";
+  });
+})();
+</script></body></html>

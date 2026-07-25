@@ -97,12 +97,11 @@ than infill percentage.
    `FIRST_PRINT_DECISION.md` §6.
 4. ⚠ **Front wheel hub:** only a **Right** hub STL exists — mirror it in Bambu Studio
    for the Left. Verify the mirrored bearing seat too.
-5. ⚠ **Servo fitment:** DS3235SG (in transit) into `Servoholder` pocket + MG90S (in
-   transit) into the chosen wing's DRS pocket — measure on arrival, before the floor
-   batch / wing print. Ordered hardware in transit: tyres (54198+51400), bearings,
-   shocks (52 F / 68 R), servos — **hardware-dependent fitment blocked until arrival;
-   printed-part-to-printed-part dry assembly may proceed as diagnostic** (see
-   `ASSEMBLY_NOTES.md`).
+5. ⚠ **Servo fitment:** DS3235SG is on hand; test it **side-on** in `Servoholder`
+   before the floor batch (42×18.5 clear arch vs documented 40×20 case side face).
+   Shaft is horizontal/lateral and an ordinary 25T horn stands vertical at neutral;
+   `servosaverv7` remains the M3-pivoted front mechanism. Do not force/grind the case.
+   MG90S fit into the chosen wing's DRS pocket remains an arrival/on-hand check.
 6. ⚠ **Battery:** not final. Keep the **≤75×45×25 mm** envelope (see appendix). A
    2026-07-10 mesh probe of the shells suggests width/height clear with margin near
    the shells' junction (~50–120 mm width, ~42–70 mm ceiling, shell-only, approximate);

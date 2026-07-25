@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>W17 internal assembly study atlas</title>
+  <style>
+    :root{--paper:#f7f5f0;--ink:#17222b;--muted:#65717a;--line:#d7dadc;--c:#227a5c;--r:#2f6fad;--p:#d98c2b;--x:#c9564a;--o:#7456a3}
+    *{box-sizing:border-box} body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.55 system-ui,-apple-system,Segoe UI,sans-serif}
+    header{background:#17222b;color:#fff;padding:3rem max(5vw,2rem) 2.5rem} header p{max-width:72rem;color:#dce3e8} h1{font-size:clamp(2rem,4vw,3.5rem);line-height:1.05;margin:.2rem 0 1rem} h2{margin-top:3.5rem;border-bottom:2px solid var(--line);padding-bottom:.45rem} h3{margin-top:2rem} a{color:#185d91} nav{display:flex;flex-wrap:wrap;gap:.6rem 1.2rem;margin-top:1.5rem} nav a{color:#fff;text-decoration:none;border-bottom:1px solid #8997a0}
+    main{max-width:1180px;margin:auto;padding:1.4rem max(3vw,1rem) 5rem}.warning{border-left:6px solid var(--x);background:#fde4df;padding:1rem 1.2rem;margin:1.5rem 0}.lead{font-size:1.15rem;max-width:78ch}
+    .legend{display:flex;flex-wrap:wrap;gap:.6rem;margin:1rem 0 2rem}.tag{border:2px solid;padding:.25rem .55rem;border-radius:.35rem;font-size:.82rem;font-weight:750;background:#fff}.confirmed{border-color:var(--c);background:#dff3e9}.recommended{border-color:var(--r);background:#dcebf8}.provisional{border-color:var(--p);background:#fff0cf}.physical,.blocked{border-color:var(--x);background:#fde4df}.optional{border-color:var(--o);background:#eee6f8}
+    figure{margin:1.8rem 0 2.6rem;background:#fff;border:1px solid var(--line);border-radius:.7rem;overflow:hidden} figure img{display:block;width:100%;height:auto} figcaption{padding:.8rem 1rem;border-top:1px solid var(--line);color:var(--muted);font-size:.9rem}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:1rem}.card{background:#fff;border:1px solid var(--line);border-radius:.6rem;padding:1rem}.card h3{margin:.1rem 0 .5rem}
+    table{width:100%;border-collapse:collapse;background:#fff;margin:1rem 0 2rem;font-size:.92rem}th,td{border:1px solid var(--line);padding:.65rem;vertical-align:top;text-align:left}th{background:#e9ecee}code{background:#e9ecee;padding:.1rem .25rem;border-radius:.2rem}ul,ol{padding-left:1.4rem}li{margin:.35rem 0}.cad{display:grid;grid-template-columns:repeat(auto-fit,minmax(225px,1fr));gap:.8rem}.cad figure{margin:0}.links{background:#fff;border:1px solid var(--line);padding:1rem 1.2rem;border-radius:.6rem}.small{font-size:.88rem;color:var(--muted)}
+    @media print{header{padding:1rem;color:#000;background:#fff}nav{display:none}main{padding:0}figure,.card,table{break-inside:avoid}a{color:#000;text-decoration:none}}
+  </style>
+</head>
+<body>
+<header>
+  <div class="small" style="color:#aebac2">WORKING VISUAL DESIGN MANUAL · REVISION 0 · 2026-07-19</div>
+  <h1>W17 internal assembly study atlas</h1>
+  <p>Approximate packaging, modular connectorization, harness routing, support structure,
+  assembly order, service paths, and decision-driving physical checks.</p>
+  <nav><a href="#overview">Overview</a><a href="#layout">Views</a><a href="#architecture">Architecture</a><a href="#connectors">Connectors</a><a href="#supports">Supports</a><a href="#sequence">Sequence</a><a href="#service">Service</a><a href="#decisions">Decisions</a><a href="README.md">Markdown manual</a></nav>
+</header>
+<main>
+  <div class="warning"><strong>Not a production assembly manual.</strong> Figures are
+  technically traceable study schematics, not manufacturing drawings. No production
+  CAD, print, connector rating, or unresolved geometry is authorized here.</div>
+  <div class="legend"><span class="tag confirmed">CONFIRMED</span><span class="tag recommended">RECOMMENDED</span><span class="tag provisional">PROVISIONAL</span><span class="tag physical">PHYSICAL CHECK REQUIRED</span><span class="tag blocked">BLOCKED</span><span class="tag optional">OPTIONAL</span></div>
+
+  <section id="overview">
+    <h2>Current conclusion</h2>
+    <p class="lead">Use a hybrid two-level open skeleton: battery at floor-left; power
+    junction, UBECs, and ESC at floor-right; central steering/shock/drivetrain volume
+    left open; and a narrow removable controller deck only if physical shell seating and
+    a full H20 dummy cluster pass. If they fail, use the distributed single-level fallback.
+    The airbox is an airflow/antenna channel, not a controller fallback.</p>
+    <figure><img src="assets/fig01_system_layers.svg" alt="System layer diagram"><figcaption>Figure 01 — system layers and module boundaries. DAT-F is confirmed; S0 controls the conditional upper deck.</figcaption></figure>
+  </section>
+
+  <section id="layout">
+    <h2>Approximate layout views</h2>
+    <figure><img src="assets/fig02_top_layout.svg" alt="Top-view internal layout"><figcaption>Figure 02 — body-off top view. Front is left; architecture-right/belt side is L&lt;0.</figcaption></figure>
+    <div class="grid">
+      <figure><img src="assets/fig03_side_section.svg" alt="Longitudinal side section"><figcaption>Figure 03 — DAT-F, S0, H20 and steering-band height logic.</figcaption></figure>
+      <figure><img src="assets/fig04_front_section.svg" alt="Transverse internal section"><figcaption>Figure 04 — left battery, open centre, low right shelf and conditional deck.</figcaption></figure>
+    </div>
+    <figure><img src="assets/fig05_exploded_modules.svg" alt="Semi-exploded module stack"><figcaption>Figure 05 — shell, deck, peripheral and lower-layer service modules.</figcaption></figure>
+  </section>
+
+  <section id="architecture">
+    <h2>Multi-layer and skeleton assessment</h2>
+    <figure><img src="assets/fig06_architecture_options.svg" alt="Architecture option comparison"><figcaption>Figure 06 — B+D is the conditional recommendation; A remains the physical-evidence fallback.</figcaption></figure>
+    <div class="grid">
+      <div class="card"><h3>Narrow deck succeeds when</h3><ul><li>Physical S0 supports the full H20 cluster.</li><li>Shell clearance remains at least 5 mm.</li><li>Physical D-26 motion remains at least 8 mm away.</li><li>USB, CN-07/CN-16, coax, hand, and removal paths work loaded.</li><li>Lower UBEC modules stay independently serviceable.</li></ul></div>
+      <div class="card"><h3>Fallback A triggers when</h3><ul><li>Side-bay clearance falls below the H.4 trigger.</li><li>The complete controller cluster cannot be inserted or removed.</li><li>Connector/cable volume consumes the apparent roof margin.</li><li>Deck service is not materially simpler than distributed modules.</li></ul></div>
+      <div class="card"><h3>Structures not carried forward</h3><ul><li>Full-width bridge across the central spine.</li><li>Left deck over the battery.</li><li>Full internal cage.</li><li>ESP32 in the narrow airbox channel.</li><li>Electronics in the crash-exposed nose.</li></ul></div>
+    </div>
+  </section>
+
+  <section id="connectors">
+    <h2>Connectorization and harness</h2>
+    <figure><img src="assets/fig07_connectorization.svg" alt="Connectorization block diagram"><figcaption>Figure 07 — disconnect at module boundaries; solder stays inside bench-removable modules.</figcaption></figure>
+    <figure><img src="assets/fig08_harness_routes.svg" alt="Top-view harness routes"><figcaption>Figure 08 — R1 clean/signal, R2 power/servo, controlled X1/X2 crossings, and pre-routed H-08 tail.</figcaption></figure>
+    <table><thead><tr><th>Boundary</th><th>Likely disconnect</th><th>Service intent</th><th>Open issue</th></tr></thead><tbody>
+      <tr><td>Battery / master</td><td>CN-01 / recommended CN-02</td><td>Pack swap and body-on emergency kill</td><td>DN-02 owner choice and reach trial</td></tr>
+      <tr><td>Deck</td><td>CN-07 + recommended CN-16</td><td>One-station controller module removal</td><td>USB integrity and physical hand space</td></tr>
+      <tr><td>Camera/gimbal</td><td>CN-09/10/12/24 + CN-16</td><td>Whole module to bench</td><td>D-06, Gate C, placement choice</td></tr>
+      <tr><td>Body</td><td>CN-14 only</td><td>Untethered vertical shell lift</td><td>Final shell-side anchor</td></tr>
+      <tr><td>Rear tail</td><td>CN-11/13/15</td><td>Pull-through LED/Hall/DRS service</td><td>Gate A route and support geometry</td></tr>
+    </tbody></table>
+    <p>The potentially live side gets female/shrouded contacts. Completed-vehicle
+    connections must be keyed and retained; no unsecured Dupont. Antennas and the Wi-Fi
+    heatsink are installed before Rail-A power. Final families, gauges, ratings, and
+    lengths wait for D-24/D-10/P9.</p>
+  </section>
+
+  <section id="supports">
+    <h2>Support-part concept</h2>
+    <p>The structure stays sparse: tray, low shelf, connector frame, replaceable height
+    gauges/posts, and local clips. Clamp feet are reversible diagnostic coupons—not
+    load-rated vehicle retention.</p>
+    <div class="cad">
+      <figure><img src="../cad/generated/renders/render_cad02_battery_tray.png" alt="PS-01 diagnostic tray"><figcaption>PS-01 · DIAG-CAD · physical floor/clamp/S0 check open</figcaption></figure>
+      <figure><img src="../cad/generated/renders/render_cad04_ubec_shelf.png" alt="PS-03 diagnostic shelf"><figcaption>PS-03 · DIAG-CAD · real UBEC/D-24 outcome open</figcaption></figure>
+      <figure><img src="../cad/generated/renders/render_cad06_post_family.png" alt="PS-05 height gauges"><figcaption>PS-05 H20/H26/H32 · gauges only, no deck geometry</figcaption></figure>
+      <figure><img src="../cad/generated/renders/render_cad08_junction_support.png" alt="PS-15 diagnostic support"><figcaption>PS-15 · open seats preserve DN-01/DN-02 decisions</figcaption></figure>
+    </div>
+    <p class="small">These local PNGs are ignored generated outputs. If absent, run the
+    generator/validator in <a href="../cad/README.md">cad/README.md</a>. Their tracked
+    source and reports—not the PNGs—are the engineering record.</p>
+  </section>
+
+  <section id="sequence">
+    <h2>Assembly sequence</h2>
+    <figure><img src="assets/fig09_assembly_sequence.svg" alt="Ten-stage assembly sequence"><figcaption>Figure 09 — install steering early, rear tail before closure, lower-layer test before deck, and final harness only after electrical/thermal/RF evidence.</figcaption></figure>
+    <ol><li>Verify inventory, envelopes, diagnostics, and measurements.</li><li>Assemble the floor and close S0/landing/occupancy evidence.</li><li>Install, power, centre, and measure steering before packaging around it.</li><li>Close qualified mechanical core and drivetrain.</li><li>Pre-route H-08 before the rear stack closes.</li><li>Install and bench-test the lower layer with long uncut harnesses.</li><li>Use the full H20 cluster to choose narrow deck or fallback A.</li><li>Add receiver, sensors, Wi-Fi and only unblocked optional modules.</li><li>Exercise everything body-off, dress motion loops, then trial the shell.</li><li>Run current, motion, video, RF, thermal, balance, and service gates before final harness/P10 review.</li></ol>
+  </section>
+
+  <section id="service">
+    <h2>Service/removal concept</h2>
+    <figure><img src="assets/fig10_service_paths.svg" alt="Service removal paths"><figcaption>Figure 10 — master-off and body-off expose independent service modules.</figcaption></figure>
+    <p>Battery should lift from the top without moving another component. Deck should
+    leave after its boundary connectors, two screws, and rear hooks. UBECs and PS-15
+    become fully accessible after deck removal. Camera/gimbal leaves as one module.
+    Steering servo removal reopens linkage and requires firmware centring/toe setup.
+    Rear LED/Hall service uses a draw-string pull-through, never a bare-wire pull.</p>
+  </section>
+
+  <section id="decisions">
+    <h2>Conflicts and decisions</h2>
+    <figure><img src="assets/fig11_conflicts_decisions.svg" alt="Conflict and decision tree"><figcaption>Figure 11 — S0 and the complete cluster drive the architecture branch; other gates remain independent.</figcaption></figure>
+    <table><thead><tr><th>Priority</th><th>Question</th><th>Evidence</th></tr></thead><tbody>
+      <tr><td>1</td><td>Is the narrow deck viable?</td><td>Physical S0 + complete H20 cluster + physical D-26 + access/removal.</td></tr>
+      <tr><td>2</td><td>Can camera/gimbal be defined?</td><td>D-06/D-07, Gate C, cockpit/halo and driver decision.</td></tr>
+      <tr><td>3</td><td>Will the support strategy attach safely?</td><td>D-27 physical occupancy, screw heads, clamp cycles/pull-off, body landing points.</td></tr>
+      <tr><td>4</td><td>What power/harness hardware is final?</td><td>Real Wi-Fi and D-24/P8; then DN-01/DN-04 and P9.</td></tr>
+      <tr><td>5</td><td>Does the left speaker improve the system?</td><td>Real D-03/port/audibility/thermal and balance evidence.</td></tr>
+    </tbody></table>
+    <div class="links"><strong>Registers:</strong> <a href="figures.md">figure index</a> · <a href="asset_register.md">view/asset register</a> · <a href="unresolved_questions.md">unresolved questions</a> · <a href="../V_P0_geometry_measurement_results.md">P0 measurements</a> · <a href="../P_assembly_master_manual.md">ASM-01…48</a> · <a href="../R_validation_gates.md">P0…P10 gates</a>.</div>
+  </section>
+</main>
+</body>
+</html>

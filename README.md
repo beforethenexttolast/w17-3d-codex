@@ -12,8 +12,15 @@ Everything needed to turn the raw STL bundles into a printed, painted, assembled
 - Slicer settings → `PRINT_SPEC.md`
 - Sanding/paint/decals → `FINISHING_GUIDE.md`
 - Putting it together → `ASSEMBLY_NOTES.md`
+- Steering-servo fit / corrected linkage datum → `10_assembly_architecture/Y_steering_servo_fit_study.md`
 - Recording work → `PRINT_LOG_TEMPLATE.md` → `05_printed_parts_log/PRINT_LOG.md`
 
 Raw model files live untouched in `unsorted_stl_raw/`; approved copies (with SHA-256
 manifest) in `02_ready_to_slice/`. Claude Code session rules: `CLAUDE.md`.
 Historical docs (build sheet v1/v2, print spec v2): `docs/`.
+
+**Steering datum correction (2026-07-22):** the original `Servoholder` carries a
+standard servo on its side; `servosaverv7` is the M3-pivoted front mechanism, not
+a 25T spline-mounted servo saver. The corrected D-09/D-26 authority is report `Y`
+and `10_assembly_architecture/evidence/p0/tables/p0_d09_d26_steering_servo_fit.md`;
+they supersede older Z 35–62 steering-band statements.

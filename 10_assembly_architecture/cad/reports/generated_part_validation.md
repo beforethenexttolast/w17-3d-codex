@@ -15,7 +15,7 @@ Status: **PASS**. Scope is diagnostic CAD only: CAD-01, CAD-02, CAD-04, CAD-06 a
 - Strict >2-incidence edge counts are reported per STL. They occur where diagnostic primitives/labels share geometry; this local tool proves closed, consistently oriented shells but does not Boolean-union them.
 - Generated SHA-256 values do not equal any donor STL under `02_ready_to_slice/`.
 - Output filenames and task metadata contain no blocked CAD/PS/production geometry.
-- CAD-02/CAD-04/CAD-06/CAD-08 geometry stays below D-26's Z=35 mm lower boundary.
+- CAD-02 tray, CAD-04 shelf, CAD-08 junction support and CAD-06 H20 gauge stay below corrected provisional D-26 Z=22 mm; H26/H32 overlap it vertically and remain physical-placement gauges only.
 - All six grouped layouts contain the exact declared part/count membership, have no XY bounding-box overlap and fit the confirmed 256 x 256 mm build plate.
 - Two isolated regenerations produced byte-identical STL sets; no stale file survived the exact-set check.
 
@@ -67,7 +67,7 @@ Status: **PASS**. Scope is diagnostic CAD only: CAD-01, CAD-02, CAD-04, CAD-06 a
 | `cad01_pwr_bat_max.stl` | component ID; orientation arrow; XT60 installed plug; forward cable exit; initial cable bend cage; 50 x 30 restraint/strap installation cage; balance-test mass pocket | open body and restraint cage up; DAT-F-facing base on bed | free diagnostic body; arrow +X is forward |
 | `cad01_pwr_ubec_a.stl` | component ID; Rail A marking; orientation arrow; input lead; output lead; both initial bend zones; cooling allowance; mounting allowance | mount allowance on bed; open body and cooling cage up | free diagnostic body; +X follows intended lead flow |
 | `cad01_pwr_ubec_b.stl` | component ID; Rail B marking; orientation arrow; input lead; output lead; both initial bend zones; cooling allowance; mounting allowance | mount allowance on bed; open body and cooling cage up | free diagnostic body; +X follows intended lead flow |
-| `cad01_srv_steer.stl` | component ID; orientation arrow; body envelope; horn sweep envelope; lead exit; initial lead bend | servo body base on bed; horn-sweep disc up | free diagnostic body; lead exits -X |
+| `cad01_srv_steer.stl` | component ID; orientation arrow; body envelope; horn radius envelope; lead exit; initial lead bend | servo body base on bed; horn-radius disc up | generic gauge only—not corrected installed side orientation; lead exits -X |
 | `cad01_vid_wifi_max.stl` | UNCONFIRMED ENVELOPE marking; component ID; orientation arrow; two aft pigtail exits; power exit; CN-16 boundary; cable bend volumes; confirmed heatsink; cooling allowance | body base on bed; heatsink/cooling cage up | free diagnostic body; +X power/CN-16, -X aft/coax |
 | `cad02_ps01_battery_tray.stl` | PS-ID TP marking; DAT-F open base; 78 mm bay gauge; two reversible plate-clamp receivers; open forward insertion path; XT60 notch/arrow; 20 mm strap passages; balance-lead park; side restraint; outboard 5 g ballast land; visible floor-interruption windows | DAT-F/open-rib face on bed | assembly origin X=-83.0 L=18.5 Z=DAT-F |
 | `cad02_ps01_plate_clamp_foot.stl` | PS-ID marking; 4 mm floor-plate jaw; removable support key; no chassis hole | jaw back/flat side on bed for coupon print | reversible 4 mm plate-edge test; fit before loading |

@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; img-src data:; base-uri 'none'; form-action 'none'">
+<title>Assembly-zone master overview · W17 assembly architecture</title>
+<style>
+:root {
+  color-scheme:light dark;
+  --bg:#edf1f0; --paper:#fff; --ink:#15201f; --muted:#596866;
+  --line:#bdc9c7; --grid:#dce3e2; --ground:#d8dfde; --accent:#00857c;
+  --accent2:#00aa9c; --soft:#e7f4f2; --good:#1f8f5f; --warn:#b05b22;
+  --bad:#bf3f35; --assume:#687573; --scan:#111918;
+  --shadow:0 1px 2px rgba(20,32,31,.08),0 9px 25px rgba(20,32,31,.06);
+}
+@media (prefers-color-scheme: dark) {
+  :root { --bg:#0c1211; --paper:#121b1a; --ink:#e7eeed; --muted:#9aa9a6;
+    --line:#2a3a38; --grid:#263230; --ground:#1d2927; --accent:#27c9b9;
+    --accent2:#56e0d2; --soft:#163330; --good:#3bbd7f; --warn:#e08a4f;
+    --bad:#e06758; --assume:#9ba8a6; --scan:#0a0f0e;
+    --shadow:0 1px 2px rgba(0,0,0,.42),0 10px 30px rgba(0,0,0,.35); }
+}
+:root[data-theme="light"] {
+  --bg:#edf1f0; --paper:#fff; --ink:#15201f; --muted:#596866;
+  --line:#bdc9c7; --grid:#dce3e2; --ground:#d8dfde; --accent:#00857c;
+  --accent2:#00aa9c; --soft:#e7f4f2; --good:#1f8f5f; --warn:#b05b22;
+  --bad:#bf3f35; --assume:#687573; --scan:#111918;
+  --shadow:0 1px 2px rgba(20,32,31,.08),0 9px 25px rgba(20,32,31,.06);
+}
+:root[data-theme="dark"] {
+  --bg:#0c1211; --paper:#121b1a; --ink:#e7eeed; --muted:#9aa9a6;
+  --line:#2a3a38; --grid:#263230; --ground:#1d2927; --accent:#27c9b9;
+  --accent2:#56e0d2; --soft:#163330; --good:#3bbd7f; --warn:#e08a4f;
+  --bad:#e06758; --assume:#9ba8a6; --scan:#0a0f0e;
+  --shadow:0 1px 2px rgba(0,0,0,.42),0 10px 30px rgba(0,0,0,.35);
+}
+* { box-sizing:border-box; }
+html,body { margin:0; min-height:100%; }
+body { overflow-x:hidden; background:var(--bg); color:var(--ink);
+  font:15px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif; }
+a { color:var(--accent); text-underline-offset:.18em; }
+code,.mono,.tag,th,svg text { font-family:ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace; }
+header { background:var(--paper); border-bottom:1px solid var(--line); }
+.bar,.page { width:min(1420px,calc(100% - 32px)); margin:auto; }
+.bar { min-height:62px; display:flex; justify-content:space-between; align-items:center; gap:16px; }
+.brand { min-width:0; display:flex; gap:12px; align-items:baseline; }
+.brand b,.eyebrow { color:var(--accent); letter-spacing:.13em; text-transform:uppercase; }
+.brand span { color:var(--muted); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+button { border:1px solid var(--line); color:var(--ink); background:var(--paper);
+  border-radius:7px; padding:7px 10px; cursor:pointer; }
+main { padding:30px 0 58px; }
+h1 { font-size:clamp(1.8rem,4vw,3rem); line-height:1.07; margin:.15em 0 .3em; text-wrap:balance; }
+h2 { font:700 13px/1.4 ui-monospace,monospace; letter-spacing:.13em;
+  text-transform:uppercase; color:var(--muted); margin:0 0 5px; }
+h3 { margin:0 0 7px; font-size:1rem; }
+p { max-width:92ch; }
+.lede { font-size:clamp(15px,1.6vw,18px); color:var(--muted); margin-top:0; }
+.board { background:var(--paper); border:1px solid var(--line); border-radius:13px;
+  box-shadow:var(--shadow); padding:clamp(14px,2.4vw,26px); margin-top:24px; }
+.sub { color:var(--muted); margin:2px 0 14px; font-size:13.5px; }
+.status { display:flex; gap:12px; align-items:flex-start; border-radius:10px;
+  padding:12px 14px; margin:18px 0; border:1px solid var(--line); }
+.status.fail { background:color-mix(in srgb,var(--bad) 10%,var(--paper)); }
+.status.warn { background:color-mix(in srgb,var(--warn) 9%,var(--paper)); }
+.status .flag { flex:0 0 auto; font:800 12px/1.4 ui-monospace,monospace; letter-spacing:.06em; }
+.status.fail .flag { color:var(--bad); } .status.warn .flag { color:var(--warn); }
+.meta,.legend,.parts,.gategrid,.summary { display:grid; gap:12px; }
+.meta { grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); margin:20px 0 0; }
+.chip { border:1px solid var(--line); border-radius:9px; padding:11px 13px; background:var(--paper); }
+.chip b { display:block; color:var(--muted); font:700 10px/1.4 ui-monospace,monospace;
+  letter-spacing:.1em; text-transform:uppercase; margin-bottom:2px; }
+.drawing { width:100%; overflow-x:auto; overscroll-behavior-inline:contain;
+  border:1px solid var(--line); border-radius:9px; background:var(--paper); }
+.drawing svg { display:block; width:max(100%,var(--drawing-w,900px)); height:auto; }
+.views { display:grid; grid-template-columns:1fr; gap:20px; }
+@media(min-width:1080px) { .views.two { grid-template-columns:1fr 1fr; } }
+.legend { grid-template-columns:repeat(auto-fit,minmax(215px,1fr)); margin:13px 0 0; }
+.legend span { display:flex; align-items:center; gap:9px; color:var(--muted); font-size:12px; }
+.swatch { width:40px; height:16px; background:var(--soft); border:2px solid var(--accent); }
+.swatch.derived { border-width:1px; }
+.swatch.documented { border-style:dotted; }
+.swatch.assumption { border-color:var(--assume); border-style:dashed;
+  background:repeating-linear-gradient(135deg,transparent 0 5px,color-mix(in srgb,var(--assume) 20%,transparent) 5px 7px); }
+.parts { grid-template-columns:repeat(auto-fit,minmax(285px,1fr)); }
+.part { border:1px solid var(--line); border-radius:11px; overflow:hidden; background:var(--paper); }
+.partviz { position:relative; min-height:145px; display:grid; place-items:center;
+  background:var(--scan); border-bottom:1px solid var(--line); overflow:hidden; }
+.partviz img,.partviz svg { display:block; width:100%; height:auto; }
+.partviz .viewlabel { position:absolute; left:9px; bottom:7px; color:#91aaa6;
+  font:10px/1.3 ui-monospace,monospace; letter-spacing:.04em; }
+.partbody { padding:13px 14px 15px; }
+.partbody h3 { margin-bottom:4px; }
+.tag { display:inline-block; border:1px solid currentColor; border-radius:4px;
+  padding:2px 6px; font-size:10px; font-weight:800; letter-spacing:.05em; color:var(--accent); }
+.tag.derived { border-width:1px; }
+.tag.documented { border-style:dotted; }
+.tag.assumption { color:var(--assume); border-style:dashed; }
+.kv { display:grid; grid-template-columns:86px 1fr; gap:4px 9px; margin-top:10px; font-size:12.5px; }
+.kv b { color:var(--muted); font-weight:650; }
+.evidence { border-top:1px solid var(--grid); padding-top:9px; margin-top:10px;
+  color:var(--muted); font-size:11.5px; overflow-wrap:anywhere; }
+.tablewrap { width:100%; overflow-x:auto; border:1px solid var(--line); border-radius:9px; }
+table { border-collapse:collapse; width:100%; min-width:880px; background:var(--paper); }
+th,td { padding:9px 10px; text-align:left; vertical-align:top; border-bottom:1px solid var(--grid); }
+th { color:var(--muted); font-size:10px; letter-spacing:.06em; text-transform:uppercase; }
+tr:last-child td { border-bottom:0; }
+.result-fail { color:var(--bad); font-weight:750; } .result-pass { color:var(--good); font-weight:750; }
+.note { border-left:3px solid var(--accent); background:var(--soft); padding:12px 15px;
+  border-radius:0 9px 9px 0; margin:16px 0 0; color:var(--muted); font-size:13px; }
+.summary { grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); margin:20px 0 0; }
+.summary>div { background:var(--paper); border:1px solid var(--line); border-radius:9px; padding:14px; }
+.summary strong { display:block; color:var(--accent); font-size:1.35rem; }
+.summary span { color:var(--muted); font-size:11.5px; }
+.gategrid { grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); }
+.gate { display:block; color:var(--ink); text-decoration:none; border:1px solid var(--line);
+  border-left:5px solid var(--warn); border-radius:9px; padding:14px; background:var(--paper); }
+.gate.rank-high { border-left-color:var(--bad); }
+.gate.rank-watch { border-left-color:var(--accent); }
+.gate p { margin:4px 0 0; color:var(--muted); font-size:12.5px; }
+footer { border-top:1px solid var(--line); color:var(--muted); padding:22px 0 34px; font-size:12.5px; }
+svg .gridline { stroke:var(--grid); stroke-width:.7; }
+svg .axis { stroke:var(--ink); stroke-width:1.5; fill:none; }
+svg .floor { stroke:var(--ink); stroke-width:2; fill:none; }
+svg .shell { stroke:var(--muted); stroke-width:1.4; fill:color-mix(in srgb,var(--muted) 13%,transparent); }
+svg .shellmat { stroke:var(--muted); stroke-width:1.1; fill:color-mix(in srgb,var(--muted) 20%,transparent); fill-rule:evenodd; }
+svg .conf-verified { stroke:var(--accent); stroke-width:2.2; fill:color-mix(in srgb,var(--accent) 16%,transparent); }
+svg .conf-derived { stroke:var(--accent); stroke-width:1.2; fill:color-mix(in srgb,var(--accent) 9%,transparent); }
+svg .conf-documented { stroke:var(--accent); stroke-width:1.7; stroke-dasharray:2 4; fill:color-mix(in srgb,var(--accent) 8%,transparent); }
+svg .conf-assumption { stroke:var(--assume); stroke-width:1.7; stroke-dasharray:7 5; fill:url(#hatch); }
+svg .moving { stroke:var(--warn); stroke-width:1.6; stroke-dasharray:7 4; fill:url(#moveHatch); }
+svg .failure { stroke:var(--bad); stroke-width:1.7; fill:url(#failHatch); }
+svg .pass { stroke:var(--good); stroke-width:1.5; fill:color-mix(in srgb,var(--good) 13%,transparent); }
+svg .dim { stroke:var(--muted); stroke-width:1; fill:none; marker-start:url(#arrow); marker-end:url(#arrow); }
+svg .dim.conf-documented { stroke-dasharray:2 4; } svg .dim.conf-assumption { stroke-dasharray:7 5; }
+svg .tick { stroke:var(--muted); stroke-width:1; }
+svg .leader { stroke:var(--muted); stroke-width:1; fill:none; }
+svg .label { fill:var(--ink); font-size:11px; } svg .small { fill:var(--muted); font-size:9.5px; }
+svg .tiny { fill:var(--muted); font-size:8px; } svg .accent { fill:var(--accent); }
+svg .badtext { fill:var(--bad); font-weight:800; } svg .goodtext { fill:var(--good); font-weight:800; }
+@media(max-width:640px) { .bar,.page { width:min(100% - 20px,1420px); }
+  main { padding-top:20px; } .brand span { display:none; } .kv { grid-template-columns:74px 1fr; } }
+</style></head><body>
+<header><div class="bar">
+ <div class="brand"><b>W17 / RC-01</b><span>eight-zone mechanical fit map</span></div>
+ <div><a href="index.html">Overview</a> · <button data-theme-toggle type="button">Theme</button></div>
+</div></header><main><div class="page">
+<p class="eyebrow">10_assembly_architecture / viz · master overview</p>
+<h1>Whole-car assembly-zone map</h1>
+<p class="lede">Eight linked engineering sheets locate every remaining component, preserve the real
+S0=0 shell geometry, show moving envelopes, and mirror each clearance verdict back to its evidence row.
+All gates below are still open; no production geometry is released.</p>
+<div class="summary">
+ <div><strong>1455–2110 g</strong><span>planning range · ASSUMPTION</span></div>
+ <div><strong>35.0% / 65.0%</strong><span>front / rear midpoint balance</span></div>
+ <div><strong>-7.9, -1.7</strong><span>X/L CG mm · midpoint</span></div>
+ <div><strong>1 active + 1 swap</strong><span>single onboard pack architecture</span></div>
+</div>
+<div class="board"><h2>Chassis plan + linked zones</h2><p class="sub">4 px/mm master plan; click a coloured zone. Red denotes a directly failing/high-risk fit, orange an unresolved physical gate.</p>
+ <div class="drawing"><svg style="--drawing-w:1430px" viewBox="0 0 1430.0 1020.0" role="img" aria-label="Master W17 chassis plan with all assembly zones"><defs>
+<pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+ <path d="M40 0H0V40" class="gridline" fill="none"/>
+</pattern>
+<pattern id="hatch" width="9" height="9" patternUnits="userSpaceOnUse" patternTransform="rotate(35)">
+ <line x1="0" y1="0" x2="0" y2="9" stroke="var(--assume)" stroke-width="1" opacity=".38"/>
+</pattern>
+<pattern id="moveHatch" width="10" height="10" patternUnits="userSpaceOnUse" patternTransform="rotate(35)">
+ <line x1="0" y1="0" x2="0" y2="10" stroke="var(--warn)" stroke-width="2" opacity=".42"/>
+</pattern>
+<pattern id="failHatch" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(35)">
+ <rect width="8" height="8" fill="color-mix(in srgb,var(--bad) 12%,transparent)"/>
+ <line x1="0" y1="0" x2="0" y2="8" stroke="var(--bad)" stroke-width="2" opacity=".62"/>
+</pattern>
+<marker id="arrow" viewBox="0 0 8 8" refX="4" refY="4" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+ <path d="M0 0L8 4L0 8Z" fill="context-stroke"/>
+</marker>
+</defs><rect width="1430.0" height="1020.0" fill="url(#grid)"/><polygon class="shell conf-derived" points="71.0,611.0 195.0,699.0 515.0,749.0 755.0,749.0 855.0,581.0 1355.0,535.0 1355.0,415.0 855.0,369.0 755.0,201.0 515.0,201.0 195.0,251.0 71.0,339.0"/><line class="axis" x1="55.0" y1="475.0" x2="1375.0" y2="475.0"/><a href="rear_drivetrain.html"><rect class="failure" x="59.0" y="251.0" width="312.0" height="448.0" rx="10"/><text class="label" x="67.0" y="269.0">ZR · Rear drivetrain &amp; thermal</text></a><a href="power_balance.html"><rect class="failure" x="319.0" y="239.0" width="312.0" height="216.0" rx="10"/><text class="label" x="327.0" y="257.0">ZP · Power, twin-pack feasibility &amp; balance</text></a><a href="control_rf.html"><rect class="conf-assumption" x="395.0" y="527.0" width="400.0" height="168.0" rx="10"/><text class="label" x="403.0" y="545.0">ZC · Control &amp; RF</text></a><a href="camera_nose.html"><rect class="conf-assumption" x="735.0" y="365.0" width="280.0" height="220.0" rx="10"/><text class="label" x="743.0" y="383.0">ZV · Camera, pod/nose &amp; cooling</text></a><a href="accessory_servos.html"><rect class="conf-assumption" x="59.0" y="319.0" width="152.0" height="312.0" rx="10"/><text class="label" x="67.0" y="337.0">ZA · Accessory servos &amp; DRS</text></a><a href="audio_light.html"><rect class="conf-assumption" x="379.0" y="227.0" width="312.0" height="136.0" rx="10"/><text class="label" x="387.0" y="245.0">ZL · Audio &amp; lighting</text></a><a href="suspension_rolling.html"><rect class="failure" x="1075.4" y="95.0" width="288.0" height="760.0" rx="10"/><text class="label" x="1083.4" y="113.0">ZS · Suspension &amp; rolling</text></a><a href="speed_sensor.html"><rect class="conf-assumption" x="223.4" y="535.0" width="96.0" height="136.0" rx="10"/><text class="label" x="231.4" y="553.0">ZH · Rear speed sensor</text></a><circle cx="603.6" cy="481.7" r="14" fill="var(--accent)" stroke="var(--paper)" stroke-width="4"/><line class="conf-assumption" x1="578.6" y1="481.7" x2="628.6" y2="481.7"/><line class="conf-assumption" x1="603.6" y1="456.7" x2="603.6" y2="506.7"/><text class="accent label" x="623.6" y="463.7">CG -7.9 X / -1.7 L</text><line class="conf-derived" x1="271.4" y1="55.0" x2="271.4" y2="895.0"/><line class="conf-derived" x1="1219.4" y1="55.0" x2="1219.4" y2="895.0"/><line class="dim conf-derived" x1="271.4" y1="965.0" x2="1219.4" y2="965.0"/><rect x="678.2" y="949.0" width="134.4" height="15" fill="var(--paper)" opacity=".92"/><text class="small" text-anchor="middle" x="745.4" y="960.0">237 mm wheelbase</text><line class="tick" x1="55" y1="990.0" x2="255.0" y2="990.0"/><line class="tick" x1="55.0" y1="990.0" x2="55.0" y2="999.0"/><text class="tiny" x="55.0" y="1010.0">0</text><line class="tick" x1="95.0" y1="990.0" x2="95.0" y2="996.0"/><text class="tiny" x="95.0" y="1010.0">10</text><line class="tick" x1="135.0" y1="990.0" x2="135.0" y2="996.0"/><text class="tiny" x="135.0" y="1010.0">20</text><line class="tick" x1="175.0" y1="990.0" x2="175.0" y2="996.0"/><text class="tiny" x="175.0" y="1010.0">30</text><line class="tick" x1="215.0" y1="990.0" x2="215.0" y2="996.0"/><text class="tiny" x="215.0" y="1010.0">40</text><line class="tick" x1="255.0" y1="990.0" x2="255.0" y2="999.0"/><text class="tiny" x="255.0" y="1010.0">50</text><text class="small" x="55" y="984.0">50 mm ruler · 4.0 px/mm</text></svg></div></div>
+<div class="board"><h2>Whole-car fore/aft balance</h2><div class="drawing"><svg style="--drawing-w:940px" viewBox="0 0 940 230" role="img" aria-label="Whole car front rear balance">
+<defs>
+<pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+ <path d="M40 0H0V40" class="gridline" fill="none"/>
+</pattern>
+<pattern id="hatch" width="9" height="9" patternUnits="userSpaceOnUse" patternTransform="rotate(35)">
+ <line x1="0" y1="0" x2="0" y2="9" stroke="var(--assume)" stroke-width="1" opacity=".38"/>
+</pattern>
+<pattern id="moveHatch" width="10" height="10" patternUnits="userSpaceOnUse" patternTransform="rotate(35)">
+ <line x1="0" y1="0" x2="0" y2="10" stroke="var(--warn)" stroke-width="2" opacity=".42"/>
+</pattern>
+<pattern id="failHatch" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(35)">
+ <rect width="8" height="8" fill="color-mix(in srgb,var(--bad) 12%,transparent)"/>
+ <line x1="0" y1="0" x2="0" y2="8" stroke="var(--bad)" stroke-width="2" opacity=".62"/>
+</pattern>
+<marker id="arrow" viewBox="0 0 8 8" refX="4" refY="4" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+ <path d="M0 0L8 4L0 8Z" fill="context-stroke"/>
+</marker>
+</defs><rect width="940" height="230" fill="url(#grid)"/>
+<text class="accent label" x="25" y="28">WHOLE-CAR CG · p0_d30 MIDPOINT LEDGER</text>
+<rect x="50" y="75" width="287.3" height="60" fill="var(--accent)" opacity=".78"/>
+<rect x="337.3" y="75" width="532.7" height="60" fill="var(--ground)" stroke="var(--line)"/>
+<text class="label" x="155" y="111">FRONT 35.0%</text>
+<text class="label" x="610" y="111">REAR 65.0%</text>
+<text class="small" x="50" y="160">cockpit case · X-CG -7.9 · L-CG -1.7 · Z-CG 22.2 mm</text>
+<text class="small" x="50" y="182">high camera-pod case · 33.2% front · Z-CG 23.2 mm</text>
+<text class="badtext small" x="50" y="205">36–40% front target = ASSUMPTION · physical four-corner scales own D-39</text>
+</svg></div></div>
+<div class="board"><h2>Confidence legend</h2><div class="legend">
+ <span><i class="swatch"></i>VERIFIED · solid · measured mesh/physical evidence</span>
+ <span><i class="swatch derived"></i>DERIVED · thin · arithmetic/registration</span>
+ <span><i class="swatch documented"></i>DOCUMENTED · dotted · controlled reference</span>
+ <span><i class="swatch assumption"></i>ASSUMPTION · dashed + hatched · physically open</span>
+</div><p class="sub mono">VERIFIED / DERIVED / DOCUMENTED / ASSUMPTION — line style follows the weakest fact being shown.</p></div>
+<div class="board"><h2>Fit-gate status board</h2><p class="sub">D-28…D-39 / ASM gates in the p0_07 priority order; each card links to its owning zone drawing.</p>
+ <div class="gategrid"><a class="gate rank-high" href="rear_drivetrain.html">
+<span class="tag assumption">OPEN · RANK 1</span> <b>D-28 / ASM-49</b> · ZR
+<p>Read exact ESC label; caliper body/fan/wire exits; body-on dummy at X−60 and alternatives.</p><p><b>Blocks:</b> all ESC support geometry</p></a><a class="gate rank-high" href="power_balance.html">
+<span class="tag assumption">OPEN · RANK 2</span> <b>D-31 / ASM-50</b> · ZP
+<p>Pin S0; fit one 75×45×25 dummy with the real steering sweep; explicitly reject/approve dual-onboard.</p><p><b>Blocks:</b> battery purchase/tray and any dual-pack wiring</p></a><a class="gate rank-high" href="rear_drivetrain.html">
+<span class="tag assumption">OPEN · RANK 3</span> <b>D-14/15/17</b> · ZR
+<p>Dry-assemble the selected rear stack, 68 mm shock, preferred wing and DRS parts through travel.</p><p><b>Blocks:</b> rear ASA and wing production</p></a><a class="gate rank-high" href="rear_drivetrain.html">
+<span class="tag assumption">OPEN · RANK 4</span> <b>D-16 / ASM-51</b> · ZR
+<p>Measure pulley teeth/OD/bores/planes, output shaft shoulders, spur bolt PCD and gear backlash.</p><p><b>Blocks:</b> drivetrain production/assembly</p></a><a class="gate rank-high" href="suspension_rolling.html">
+<span class="tag assumption">OPEN · RANK 5</span> <b>D-37 / ASM-56</b> · ZS
+<p>Measure front shock free/compressed length and body-on steer+bump; set ride height on scales.</p><p><b>Blocks:</b> full suspension and body sign-off</p></a><a class="gate rank-high" href="camera_nose.html">
+<span class="tag assumption">OPEN · RANK 6</span> <b>D-34 / ASM-53</b> · ZV
+<p>Resolve IMX415-vs-IMX335 identity; caliper camera/blower; choose A/B; prove airflow/FOV/service.</p><p><b>Blocks:</b> PS-10/11 and camera prints</p></a><a class="gate " href="accessory_servos.html">
+<span class="tag assumption">OPEN · RANK 7</span> <b>D-35 / ASM-54</b> · ZA
+<p>Caliper all three MG90S clones; no-power pocket/horn sweep; later record powered endpoints under project safety gate.</p><p><b>Blocks:</b> gimbal/DRS production</p></a><a class="gate " href="control_rf.html">
+<span class="tag assumption">OPEN · RANK 8</span> <b>D-32/33 / ASM-52</b> · ZC
+<p>Caliper boards/module/heatsink and trial the complete RF/coax routes with shell seated.</p><p><b>Blocks:</b> deck/RX/antenna supports</p></a><a class="gate " href="audio_light.html">
+<span class="tag assumption">OPEN · RANK 9</span> <b>D-36 / ASM-55</b> · ZL
+<p>Measure speaker/amp; prove port and seven-pixel proposed segment/lens layout.</p><p><b>Blocks:</b> speaker and LED supports</p></a><a class="gate " href="speed_sensor.html">
+<span class="tag assumption">OPEN · RANK 10</span> <b>D-38 / ASM-57</b> · ZH
+<p>Set 1.5 mm cold gap; spin by hand through axle play; verify 1–3 mm reliable range.</p><p><b>Blocks:</b> PS-16 Hall bracket</p></a><a class="gate rank-watch" href="power_balance.html">
+<span class="tag assumption">OPEN · RANK 11</span> <b>D-24 / ASM-36</b> · ZP
+<p>Measure rail currents, hold-up and common-star continuity before final harness.</p><p><b>Blocks:</b> final harness/fuse/cap decisions</p></a><a class="gate rank-watch" href="power_balance.html">
+<span class="tag assumption">OPEN · RANK 12</span> <b>D-39 / ASM-58</b> · ZP
+<p>Weigh every module and all four corners with body on; compute X/L CG and axle percentages.</p><p><b>Blocks:</b> ballast and final battery station</p></a></div></div>
+<!-- BEGIN GENERATED CONNECTION LINKS · p0_10 -->
+<div class="board"><h2>Exploded mechanical connections</h2>
+<p class="sub">Project-wide build-level atlas: every neighbour joint, BOM hardware, interface confidence, retention, dependency, tool and ASM closure. These sheets add connection execution detail; they do not revise the fit pages above.</p>
+<div class="gategrid"><a class="gate rank-watch" href="connections/index.html"><span class="tag">MASTER</span> <b>Mechanical connection atlas</b><p>160 joints · 12 assemblies · sortable register + manual sequence</p></a><a class="gate rank-watch" href="connections/floor_structure.html"><span class="tag documented">CONNECTION 01</span> <b>Floor datum &amp; chassis structure</b><p>7 joints · 0 DEFER · exploded + joint work instructions</p></a><a class="gate rank-watch" href="connections/servo_holder.html"><span class="tag documented">CONNECTION 02</span> <b>Steering servo &amp; holder</b><p>4 joints · 0 DEFER · exploded + joint work instructions</p></a><a class="gate rank-watch" href="connections/steering.html"><span class="tag documented">CONNECTION 03</span> <b>Steering output chain</b><p>19 joints · 0 DEFER · exploded + joint work instructions</p></a><a class="gate rank-watch" href="connections/front_suspension.html"><span class="tag documented">CONNECTION 04</span> <b>Front suspension &amp; rolling</b><p>23 joints · 2 DEFER · exploded + joint work instructions</p></a><a class="gate rank-watch" href="connections/rear_drivetrain.html"><span class="tag documented">CONNECTION 05</span> <b>Rear suspension &amp; drivetrain</b><p>33 joints · 8 DEFER · exploded + joint work instructions</p></a><a class="gate rank-watch" href="connections/power_charge.html"><span class="tag documented">CONNECTION 06</span> <b>Battery, power &amp; onboard charging</b><p>12 joints · 5 DEFER · exploded + joint work instructions</p></a><a class="gate rank-watch" href="connections/electronics_trays.html"><span class="tag documented">CONNECTION 07</span> <b>Electronics trays &amp; RF hardware</b><p>33 joints · 3 DEFER · exploded + joint work instructions</p></a><a class="gate rank-watch" href="connections/camera_blower.html"><span class="tag documented">CONNECTION 08</span> <b>Camera pod, gimbal &amp; blower</b><p>8 joints · 3 DEFER · exploded + joint work instructions</p></a><a class="gate rank-watch" href="connections/audio.html"><span class="tag documented">CONNECTION 09</span> <b>Audio assembly</b><p>3 joints · 0 DEFER · exploded + joint work instructions</p></a><a class="gate rank-watch" href="connections/lighting.html"><span class="tag documented">CONNECTION 10</span> <b>Lighting segments &amp; lenses</b><p>6 joints · 0 DEFER · exploded + joint work instructions</p></a><a class="gate rank-watch" href="connections/speed_sensor.html"><span class="tag documented">CONNECTION 11</span> <b>Hall speed sensor</b><p>3 joints · 3 DEFER · exploded + joint work instructions</p></a><a class="gate rank-watch" href="connections/body_shell.html"><span class="tag documented">CONNECTION 12</span> <b>Body, shell &amp; aero fasteners</b><p>9 joints · 0 DEFER · exploded + joint work instructions</p></a></div></div>
+<!-- END GENERATED CONNECTION LINKS · p0_10 -->
+
+
+
+
+
+
+<!-- BEGIN GENERATED CASSETTE LINKS · p0_12 -->
+<div class="board"><h2>Lift-out cassette physical audit</h2>
+<p class="sub">Separate, fit-gated visualization set for the owner/Claude cassette architecture. It preserves the prior eight-zone and connection sets.</p>
+<div class="gategrid"><a class="gate rank-high" href="cassette/index.html"><span class="tag assumption">CASSETTE · REPACK DUMMY ONLY</span> <b>Electronics cassette audit</b><p>55×45×18 PDB target repack · 3/8 mm KO gap · unplaced Wi-Fi · firm connector map / assumed bodies · no production STL</p></a></div></div>
+<!-- END GENERATED CASSETTE LINKS · p0_12 -->
+<div class="board"><h2>Evidence chain</h2>
+ <p><code>p0_07_zone_fit_rollup.py</code> owns 18 STL bboxes, component facts, placements,
+ mass scenarios and open gates. This generator reads those structures without changing them,
+ adds deterministic embedded STL renders, and sections the real registered 2024 shell meshes.
+ The resulting nine pages use inline CSS/JS/SVG and data-URI PNG only.</p>
+</div>
+</div></main><footer><div class="page">
+Generated by <code>10_assembly_architecture/evidence/scripts/p0_08_zone_visualizations.py</code>.
+Evidence: <code>p0_07</code> / D-28…D-39 plus the measured D-02 S0=0 shell sections.
+No production STL, hardware identity, or unresolved coordinate is authorized by these drawings.
+</div></footer><script>
+(() => {
+  const root=document.documentElement, btn=document.querySelector("[data-theme-toggle]");
+  if(!btn) return;
+  btn.addEventListener("click",()=>{
+    const current=root.dataset.theme;
+    root.dataset.theme=current==="dark"?"light":current==="light"?"dark":
+      matchMedia("(prefers-color-scheme: dark)").matches?"light":"dark";
+    btn.textContent=root.dataset.theme==="dark"?"Light":"Dark";
+  });
+})();
+</script></body></html>

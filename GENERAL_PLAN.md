@@ -114,8 +114,12 @@ Tracked here until resolved; details in `MODEL_INVENTORY.md`:
    (2026-07-14, source of truth — includes VR/head-tracking requirements and the
    hard-stop geometry the firmware safety gate needs); the placement decision itself
    remains open.**
-4. **Gate D — RESOLVED 2026-07-10:** `Servoholder` is the floor servo mount (drawing
-   `[2]`) → REQUIRED. Residual: DS3235SG fit-check on arrival, before the floor batch.
+4. **Gate D — PARTIALLY RESOLVED / orientation corrected 2026-07-22:**
+   `Servoholder` is the required floor servo mount (drawing `[2]`) and carries the
+   standard servo **on its side**: holder top Z22.89, servo case top ~Z20, shaft
+   horizontal/lateral, vertical horn driving the long rod. Residual: the 42×18.5
+   clear arch versus the DS3235SG's documented 40×20 side face requires a no-force
+   physical fit-check before the floor batch. See `10_assembly_architecture/Y_steering_servo_fit_study.md`.
 5. **Hardware *arrival* status lives in `../HARDWARE_INVENTORY.md`** (workspace-level
    delivery log, authoritative as of 2026-07-22: what arrived, when, and how each drop
    maps to a BOM v2 line). **This item is no longer an arrival ledger** — it carries only
@@ -125,8 +129,11 @@ Tracked here until resolved; details in `MODEL_INVENTORY.md`:
      (`../HARDWARE_INVENTORY.md` §10); the real length picks the shock-mount geometry.
    - **Spur ↔ belt-pulley bolt pattern.** Confirm the 3Racing Sakura 48P 75T spur bolt
      holes match the belt-set pulley (BOM open confirm #1). Spur + belt set both on hand (§8).
-   - **DS3235SG steering-servo fit-check** into the `Servoholder` pocket + horn sweep
-     (Gate D residual; servo on hand, §6). **MG90S** pan/tilt/DRS fit-checks are deferred —
+   - **DS3235SG steering-servo fit-check** side-on in the `Servoholder` arch, with
+     shaft horizontal/lateral and a normal 25T horn vertical at neutral; then record
+     the long-rod sweep (Gate D/D-26 residual; servo on hand, §6). `servosaverv7`
+     stays at the front on its M3 pivot; it does not go on the spline. **MG90S**
+     pan/tilt/DRS fit-checks are deferred —
      the micro servos are still in transit (§6).
    - **King-pin 3 mm knuckle-bore check.** King pins (M3 dowel + circlip) are on hand
      (§11); verify the printed knuckle's 3 mm bore accepts them.

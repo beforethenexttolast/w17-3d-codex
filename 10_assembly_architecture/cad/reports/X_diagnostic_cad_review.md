@@ -131,8 +131,10 @@ not a hidden pass.
   present; it makes no actual-module claim.
 - **Amplifier:** body/mount, I2S and speaker exits/bends, orientation and bed-connected
   adjustment/tool-access volume are present.
-- **Steering-servo stand-in:** body/lead/bend, maximum horn-sweep disc, direction and a
-  top-visible ID are present; it is explicitly not a new mount.
+- **Steering-servo generic gauge:** body/lead/bend, maximum horn-radius disc,
+  direction and top-visible ID are present; it is explicitly not a new mount.
+  After the 2026-07-22 side-mount correction this is not installed-orientation
+  evidence; D-09/D-26 require the real DS3235SG and horn.
 - **Connector bank:** body, XT60/three-XT30 allowances, wire/bend and extraction volume,
   mating-hand volume, tool access and support/reference region are present.
 

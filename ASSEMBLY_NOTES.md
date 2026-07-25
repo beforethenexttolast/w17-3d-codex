@@ -54,7 +54,10 @@ its READ ME (ryanscreations28@gmail.com).
   Side Vents L/R, Diffuser — matches our group 05. 12× M3 nuts sit in floor slots.
 - **`[3]` Front suspension:** the steering servo is NOT in the front assembly — a
   **long rod links the servo to the servo-saver** ("mount this hole with a rod to the
-  steering servo motor"). Guide rods tap in gently with a hammer. Front assembly locks
+  steering servo motor"). The original holder carries the servo on its side, with a
+  horizontal/lateral shaft and a normal 25T horn vertical at neutral. The printed
+  `servosaverv7` has an M3 pivot bore and stays on the front boss; it is not fitted to
+  the servo spline. Guide rods tap in gently with a hammer. Front assembly locks
   to the floor with nuts.
 - **`[1]` Body (2023-era):** nose and front wing are always **separate printed parts**
   bolted on (12× M3 pattern) — no rear wing in the body drawing (it's on the chassis).
@@ -89,7 +92,7 @@ see `docs/00_BUILD_SHEET_v2.md`).
 | Turnbuckles | 3×32 mm | 2 (+crash spares) (BOM v2) | adjustable toe links — the crash-snap item |
 | M3 ball studs | Tamiya/Sakura style | pack (BOM v2) | pivot balls the rod ends clip onto |
 | King pins | M3×30 mm dowel + circlip | 2 (+spares) (BOM v2) | knuckle pivots — ⚠ confirm 3 mm bore in slicer |
-| Steering servo | DS3235SG (standard size), 25T horn | 1 (in transit) | into `Servoholder` on the rear floor — ⚠ fit-check on arrival |
+| Steering servo | DS3235SG (standard size), normal metal 25T horn | 1 (on hand) | side-on in `Servoholder` on the rear floor; shaft horizontal/lateral, horn vertical — ⚠ 42×18.5 arch vs 40×20 case fit-check |
 | DRS servo | MG90S micro, positional | 1 of 3 (in transit) | into the chosen rear wing's pocket + metal rod to horn (drawing `[2]`) |
 | Front shocks | 52 mm ordered (BOM v2) — **front only** | 2 (+spares) | ⚠ 51 (Ryan) vs 52 mm (v2) — measure on arrival; these numbers never apply to the rear |
 | Rear shock | **68 mm** (HSP, ordered) — confirmed 2026-07-10 | 1 (+spare) | single central damper; rear stack must seat **and articulate** with it — gate #1 in `BUILD_SHEET.md` |
@@ -133,8 +136,11 @@ screws) of every stage first**, then final assembly after painting.
 ### Stage 3 — Front suspension + steering
 - [ ] Drawing `[3]`; original oil-shock parts only (no Rev 1.1 steering)
 - [ ] King pins ~3 mm bore verified; uprights pivot freely
-- [ ] Steering servo into `Servoholder` on the rear floor; long rod to the
-      servo-saver (drawing `[3]`) — centre the servo in firmware BEFORE linkage
+- [ ] Steering servo side-on into `Servoholder` on the rear floor; do not force or
+      grind the case. Shaft horizontal/lateral; ordinary 25T horn vertical at neutral;
+      long rod to the front M3-pivoted `servosaverv7` (drawing `[3]`) — centre the
+      servo with the existing control/test setup BEFORE linkage; no firmware change
+      is part of this mechanical step
 - [ ] M4 tie rods + turnbuckles + ball studs; equal lengths L/R before trim
 - [ ] Shocks mounted; suspension compresses/returns without binding
 

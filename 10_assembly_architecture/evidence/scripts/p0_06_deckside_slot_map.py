@@ -22,8 +22,8 @@ SRC = os.path.join(OUT_T, 'p0_d01_feature_map.csv')
 
 # keep-outs in the P0 frame (this session's measurements)
 KO = [
-    ('KO-01 rod band', 'X -50..+135, |L|<=18 (rear)..12 (fwd), Z 35..62'),
-    ('KO-19 servo+holder', 'X -25..-52 (bracket stations), |L|<=12, Z 0..58'),
+    ('KO-01 provisional moving band', 'X -80..+100, |L|<=22, Z 22..38; ASM-08 physical sweep open'),
+    ('KO-19 side-mounted servo+holder', 'likely X -85.76..-27.76, holder Z 0..22.89; exact seat open'),
     ('belt/spur cutout', 'X -98..-117, L -34..-60 — NO plate (through)'),
     ('joint window', 'X -14..-4 centre |L|<14 OPEN; splice screws to +24'),
     ('motor/axle bay', 'X <= -94 centre — open + rotating (KO-08/09)'),

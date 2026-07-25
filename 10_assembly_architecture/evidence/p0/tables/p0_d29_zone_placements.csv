@@ -1,0 +1,44 @@
+id,zone,x,l,z,orientation,confidence,note
+DRV-ESC,rear,−60,−25,+3,fan up; 43 mm X; 36.8 mm L,ASSUMPTION,Current Z5R candidate FAILS S0=0 side-envelope check; freeze PS-02/CAD-03.
+DRV-MOT,rear,−105,0,+27 axis,shaft lateral; can transverse,ASSUMPTION,"Donor drivetrain fixes the family of location, not a datum-clean transform."
+DRV-BELT,rear,−118…−82,belt side,+10…+45,two pulley planes and moving tangent runs,ASSUMPTION,Pulley teeth/diameters/plane offsets require the physical set.
+DRV-SHAFT,rear,−90.9,transverse,+26…+27 axis,coaxial with rear wheels,X DERIVED; L/Z ASSUMPTION,Rear shell arch establishes X; ride height establishes Z.
+DRV-SPUR,rear,−90.9,belt-side offset TBD,+26…+27 axis,vertical gear plane,X DERIVED; L/Z ASSUMPTION,Bolt pattern and lateral stack are physical gates.
+DRV-PINION,rear,motor axis ±27.25,motor shaft,TBD,parallel gear plane to spur,DERIVED centre distance; placement ASSUMPTION,"27.25 mm is 48P pitch-centre arithmetic, not a mounted measurement."
+BRG-REAR,rear,−90.9,carrier centres TBD,+26…+27,axes lateral,X DERIVED; L/Z ASSUMPTION,Gate A decides original carriers versus motor covers.
+SHK-REAR,rear,−60…−25,0,+10…+45,"longitudinal/central, exact eyes TBD",ASSUMPTION,Full articulation owns the envelope; 68 mm is only free eye distance.
+PWR-BAT-1,power,−44,+25,+3,"75 X ×45 L ×25 Z, XT60 forward",ASSUMPTION,Candidate crosses provisional steering corridor and shell shoulder; fit gate open.
+PWR-BAT-2,power,OFF-CAR,OFF-CAR,OFF-CAR,charged swap/storage pack,DERIVED architecture decision,Two onboard packs do not fit the selected architecture without relocating electronics.
+PWR-UBEC-A,power,−15,−38,+3,"flat, leads fore/aft",ASSUMPTION,Rail A route stays forward/upper and away from motor phase wires.
+PWR-UBEC-B,power,−48,−38,+3,"flat, leads fore/aft",ASSUMPTION,Rail B remains low/right; capacitor adjacent.
+PWR-CAP-B,power,−48,−48,+3,sideways/upright after real can measure,ASSUMPTION,Shortest practical Rail-B leads.
+PWR-CAP-LED,power,+20,−40,+3,at lighting harness origin,ASSUMPTION,Final position follows first strip segment and stock count.
+SNS-DIV,power,−5,−35,+3,heatshrunk inline branch,ASSUMPTION,Battery sense branch; ground returns to star.
+PWR-XT60,power,+20,−40,+3,contacts recessed; disconnect upward,ASSUMPTION,Body-on reach remains a gate.
+PWR-XT30,power,+10,−42,+3,tap row upward,ASSUMPTION,No final seat before connector calipers.
+PWR-BUZZ,power,+25,−50,+3,apertures unobstructed,ASSUMPTION,Optional; no priority over main disconnect access.
+CTL-E1,control,+10,−32,+20 deck,"flat, USB outboard",ASSUMPTION,Conditional on S0 and physical steering sweep.
+CTL-E2,control,−45,−32,+20 deck,"flat, USB outboard",ASSUMPTION,Conditional on S0; outer header field is the shell limiter.
+CTL-E3,control,OFF-CAR,OFF-CAR,OFF-CAR,bench spare,DOCUMENTED,BOM explicitly assigns the third board as spare.
+RX-ELRS,control,+20 receiver / +120 antenna,+38 / +15,+3 / +30,receiver flat; T antenna transverse/clear,ASSUMPTION,Forward antenna route targets separation from video antennas.
+VID-WIFI,control,−45,−18,+20 deck,"flat, heatsink up, U.FL aft",ASSUMPTION,P9 hard cap only; real module and shell fit are open.
+VID-ANT,control,−45 roots,±18,+35,70 mm longitudinal routes; shallow opposing V,ASSUMPTION,"Chassis-mounted; ≥150 mm design target from 2.4 GHz antenna, validate D-20."
+VID-CAM,camera,+60 Option A / −53 Option B,0,+20 / +73+S0,boresight X+; adjustable roll,ASSUMPTION,Option A preferred for CG/POV; identity and calipers still block geometry.
+CAM-TOP,camera,−61.6…−44.8,−8.8…+8.9,+73.35…+80.27 + S0,same authored shell frame,DERIVED,"Transform X=146.6−raw_x, L=−(raw_y−1.855), Z=raw_z+S0."
+COOL-BLOW,camera,camera-module local,offset from lens,TBD,inlet open; outlet to hot side,ASSUMPTION,No fixed coordinate before camera/placement decision.
+COOL-DUCT,camera,camera-module local,local,local,blower outlet → camera heatsink,ASSUMPTION,Nine SCAD inputs must be measured.
+SRV-PAN,servos,+60 / −53,0,camera-module base,output axis Z,ASSUMPTION,Option A/B coordinate follows VID-CAM.
+SRV-TILT,servos,+60 / −53,0,above pan,output axis L,ASSUMPTION,"Reserve board, lens and horn sweep; no gimbal mesh exists."
+SRV-DRS,servos,−125,0,+55…+80,per 2021 wing pocket,ASSUMPTION,"Raw wing proves a pocket exists, not that the actual clone fits."
+DRS-ARM,servos,rear-wing local,0,flap linkage,58 mm arm swept,ASSUMPTION,Gate A/B combined dry-fit fixes pivots and travel.
+AUD-AMP,audio,−5,−40,+15 deck,flat; speaker terminals outboard,ASSUMPTION,Actual clone size and connector height pending.
+AUD-SPK,audio,−30,+43,+3,"flat, cone/port outboard",ASSUMPTION,S0=0 shell gives 6–9 mm policy margin for a 12 mm-tall speaker.
+LGT-DIFF,audio,−125,0,+35,lens aft,ASSUMPTION,BBox verified; rear-stack transform is not.
+LGT-LED,audio,tail / wing ends / halo,0 / ±40 / halo,TBD,1 centre + 2 per indicator + 2 halo planning segments,ASSUMPTION,Seven installed pixels proposed; remaining strip is spare until lens checks.
+SHK-FRONT,suspension,+120…+150,±55…±75,+10…+45,eye axes per original oil-shock front,ASSUMPTION,51 mm requirement conflicts with 52 mm stock label; D-12/D-37 measures the real free/compressed length.
+UPRIGHT-L,suspension,+146.1,+75,+26…+27 axle,original oil-shock assembly,X DERIVED; L/Z ASSUMPTION,Do not substitute Rev-1/1.1 steering parts.
+UPRIGHT-R,suspension,+146.1,−75,+26…+27 axle,original oil-shock assembly,X DERIVED; L/Z ASSUMPTION,Do not substitute Rev-1/1.1 steering parts.
+TYRE-F,suspension,+146.1,±75,+26…+27,wheel axes lateral,X DERIVED; L/Z ASSUMPTION,"At ±25° assumed steer, plan half-envelope is 35.3 X ×27.1 L mm."
+TYRE-R,suspension,−90.9,±72.5,+26…+27,wheel axes lateral,X DERIVED; L/Z ASSUMPTION,No steering; vertical bump remains unmeasured.
+SNS-HALL,sensors,−90.9,belt-side collar TBD,+26…+27,sensitive face toward magnet,X DERIVED; L/Z ASSUMPTION,Bracket requires 0.5 mm adjustment steps and a service loop.
+SNS-MAG,sensors,−90.9,shaft collar TBD,+26…+27,radial face; one pulse/rev,X DERIVED; L/Z ASSUMPTION,"Target 1.5 mm cold gap, validate reliable range 1–3 mm."

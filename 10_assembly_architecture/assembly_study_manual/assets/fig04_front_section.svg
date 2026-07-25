@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720" role="img" aria-labelledby="t d">
+  <title id="t">W17 transverse internal section</title><desc id="d">Transverse schematic comparing battery side and belt side, with central steering keep-out, low UBEC shelf, conditional narrow deck and edge harness corridors.</desc>
+  <defs><style>.bg{fill:#f7f5f0}.ink{fill:#17222b}.muted{fill:#65717a}.c{fill:#dff3e9;stroke:#227a5c}.r{fill:#dcebf8;stroke:#2f6fad}.p{fill:#fff0cf;stroke:#d98c2b}.x{fill:#fde4df;stroke:#c9564a}.box{stroke-width:2}.line{fill:none;stroke:#293943;stroke-width:3}.dash{stroke-dasharray:9 7}.h{font:700 25px system-ui}.sub{font:700 16px system-ui}.txt{font:14px system-ui}.small{font:12px system-ui}</style></defs>
+  <rect class="bg" width="1200" height="720"/><text class="h ink" x="48" y="45">Transverse section — left/right stack and open spine</text><text class="txt muted" x="48" y="70">Representative junction/core station · not a shell-measurement drawing</text>
+  <path class="line" d="M120 470 Q150 170 400 105 Q600 45 800 105 Q1050 170 1080 470"/>
+  <path class="line dash" d="M165 457 Q190 212 420 150 Q600 98 780 150 Q1010 212 1035 457"/>
+  <rect x="135" y="470" width="930" height="24" fill="#cbd1d5" stroke="#65717a" stroke-width="2"/><text class="sub ink" x="518" y="520">DAT-F Z0</text>
+  <line x1="600" y1="112" x2="600" y2="494" stroke="#65717a" stroke-width="2" stroke-dasharray="8 7"/><text class="small muted" x="610" y="132">L=0</text>
+
+  <rect class="r box" x="225" y="355" width="260" height="115" rx="10"/><text class="sub ink" x="298" y="391">BATTERY + PS-01</text><text class="txt ink" x="280" y="418">floor-left · top remains open</text><text class="small ink" x="295" y="442">pack top approx. Z28</text>
+  <rect class="c box" x="512" y="355" width="176" height="115" rx="10"/><text class="sub ink" x="541" y="386">STEERING</text><text class="txt ink" x="543" y="408">servo / holder</text><text class="small ink" x="526" y="433">donor occupant KO-19</text>
+  <path class="x box" opacity="0.65" d="M472 215 H728 V350 H472 Z" stroke-dasharray="9 7"/><text class="sub ink" x="517" y="246">ROD / JOINTS</text><text class="txt ink" x="505" y="271">Z35…62 reserved</text><text class="small ink" x="497" y="294">moving clearance ≥8 mm</text>
+  <rect class="r box" x="727" y="410" width="205" height="60" rx="9"/><text class="sub ink" x="765" y="437">UBEC A/B · PS-03</text><text class="small ink" x="775" y="458">right/belt side · ≤Z14</text>
+  <rect class="p box" x="748" y="333" width="220" height="28" rx="5"/><text class="sub ink" x="782" y="353">narrow H20 trial plane</text>
+  <rect class="p box" x="774" y="292" width="172" height="41" rx="6"/><text class="small ink" x="795" y="310">controllers / amp / Wi-Fi</text><text class="small ink" x="806" y="326">only if shell ≥5 mm</text>
+  <line x1="719" y1="326" x2="719" y2="388" stroke="#c9564a" stroke-width="4"/><text class="small ink" x="738" y="385">inboard edge |L|≥26 rear</text>
+  <rect class="c box" x="156" y="434" width="58" height="28" rx="5"/><text class="small ink" x="168" y="452">R1</text><rect class="p box" x="942" y="434" width="58" height="28" rx="5"/><text class="small ink" x="953" y="452">R2</text>
+  <text class="sub ink" x="245" y="563">ARCHITECTURE LEFT · L&gt;0</text><text class="sub ink" x="733" y="563">ARCHITECTURE RIGHT / BELT · L&lt;0</text>
+  <path d="M120 593H1080" stroke="#293943" stroke-width="2"/><path d="M120 593l14-7v14z" fill="#293943"/><path d="M1080 593l-14-7v14z" fill="#293943"/><text class="small muted" x="410" y="621">outboard shell ceilings vary by X and S0; this view only shows the packaging logic</text>
+  <rect class="x box" x="410" y="648" width="380" height="38" rx="6"/><text class="sub ink" x="440" y="673">PHYSICAL CHECK: S0 + powered D-26 sweep + loaded H20 cluster</text>
+</svg>

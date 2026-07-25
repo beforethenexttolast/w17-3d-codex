@@ -16,14 +16,14 @@ the Session-1 Z1–Z8 set with side/level suffixes: `L`/`R`/`C` (left/right/cent
 
   P2c 65–71 ──────────────╮ shell roof over Z3 centreline (P0, S0=0)
                            │
-  Z 35–62 ─ ─ ─ ─ ─ ─ ─ ─ ─ ── │  KO-01 steering-rod reserved band (D-26)
-                           │      │ high, near-level; X1/X2 cross below Z35
+  Z 22–38 ─ ─ ─ ─ ─ ─ ─ ─ ─ ── │  provisional KO-01 moving band (D-26 corrected)
+                           │      │ X −80…+100, |L|≤22; physical sweep open
   P2s 26–41 ──────╮       │      │            (P0, S0=0; add S0)
                    │ shell │      │
   DAT-D ~20   ═════╪═══════╪══════╪══════ deck top (conditional on S0; removable)
    ESP32 top =     │       │      │       DAT-D + P5 (18–28) → must clear P2s
   DAT-T  ~3 ───────┤       │      │
-                   │       │  KO-19 servo top P6 42–52 (centre, mid-chassis)
+                   │       │  KO-19 holder top 22.89; servo top ~20 ASSUMED
   DAT-F  0 ════════╧═══════╧══════╧══════ chassis floor TOP (universal datum)
   −8               floor plate (8 mm, CONFIRMED)
   DAT-S  S0 (0…~11)       body-shell bottom edge (physical pin at Gate P1)
@@ -34,9 +34,13 @@ sign assumption is superseded: the shell bottom edge (DAT-S) sits AT or ABOVE DA
 by **S0 ∈ 0…~11 (physical pin at Gate P1)**. Measured at S0=0 (lower bound):
 **P2c = 65–71 ✔ (est. ~57–70 held)**; **P2s = 26–41** (37–52 if S0≈11) — the deck
 survives only as a narrow inboard deck (plate ≈ L −50…−26, P4 ≈ 20) in the S0 ≥ ~6
-world; the H.4 fallback-A trigger is armed but NOT fired pending S0. **P7 (rod):
-measured band Z 35–62, |L| ≤ 18 rear → 12 fwd — a high level line, not 35→70.**
-Battery bay length ≈ 78 > 75 ✔ (D-01); pack top (~28) passes under the rod band.
+world; the H.4 fallback-A trigger is armed but NOT fired pending S0. **2026-07-22
+D-26 correction:** the prior Z35–62 result used a longitudinal STL axis as vertical.
+Printed front datums put the saver link gap at Z25.33 and its top at Z37.00;
+provisional KO-01 is X−80…+100, Z22…38, |L|≤22 pending the missing physical
+horn/rod sweep at ASM-08. Battery bay length ≈78 >75 ✔ (D-01), but pack top
+(~28) now overlaps the provisional band vertically and must be cleared laterally
+or by the physical D-26 result.
 
 Safety clearance policy (applies at every level): **≥ 5 mm** static-to-static,
 **≥ 8 mm** static-to-moving (rod, horn, shock, belt), **≥ 10 mm** above the ESC fan,
@@ -108,7 +112,8 @@ dependencies. “—” = not applicable.
   (flat, fore-aft in a row, USB ends outboard-right), AUD-AMP, VID-WIFI (rear slot, P9
   dummy ≤ 60 × 32 × 12 — RST-06), 5.8 GHz antenna roots (rear posts).
 - **Prohibited:** anything needing floor access below it except the UBEC shelf (designed for it).
-- **Keep-outs:** open centreline inboard (KO-01/KO-19 per D-26), ESC fan aft (deck stops
+- **Keep-outs:** open centreline inboard (provisionally |L|≤22, plus 8 mm moving
+  clearance where heights overlap, per corrected D-26), ESC fan aft (deck stops
   short of the ESC bay), shell roof above.
 - **Mounting:** PS-04 deck on PS-05 posts; 2 thumbscrew/M3 fasteners; lifts out as one module
   after 1 service disconnect (M: CN-DECK).
@@ -119,7 +124,8 @@ dependencies. “—” = not applicable.
 - **Depends on:** D-02 (side-bay profile), D-04 (roof), D-06b (real WiFi), D-24, D-26.
 
 ### Z3C / Z5C — Central spine (PROHIBITED for electronics)
-- Occupants: KO-19 servo + `Servoholder` (mid-chassis), KO-01 high near-level rod band, KO-06
+- Occupants: KO-19 side-mounted servo + `Servoholder` (mid-chassis), provisional
+  KO-01 low/mid-height rod band, KO-06
   68 mm shock band, drivetrain approach. **Nothing else enters.** Cable crossings of the
   centreline: only at the two defined crossing stations (N §routes), 90°, above/below the
   rod per D-26, with ≥8 mm to any moving part.
@@ -215,3 +221,58 @@ thermal/RF/safety → [`O`](O_thermal_rf_vibration_safety.md) · assembly →
 [`P`](P_assembly_master_manual.md) · service → [`Q`](Q_service_disassembly_guide.md) ·
 gates → [`R`](R_validation_gates.md) · decisions → [`S`](S_decision_register.md) ·
 CAD hand-off → [`T`](T_cad_task_spec.md).
+
+## I.5 Remaining-component zone overlay (2026-07-23)
+
+Detailed studies live in [`fit_studies/`](fit_studies/README.md); self-contained
+drawings live in [`viz/`](viz/index.html). Coordinates use DAT-F. All placements
+below are **ASSUMPTION** unless an axis is explicitly DERIVED.
+
+| Study zone | Existing zones | Main occupants / datum candidate | Status |
+|---|---|---|---|
+| **ZR rear drivetrain** | Z5R/Z5C/Z6/Z7 | axle X−90.9 DERIVED; motor X≈−105; ESC X−60/L−25/Z3 | **ESC candidate rejected at S0=0; Gate A/D-28/D-30 open** |
+| **ZP power/balance** | Z3L-L0/Z3R-L0/Z2R | one active pack X−44/L+25/Z3; pack 2 off-car; UBECs right low | **single pack still gated; dual onboard rejected for selected architecture** |
+| **ZC control/RF** | Z2L/Z3R-L1/airbox | ESP32s X+10/−45, L−32, deck Z20; RP1 antenna forward; video roots X−45 | **conditional on S0/ASM-08/D-32/33** |
+| **ZV camera** | Z8 / rejected Z1 | Option A X+60 low; B X−53 high; nose has no protected cavity | **A preferred; D-34/owner choice open** |
+| **ZA accessory servos** | Z8/Z7 | pan/tilt follow camera; DRS around X−125 | **D-35 and Gate A/B** |
+| **ZL audio/light** | Z4L/Z3R-L1/Z7/ZB | speaker X−30/L+43/Z3; amp X−5/L−40; 7-pixel proposed light set | **speaker plausible; D-36** |
+| **ZS suspension/rolling** | front corners/Z6 | axle X+146.1/−90.9 DERIVED; ride axes Z26…27 from 5–6 mm ASSUMPTION | **D-37; arch margins below moving policy** |
+| **ZH speed sensor** | Z6 | Hall/magnet at rear axle X−90.9; L/Z local TBD | **Gate A + D-38** |
+
+## I.6 Superseding mass/balance ledger
+
+I.4 used an obsolete 40–65 g ESC estimate. The authoritative planning ledger is
+[`evidence/p0/tables/p0_d30_mass_balance.md`](evidence/p0/tables/p0_d30_mass_balance.md):
+
+- total **1455–2110 g ASSUMPTION range**; midpoint 1782 g;
+- one active left pack + cockpit camera midpoint: X-CG −7.9 mm,
+  **35.0% front / 65.0% rear**, L-CG −1.7 mm;
+- assumed tuning target: 36–40% front and |L-CG|≤2 mm;
+- high airbox camera sensitivity: 33.2% front and Z-CG 23.2 mm versus
+  22.2 mm for Option A (**ASSUMPTION group Z=70 at S0=0**);
+- hypothetical second 100 g right-side pack: 34.2% front, L-CG about −3.3 mm,
+  while displacing required electronics.
+
+Therefore the **one-left-pack + speaker-left + cockpit-camera** combination is
+the current balance preference, but it does not prove the target. D-39/ASM-58
+four-corner weighing owns pack station and ballast. No battery tray may be
+declared final from this ledger.
+
+## I.7 Cassette audit overlay (2026-07-24)
+
+This overlay supersedes only the failed ZK reference attempt. It is a
+**CONDITIONAL-GO fit gauge**, not a production zone allocation.
+
+| Layer/zone | Reference occupancy | Confidence | Status |
+|---|---|---|---|
+| **ZK-L0** | fixed floor side bodies unchanged; cassette stepped-T carries rotated PDB TARGET X+1…+46/L±27.5/Z1…19 and charge TARGET X−31…−1/L−13…+12/Z1…11 | contents FIRM / envelopes and placement ASSUMPTION | target cells pack under shell; PDB has only 3 mm to KO-01 versus 8 mm policy |
+| **ZK-W** | two MH-ET Live 39×31×~13 envelopes on side walls, X+3…+42, L±30…43, Z1…32; micro-USB toward X+42 | identity/envelope FIRM; install ASSUMPTION | row clears 97.36 mm interval; S0≥9.82 + real plug/physical sweep required |
+| **ZK-L1** | insulated Z13…16 rear deck carries amp + RP1; Wi-Fi/heatsink has no accepted cell | amp ASSUMPTION / RP1 DOCUMENTED / Wi-Fi ASSUMPTION | lower named stack packs; everything-inside remains open on D-06b |
+| **ZK-P** | hollow pedestal X+51…+65/L±11; 10×18 clear conduit, 2 mm trial wall | ASSUMPTION; MG90S DEFER | old Z98 failure removed; plug/wall/steering/opening/halo/FOV/sweep gate open |
+| **ZK-F** | former saddle at (−15,±12)/(+35,±12) | ASSUMPTION / REJECTED implementation | rear pair overlaps charge target; front pair overlaps PDB; CAS-07 must find external four-point clamp without drilling |
+| **ZK-U** | firm dock minimum XT60×1/XT30×2/3-pin×5/XH3×3/USB4×1 plus auxiliaries; R1/R2 after A1 | map FIRM; bodies/topology ASSUMPTION | straight X+42…+58/L±32 projection overlaps pedestal; stepped/wrapped dummy required |
+
+Vertical gauge: DAT-F Z0 → isolation Z1 → target PDB Z1…19 / rear service
+deck Z13…16 → mini boards upright Z1…32 at the outboard walls. The camera system is a separate
+floor-referenced pedestal and is not added above Z32. The heavy/hot rule remains:
+2S pack and ESC stay on the floor and off the lift-out cassette.

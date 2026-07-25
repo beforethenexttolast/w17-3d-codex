@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760" role="img" aria-labelledby="t d">
+  <title id="t">W17 harness route concept</title><desc id="d">Top-view routing diagram showing left R1 clean and signal highway, right R2 power and servo highway, two crossing stations and rear tail pre-route.</desc>
+  <defs><style>.bg{fill:#f7f5f0}.ink{fill:#17222b}.muted{fill:#65717a}.floor{fill:#fff;stroke:#293943;stroke-width:3}.c{fill:#dff3e9;stroke:#227a5c}.r{fill:#dcebf8;stroke:#2f6fad}.p{fill:#fff0cf;stroke:#d98c2b}.x{fill:#fde4df;stroke:#c9564a}.box{stroke-width:2}.h{font:700 25px system-ui}.sub{font:700 16px system-ui}.txt{font:14px system-ui}.small{font:12px system-ui}</style><marker id="arrb" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0L8 4L0 8z" fill="#2f6fad"/></marker><marker id="arrg" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0L8 4L0 8z" fill="#227a5c"/></marker><marker id="arro" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0L8 4L0 8z" fill="#d98c2b"/></marker></defs>
+  <rect class="bg" width="1200" height="760"/><text class="h ink" x="48" y="45">Harness routing — two edge highways, two controlled crossings</text><text class="txt muted" x="48" y="70">FRONT left · open centre · corridors only, lengths remain provisional</text>
+  <path class="floor" d="M92 190H1095L1140 260V522L1095 590H92L52 522V260Z"/>
+  <rect class="r box" x="105" y="226" width="125" height="55" rx="7"/><text class="sub ink" x="136" y="252">RX Z2L</text><text class="small ink" x="124" y="271">CN-19 / antenna</text>
+  <rect class="r box" x="102" y="490" width="150" height="55" rx="7"/><text class="sub ink" x="126" y="516">PS-15 / PWR</text><text class="small ink" x="118" y="535">CN-01/02/04/05/06</text>
+  <rect class="r box" x="280" y="487" width="160" height="55" rx="7"/><text class="sub ink" x="311" y="513">UBEC A/B</text><text class="small ink" x="310" y="532">CN-23A/B</text>
+  <rect class="c box" x="515" y="344" width="155" height="70" rx="8"/><text class="sub ink" x="548" y="373">STEERING</text><text class="small ink" x="536" y="396">rod / horn keep-out</text>
+  <rect class="p box" x="675" y="466" width="185" height="76" rx="8"/><text class="sub ink" x="719" y="494">MOD-DECK</text><text class="small ink" x="697" y="515">CN-07/CN-16 station</text><text class="small ink" x="714" y="533">U.FL to posts</text>
+  <rect class="p box" x="882" y="478" width="120" height="62" rx="7"/><text class="sub ink" x="920" y="505">ESC</text><text class="small ink" x="899" y="524">H-03 → motor</text>
+  <rect class="x box" x="1018" y="328" width="93" height="115" rx="7"/><text class="sub ink" x="1036" y="371">REAR</text><text class="sub ink" x="1031" y="392">STACK</text><text class="small ink" x="1027" y="414">H-08 tail</text>
+
+  <path d="M120 305H1030" fill="none" stroke="#227a5c" stroke-width="10" marker-end="url(#arrg)"/><text class="sub ink" x="385" y="292">R1 · Rail A + signal/control</text>
+  <path d="M120 565H1015" fill="none" stroke="#d98c2b" stroke-width="10" marker-end="url(#arro)"/><text class="sub ink" x="390" y="619">R2 · battery voltage + Rail B</text>
+  <path d="M255 515V305" fill="none" stroke="#7456a3" stroke-width="7" stroke-dasharray="9 6"/><text class="sub ink" x="238" y="335">X2</text><text class="small ink" x="270" y="360">RX/camera/</text><text class="small ink" x="270" y="377">speaker branches</text>
+  <path d="M715 565V305" fill="none" stroke="#7456a3" stroke-width="7" stroke-dasharray="9 6"/><text class="sub ink" x="698" y="335">X1</text><text class="small ink" x="730" y="359">steer + tail</text><text class="small ink" x="730" y="376">below rod</text>
+  <path d="M1010 305H1080V328" fill="none" stroke="#2f6fad" stroke-width="8" marker-end="url(#arrb)"/><text class="small ink" x="915" y="286">H-08 pre-route before closure</text>
+  <path d="M1002 510H1080V445" fill="none" stroke="#c9564a" stroke-width="8" marker-end="url(#arrb)"/><text class="small ink" x="877" y="463">H-03 short/right-rear</text>
+  <rect class="x box" x="386" y="642" width="430" height="49" rx="8"/><text class="sub ink" x="412" y="665">PHYSICAL CHECK: bends, bulk, loops, real motion and fastener access</text><text class="small ink" x="468" y="683">cross at 90° · ≥8 mm moving · comb both sides</text>
+  <text class="small muted" x="80" y="728">No signal/power chassis return · every signal carries ground · motor wiring never parallels R1 within 20 mm · open centre remains free.</text>
+</svg>

@@ -1,0 +1,157 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; img-src data:; font-src data:">
+<title>Cassette umbilical · W17 cassette audit</title><style>
+:root {
+  color-scheme:light dark;
+  --bg:#edf1f0; --paper:#fff; --ink:#15201f; --muted:#596866;
+  --line:#bdc9c7; --grid:#dce3e2; --accent:#00857c; --soft:#e7f4f2;
+  --good:#1f8f5f; --warn:#b05b22; --bad:#bf3f35; --assume:#687573;
+  --shadow:0 1px 2px rgba(20,32,31,.08),0 9px 25px rgba(20,32,31,.06);
+}
+@media (prefers-color-scheme: dark) {
+  :root { --bg:#0c1211; --paper:#121b1a; --ink:#e7eeed; --muted:#9aa9a6;
+    --line:#2a3a38; --grid:#263230; --accent:#27c9b9; --soft:#163330;
+    --good:#3bbd7f; --warn:#e08a4f; --bad:#e06758; --assume:#9ba8a6;
+    --shadow:0 1px 2px rgba(0,0,0,.42),0 10px 30px rgba(0,0,0,.35); }
+}
+:root[data-theme="light"] { --bg:#edf1f0; --paper:#fff; --ink:#15201f; --muted:#596866;
+  --line:#bdc9c7; --grid:#dce3e2; --accent:#00857c; --soft:#e7f4f2;
+  --good:#1f8f5f; --warn:#b05b22; --bad:#bf3f35; --assume:#687573;
+  --shadow:0 1px 2px rgba(20,32,31,.08),0 9px 25px rgba(20,32,31,.06); }
+:root[data-theme="dark"] { --bg:#0c1211; --paper:#121b1a; --ink:#e7eeed; --muted:#9aa9a6;
+  --line:#2a3a38; --grid:#263230; --accent:#27c9b9; --soft:#163330;
+  --good:#3bbd7f; --warn:#e08a4f; --bad:#e06758; --assume:#9ba8a6;
+  --shadow:0 1px 2px rgba(0,0,0,.42),0 10px 30px rgba(0,0,0,.35); }
+* { box-sizing:border-box; }
+html,body { margin:0; min-height:100%; }
+body { overflow-x:hidden; background:var(--bg); color:var(--ink);
+  font:15px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif; }
+a { color:var(--accent); text-underline-offset:.18em; }
+code,.mono,.tag,th,svg text { font-family:ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace; }
+header { background:var(--paper); border-bottom:1px solid var(--line); }
+.bar,.page { width:min(1420px,calc(100% - 32px)); margin:auto; }
+.bar { min-height:62px; display:flex; justify-content:space-between; align-items:center; gap:16px; }
+.brand { min-width:0; display:flex; gap:12px; align-items:baseline; }
+.brand b,.eyebrow { color:var(--accent); letter-spacing:.13em; text-transform:uppercase; }
+.brand span { color:var(--muted); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+button { border:1px solid var(--line); color:var(--ink); background:var(--paper);
+  border-radius:7px; padding:7px 10px; cursor:pointer; }
+main { padding:30px 0 58px; }
+h1 { font-size:clamp(1.8rem,4vw,3rem); line-height:1.07; margin:.15em 0 .3em; text-wrap:balance; }
+h2 { font:700 13px/1.4 ui-monospace,monospace; letter-spacing:.13em;
+  text-transform:uppercase; color:var(--muted); margin:0 0 5px; }
+h3 { margin:0 0 7px; font-size:1rem; }
+p { max-width:100ch; }
+.lede { font-size:clamp(15px,1.6vw,18px); color:var(--muted); margin-top:0; }
+.board { background:var(--paper); border:1px solid var(--line); border-radius:13px;
+  box-shadow:var(--shadow); padding:clamp(14px,2.4vw,26px); margin-top:24px; }
+.sub { color:var(--muted); margin:2px 0 14px; font-size:13.5px; }
+.drawing { width:100%; overflow-x:auto; overscroll-behavior-inline:contain;
+  border:1px solid var(--line); border-radius:9px; background:var(--paper); }
+.drawing svg { display:block; width:max(100%,var(--drawing-w,1100px)); height:auto; }
+.cards,.summary,.legend,.assets { display:grid; gap:12px; }
+.cards,.summary { grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); }
+.legend { grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); margin-top:13px; }
+.legend span { display:flex; align-items:center; gap:9px; color:var(--muted); font-size:12px; }
+.assets { grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); }
+.asset { border:1px solid var(--line); border-radius:9px; overflow:hidden; background:var(--paper); }
+.asset img { width:100%; height:130px; object-fit:contain; background:#0b1312; display:block; }
+.asset div { padding:9px 11px; font-size:11px; color:var(--muted); }
+.card { display:block; color:var(--ink); text-decoration:none; border:1px solid var(--line);
+  border-left:5px solid var(--accent); border-radius:10px; padding:14px; background:var(--paper); }
+.card.fail { border-left-color:var(--bad); }
+.card p { margin:5px 0 0; color:var(--muted); font-size:12.5px; }
+.summary strong { display:block; color:var(--accent); font-size:1.3rem; }
+.summary span { color:var(--muted); font-size:11.5px; }
+.status { border:1px solid var(--bad); border-left-width:6px; border-radius:10px;
+  padding:13px 15px; background:color-mix(in srgb,var(--bad) 9%,var(--paper)); }
+.status b { color:var(--bad); }
+.tag { display:inline-block; border:1px solid currentColor; border-radius:4px;
+  padding:2px 6px; font-size:10px; font-weight:800; letter-spacing:.05em; color:var(--accent); }
+.tag.documented { border-style:dotted; }
+.tag.assumption { color:var(--assume); border-style:dashed; }
+.tag.defer { color:var(--bad); border-style:dashed; }
+.swatch { width:40px; height:16px; background:var(--soft); border:2px solid var(--accent); }
+.swatch.derived { border-width:1px; }
+.swatch.documented { border-style:dotted; }
+.swatch.assumption { border-color:var(--assume); border-style:dashed;
+  background:repeating-linear-gradient(135deg,transparent 0 5px,color-mix(in srgb,var(--assume) 20%,transparent) 5px 7px); }
+.orderstrip { display:flex; gap:7px; overflow-x:auto; padding:10px 0 2px; }
+.orderstrip span { flex:0 0 auto; border:1px solid var(--line); border-radius:6px;
+  padding:7px 9px; font:700 10px/1.2 ui-monospace,monospace; }
+.tablewrap { width:100%; overflow-x:auto; border:1px solid var(--line); border-radius:9px; }
+table { border-collapse:collapse; width:100%; min-width:980px; background:var(--paper); }
+th,td { padding:9px 10px; text-align:left; vertical-align:top; border-bottom:1px solid var(--grid); }
+th { color:var(--muted); font-size:10px; letter-spacing:.06em; text-transform:uppercase; }
+tr:last-child td { border-bottom:0; }
+.note { border-left:3px solid var(--accent); background:var(--soft); padding:12px 15px;
+  border-radius:0 9px 9px 0; margin:16px 0 0; color:var(--muted); font-size:13px; }
+footer { border-top:1px solid var(--line); color:var(--muted); padding:22px 0 34px; font-size:12.5px; }
+svg .gridline { stroke:var(--grid); stroke-width:.7; }
+svg .axis { stroke:var(--ink); stroke-width:1.4; fill:none; }
+svg .floor { stroke:var(--ink); stroke-width:1.5; fill:none; }
+svg .shell { stroke:var(--accent); stroke-width:1.4; fill:none; }
+svg .optimistic { stroke:var(--warn); stroke-width:1.1; stroke-dasharray:8 5; fill:none; }
+svg .conf-verified { stroke:var(--accent); stroke-width:2.1; fill:color-mix(in srgb,var(--accent) 14%,transparent); }
+svg .conf-derived { stroke:var(--accent); stroke-width:1.2; fill:color-mix(in srgb,var(--accent) 8%,transparent); }
+svg .conf-documented { stroke:var(--accent); stroke-width:1.6; stroke-dasharray:2 4; fill:color-mix(in srgb,var(--accent) 8%,transparent); }
+svg .conf-assumption { stroke:var(--assume); stroke-width:1.6; stroke-dasharray:7 5; fill:url(#hatch); }
+svg .moving { stroke:var(--warn); stroke-width:1.7; stroke-dasharray:7 4; fill:url(#moveHatch); }
+svg .failure,.defer { stroke:var(--bad); stroke-width:1.8; stroke-dasharray:7 5; fill:url(#failHatch); }
+svg .leader { stroke:var(--muted); stroke-width:1; fill:none; marker-end:url(#arr); }
+svg .route-a { stroke:#2086c9; stroke-width:5; fill:none; }
+svg .route-b { stroke:#d68b25; stroke-width:5; fill:none; }
+svg .trunk { stroke:var(--ink); stroke-width:8; fill:none; }
+svg .anchor { fill:var(--paper); stroke:var(--ink); stroke-width:2; }
+svg .label { fill:var(--ink); font-size:11px; }
+svg .small { fill:var(--muted); font-size:9px; }
+svg .tiny { fill:var(--muted); font-size:7.5px; }
+svg .accent { fill:var(--accent); }
+svg .badtext { fill:var(--bad); font-weight:800; }
+@media(max-width:640px) { .bar,.page { width:min(100% - 20px,1420px); } main { padding-top:20px; } }
+</style></head><body>
+<header><div class="bar"><div class="brand"><b>W17 / RC-01</b><span>connector seats + strain relief + fixed branches</span></div>
+<div><a href="index.html">Cassette index</a> · <a href="../index.html">All viz</a> · <button data-theme-toggle type="button">Theme</button></div>
+</div></header><main><div class="page"><p class="eyebrow">cassette audit / sheet D</p><h1>Umbilical route and connector seats</h1>
+<div class="status"><b>CONNECTOR MAP FIRM; BODY SEATS ARE TARGET ALLOCATIONS.</b> The fixed-consumer dock must carry at least one XT60 pack inlet, two XT30 rail branches, five 3-pin servo positions, three JST-XH 3-pin links and one shielded USB4 link. A straight 16×64 mm body projection at the access edge overlaps the fixed pedestal, so a notched/wrapped full-size dummy is mandatory before any seat CAD.</div>
+<div class="board"><h2>Physical route</h2><p class="sub">The route and family/count map are fixed. Dashed/hatched connector bodies, bank spans, bend radii and the dock station remain ASSUMPTION until terminated parts are measured.</p><div class="drawing"><svg style="--drawing-w:1260px" viewBox="0 0 1260 575" role="img" aria-label="Cassette umbilical and connector-seat route at 2.5 px/mm"><defs>
+<pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0H0V40" class="gridline" fill="none"/></pattern>
+<pattern id="hatch" width="9" height="9" patternUnits="userSpaceOnUse" patternTransform="rotate(35)"><line x1="0" y1="0" x2="0" y2="9" stroke="var(--assume)" opacity=".4"/></pattern>
+<pattern id="moveHatch" width="10" height="10" patternUnits="userSpaceOnUse" patternTransform="rotate(35)"><line x1="0" y1="0" x2="0" y2="10" stroke="var(--warn)" stroke-width="2" opacity=".45"/></pattern>
+<pattern id="failHatch" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(35)"><rect width="8" height="8" fill="color-mix(in srgb,var(--bad) 10%,transparent)"/><line x1="0" y1="0" x2="0" y2="8" stroke="var(--bad)" stroke-width="2" opacity=".6"/></pattern>
+<marker id="arr" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L8 4L0 8Z" fill="context-stroke"/></marker>
+</defs><rect width="1260" height="575" fill="url(#grid)"/><polygon class="floor" points="47.5,365.0 125.0,420.0 325.0,451.2 475.0,451.2 537.5,346.2 850.0,317.5 850.0,242.5 537.5,213.8 475.0,108.8 325.0,108.8 125.0,140.0 47.5,195.0"/><rect class="moving" x="200.0" y="225.0" width="450.0" height="110.0" rx="4"/><text class="tiny" x="204.0" y="237.0">OPEN SPINE · KO-01</text><rect class="conf-assumption" x="322.5" y="236.2" width="80.0" height="90.0" rx="4"/><text class="tiny" x="326.5" y="248.2">rear stem</text><rect class="conf-assumption" x="402.5" y="172.5" width="102.5" height="215.0" rx="4"/><text class="tiny" x="406.5" y="184.5">forward wing</text><rect class="conf-assumption" x="527.5" y="252.5" width="35.0" height="55.0" rx="4"/><text class="tiny" x="531.5" y="264.5">fixed pedestal</text><rect class="failure" x="505.0" y="200.0" width="40.0" height="160.0" rx="4"/><text class="tiny" x="509.0" y="212.0">straight dock projection</text><text class="tiny" x="512.0" y="225.0">U-PWR · XT60×1 + XT30×2 MIN</text><text class="tiny" x="512.0" y="245.0">U-SRV · 3-PIN×5</text><text class="tiny" x="512.0" y="265.0">U-SIG · XH3×3 + USB4×1</text><text class="tiny badtext" x="512.0" y="292.0">OVERLAPS PEDESTAL · WRAP/NOTCH DUMMY</text><path class="trunk" d="M505.0 280.0L462.5 385.0L262.5 410.0"/><path class="route-a" stroke-dasharray="7 5" d="M535.0 280.0L517.5 355.0L462.5 385.0"/><path class="route-b" d="M262.5 410.0L462.5 385.0"/><path class="route-a" d="M262.5 410.0L262.5 280.0"/><path class="route-a" d="M262.5 410.0L175.0 410.0L87.5 167.5"/><circle class="anchor" cx="505.0" cy="280.0" r="7"/><text class="small" x="515.0" y="272.0">A0 dock</text><circle class="anchor" cx="462.5" cy="385.0" r="7"/><text class="small" x="472.5" y="377.0">A1 first bend</text><circle class="anchor" cx="262.5" cy="410.0" r="7"/><text class="small" x="272.5" y="402.0">A2 fan-out/X1</text><circle class="anchor" cx="175.0" cy="410.0" r="7"/><text class="small" x="185.0" y="402.0">A3 rear trunk</text><circle class="anchor" cx="517.5" cy="355.0" r="7"/><text class="small" x="527.5" y="347.0">P1 pedestal exit</text><circle class="conf-assumption" cx="262.5" cy="280.0" r="12"/><text class="label" x="278.5" y="284.0">fixed steering servo</text><circle class="conf-assumption" cx="462.5" cy="385.0" r="12"/><text class="label" x="478.5" y="389.0">relocated ESC candidate</text><circle class="conf-assumption" cx="87.5" cy="167.5" r="12"/><text class="label" x="103.5" y="171.5">rear fan-out: LED / Hall / DRS</text><text class="accent label" x="25" y="25">ONE UMBILICAL = ONE GANGED CASSETTE DOCK + ONE CHASSIS LOOM</text><text class="small" x="25" y="44">A literal centre-spine trunk is rejected: it would occupy KO-01/KO-06. The dock turns immediately into R1/R2 edge highways.</text><text class="small" x="25" y="64">Dashed blue = shielded USB4 + 2×3-pin servo leads in a 10×18 clear target conduit; straight-front dock projection is rejected.</text><line class="axis" x1="50.0" y1="505.0" x2="175.0" y2="505.0"/><text class="small" x="50.0" y="497.0">50 mm ruler · 2.5 px/mm</text></svg></div></div><div class="board"><h2>Connector-seat rules</h2><div class="tablewrap"><table><thead><tr><th>Seat</th><th>Physical family</th><th>Location / access</th><th>Retention / strain relief</th><th>Open evidence</th></tr></thead><tbody>
+<tr><td>U-PWR</td><td>1× XT60 pack inlet + minimum 2× XT30 Rail-A/Rail-B branches</td><td>~60 mm target face span; power physically distinct; source side shrouded/socket</td><td>XT60 20×20×12 and XT30 16×16×10 seat allocations</td><td>ASSUMPTION bodies: caliper housings, mating hand, wire gauge, bend and extraction</td></tr>
+<tr><td>U-SRV</td><td>5× positive-lock 3-pin: steering, ESC (+5 absent), DRS, pan, tilt</td><td>~58 mm target face span; labelled; separate from power bank</td><td>16 mate-depth ×10 pitch ×8 high per position; anchor jackets</td><td>ASSUMPTION bodies: caliper shrouds/clips and prove finger release</td></tr>
+<tr><td>U-SIG</td><td>3× JST-XH 3-pin: pack balance, LED, Hall; 1× shielded USB4 camera link</td><td>~64 mm target face span; keyed/labelled</td><td>XH3 12×12×9 each; USB4 16×16×10 allocation</td><td>ASSUMPTION bodies: pin-order witness, shell outline, shield termination and bends</td></tr>
+<tr><td>U-AUX</td><td>blower 2-pin JST + speaker 2-pin JST-PH</td><td>adjacent auxiliary strip, visually distinct from signal/power</td><td>body seats remain unsized pending selected housings</td><td>ASM-31 full dock dummy; omission is not allowed</td></tr>
+</tbody></table></div></div>
+<div class="board"><h2>Internal connector-body allocations</h2><div class="tablewrap"><table><thead><tr><th>Link</th><th>Firm family</th><th>Target seat allocation</th><th>ASM closure</th></tr></thead><tbody>
+<tr><td>CRSF</td><td>JST-XH 4-pin</td><td>15 mate-depth ×15 pitch ×9 high</td><td>caliper terminated housing, latch, conductor exit and RP1 service loop</td></tr>
+<tr><td>link2</td><td>JST-XH 3-pin</td><td>12×12×9</td><td>caliper and label both ESP ends</td></tr>
+<tr><td>I2S audio</td><td>JST-XH 5-pin</td><td>18×18×9</td><td>caliper, verify amp exit and speaker-wire separation</td></tr>
+<tr><td>Wi-Fi RF</td><td>2× U.FL</td><td>12×12×6 bend/strain-relief reserve each; never clamp plug</td><td>real module + ≥10 mm coax bend + antenna-before-power tug check</td></tr>
+</tbody></table></div></div>
+<div class="board"><h2>Pedestal conduit target</h2><p><b>10×18 mm clear rounded rectangle, 2 mm trial wall → 14×22 mm outer.</b> Pull the shielded USB4 connector and two servo connectors through sequentially, not abreast. Reserve ≥25 mm of service loop below the pedestal and a provisional ≥20 mm USB bend radius before the R1/R2 turn. These are ASSUMPTION gauges: any terminated body over the pass gauge, cable bend that kinks, or wall coupon failure restarts the section.</p></div>
+<div class="board"><h2>Strain-relief and service checks</h2><p>A0 supports the cassette-side connector bodies; A1 arrests the ganged bundle before its first direction change; A2 supports both fan-out branches at X1; A3 supports the rear tail before belt/shock/DRS approach. P1 anchors the pedestal leads after their lower turn. Add an anchor at every later branch and motion boundary. The body-off sequence must expose the entire dock, allow one-hand latch release, leave the chassis half parked, and let the cassette lift without pulling the fixed pedestal loom.</p></div>
+<div class="board"><h2>Confidence</h2><div class="legend">
+<span><i class="swatch"></i>VERIFIED · real STL/interface evidence</span>
+<span><i class="swatch derived"></i>DERIVED · registered section/arithmetic</span>
+<span><i class="swatch documented"></i>DOCUMENTED · owner/supplier value</span>
+<span><i class="swatch assumption"></i>ASSUMPTION · dashed/hatched · ASM gate open</span>
+</div></div></div></main><footer><div class="page">Generated by
+<code>evidence/scripts/p0_12_cassette_fit_visualizations.py</code>. Real STLs are read-only;
+ASSUMPTION is dashed/hatched. This audit emits no production STL.</div></footer>
+<script>
+(() => {
+  const root=document.documentElement, btn=document.querySelector("[data-theme-toggle]");
+  if(!btn) return;
+  btn.addEventListener("click",()=>{
+    const current=root.dataset.theme;
+    root.dataset.theme=current==="dark"?"light":current==="light"?"dark":
+      matchMedia("(prefers-color-scheme: dark)").matches?"light":"dark";
+    btn.textContent=root.dataset.theme==="dark"?"Light":"Dark";
+  });
+})();
+</script></body></html>

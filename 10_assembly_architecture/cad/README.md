@@ -21,6 +21,7 @@ cad/
 ├── reports/diagnostic_cad_manifest.md   implementation and output manifest
 ├── reports/generated_part_validation.md generated validation results
 ├── reports/P1_dry_fit_checklist.md      exact physical dry-fit evidence checklist
+├── reports/P1_print_preflight.md        Bambu preflight + minimum staged P1 print plan
 ├── reports/X_diagnostic_cad_review.md   independent recovery/finalization review
 └── generated/
     ├── stl/                              ignored diagnostic binaries
@@ -58,11 +59,15 @@ bounding boxes, feature audit and truncated SHA-256 values. Do not force-add the
 
 ## Pre-print limitation
 
-No Boolean mesh engine or Bambu Studio CLI is installed. Primitive shells are closed and
-consistently oriented, but labels and some intersecting diagnostic primitives are not
-Boolean-unioned. The automated report exposes strict `>2` edge-incidence counts. Inspect
-and repair/union in Bambu Studio before any TP print; a successful local STL export alone
-is not a print authorization.
+No separate Boolean mesh engine is installed. Bambu Studio 02.07.01.62 and its
+documented CLI are now available; the 2026-07-19 screening is recorded in
+[`reports/P1_print_preflight.md`](reports/P1_print_preflight.md). Primitive shells are
+closed and consistently oriented, but labels and some intersecting diagnostic
+primitives are not Boolean-unioned. The CLI calls the individual inputs manifold while
+also exposing many internal parts and floating-region/cantilever slice warnings.
+Inspect the named critical layers and repair/support outcome in Bambu Studio before any
+TP print; a successful local STL export or headless slice alone is not print
+authorization.
 
 ## Final review
 

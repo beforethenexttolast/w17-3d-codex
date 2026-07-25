@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760" role="img" aria-labelledby="t d">
+  <title id="t">Semi-exploded W17 module stack</title><desc id="d">Exploded assembly illustration showing body, body harness, conditional electronics deck, optional camera and speaker, lower power layer, steering and drive modules, rear tail and floor.</desc>
+  <defs><style>.bg{fill:#f7f5f0}.ink{fill:#17222b}.muted{fill:#65717a}.c{fill:#dff3e9;stroke:#227a5c}.r{fill:#dcebf8;stroke:#2f6fad}.p{fill:#fff0cf;stroke:#d98c2b}.x{fill:#fde4df;stroke:#c9564a}.o{fill:#eee6f8;stroke:#7456a3}.box{stroke-width:2}.line{fill:none;stroke:#293943;stroke-width:2}.dash{stroke-dasharray:8 7}.h{font:700 25px system-ui}.sub{font:700 16px system-ui}.txt{font:14px system-ui}.small{font:12px system-ui}</style><marker id="arr" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0L8 4L0 8z" fill="#293943"/></marker></defs>
+  <rect class="bg" width="1200" height="760"/><text class="h ink" x="48" y="45">Semi-exploded assembly — build and service modules</text><text class="txt muted" x="48" y="70">Vertical spacing is illustrative · arrows show assembly/removal direction</text>
+  <path class="line dash" d="M218 120 Q600 37 982 120 L932 198 Q600 142 268 198 Z"/><text class="sub ink" x="481" y="104">MOD-BODY / SHELL</text><rect class="r box" x="475" y="151" width="248" height="36" rx="7"/><text class="sub ink" x="497" y="175">halo LED + H-09 → CN-14</text>
+  <path class="line" marker-end="url(#arr)" d="M598 202V236"/><text class="small ink" x="615" y="226">one body mate</text>
+
+  <polygon class="p box" points="515,248 850,248 905,294 475,294"/><text class="sub ink" x="562" y="275">MOD-DECK — CN-07 + CN-16</text>
+  <rect class="r box" x="535" y="302" width="105" height="42" rx="6"/><text class="small ink" x="555" y="328">CTL-E1/E2</text><rect class="r box" x="650" y="302" width="72" height="42" rx="6"/><text class="small ink" x="671" y="328">AMP</text><rect class="p box" x="732" y="302" width="102" height="42" rx="6"/><text class="small ink" x="753" y="321">Wi-Fi</text><text class="small ink" x="744" y="337">unconfirmed</text><text class="small muted" x="575" y="363">2 M3 + rear hooks · conditional on S0/P1</text>
+  <rect class="x box" x="935" y="250" width="204" height="88" rx="9"/><text class="sub ink" x="966" y="278">MOD-CAM / GIMBAL</text><text class="small ink" x="956" y="300">CN-09/10/12/24 + CN-16</text><text class="small ink" x="983" y="320">BLOCKED by Gate C</text>
+  <rect class="o box" x="65" y="284" width="184" height="64" rx="8"/><text class="sub ink" x="90" y="311">OPTIONAL SPEAKER</text><text class="small ink" x="103" y="332">CN-21 · left sidepod</text>
+
+  <path class="line" marker-end="url(#arr)" d="M598 370V404"/><path class="line" marker-end="url(#arr)" d="M982 346L850 407"/><path class="line" marker-end="url(#arr)" d="M248 350L365 410"/>
+  <polygon class="c box" points="218,427 939,427 1000,484 158,484"/><text class="sub ink" x="460" y="464">LOWER POWER + MECHANICAL LAYER</text>
+  <rect class="r box" x="230" y="499" width="195" height="57" rx="8"/><text class="sub ink" x="274" y="524">MOD-PWR battery</text><text class="small ink" x="269" y="544">PS-01 · CN-01 top-out</text>
+  <rect class="r box" x="450" y="499" width="180" height="57" rx="8"/><text class="sub ink" x="474" y="524">UBEC shelf / PS-15</text><text class="small ink" x="471" y="544">junction stays · UBECs lift</text>
+  <rect class="c box" x="650" y="499" width="136" height="57" rx="8"/><text class="sub ink" x="676" y="524">MOD-STR</text><text class="small ink" x="674" y="544">CN-08 + linkage</text>
+  <rect class="p box" x="805" y="499" width="150" height="57" rx="8"/><text class="sub ink" x="840" y="524">MOD-DRV</text><text class="small ink" x="829" y="544">CN-04/22 + bullets</text>
+  <rect class="r box" x="120" y="563" width="156" height="52" rx="8"/><text class="sub ink" x="149" y="587">MOD-RX</text><text class="small ink" x="145" y="605">CN-19 · guided ant.</text>
+  <rect class="o box" x="929" y="572" width="194" height="52" rx="8"/><text class="sub ink" x="950" y="596">MOD-RLD rear tail</text><text class="small ink" x="947" y="614">CN-11/13/15 pull-through</text>
+  <path class="line" marker-end="url(#arr)" d="M598 571V621"/>
+  <polygon fill="#cbd1d5" stroke="#65717a" stroke-width="2" points="175,650 970,650 1040,704 105,704"/><text class="sub ink" x="424" y="684">ASSEMBLED FLOOR / DAT-F</text>
+  <text class="small muted" x="73" y="735">Normal maintenance boundary rule: unplug named CN set + remove mount fasteners; no vehicle-level desoldering.</text>
+</svg>

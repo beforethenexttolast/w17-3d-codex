@@ -197,30 +197,38 @@ floor**). Tables + 16 station SVGs: `p0_d25_nose_interior.md`, `evidence/p0/sect
   NOT selected and is now numerically disfavoured; the owner decision remains
   formally open (DN-05 scope untouched).
 
-## 9. D-26 — steering-rod line + sweep (slicer stage). Status: **GEOMETRICALLY DERIVED (relative)** / **SLICER-ESTIMATED (absolute)** / **ASM-08 physical stage OPEN**
+## 9. D-26 — steering-rod line + sweep. Status: **CORRECTED 2026-07-22** / **PRINTED DATUMS GEOMETRICALLY DERIVED** / **ASM-08 physical stage OPEN**
 
-Table: `p0_d26_rod_line.md`. Measured ingredients: saver pivot = vertical Ø3 bore
-(mesh-measured), rod-attach holes at saver-local z 16–22 with **arm radius 18.0 mm**
-about the pivot; tower 70.8 tall with its insert blade at the bottom; Servoholder
-58 plate + DS3235SG ~40.5 EST (D-09 open).
+> **Erratum:** this section's original Z35–62 result used `Suspension Block_10`
+> raw Z as vertical. Four front-floor/tower M3 centres now reproduce one assembly
+> transform within 0.025 mm and prove raw **Y** is vertical; the 70.79 mm raw-Z
+> extent is longitudinal. The corrected authority is
+> `Y_steering_servo_fit_study.md` and
+> `evidence/p0/tables/p0_d09_d26_steering_servo_fit.md`.
 
-| Station | X (band) | Z nominal | Z band | lateral band |
-|---|---|---|---|---|
-| S1 horn end | −30 (−50…−25) | 47 | 42…52 | ±6 nominal, sweep to ±16 |
-| S2 mid-spine | +45 | 51 | 42…56 | ±10 |
-| S3 saver end | +125 (+119/+129) | 54 | 50…58 | ±6, sweep to ±12 |
+Corrected printed datums above DAT-F:
 
-- **The rod is a HIGH, nearly-level line (Z ≈ 42–58), not H.1.2's 35→70 rising
-  diagonal.** KO-01 reserved band (P0): **Z 35–62, |L| ≤ 18 rear tapering to
-  ≤ 12 forward.**
-- Consequences: PS-04 deck inboard edge **|L| ≥ 26 near the horn / ≥ 20 forward**
-  (**L ≤ −26/−20 on the architecture-right belt side**)
-  (at deck heights Z 20–45); the UBEC shelf (≤ Z 14) is untouched by the rod; the
-  battery body (top ~28) passes UNDER the band — only straps/walls above Z 30
-  respect KO-01. Deck insertion/removal crosses under nothing (rod is inboard of
-  the deck). X1 crossing must pass **below Z 35** at the joint region.
-- Rod diameter + joint allowances included in the band; lock-to-lock sweep and
-  real heights remain **PHYSICAL CONFIRMATION REQUIRED at ASM-08** (unchanged).
+| datum | value |
+|---|---:|
+| front saver-pivot boss top | Z=10.50 |
+| `servosaverv7` paired-forward-link clear-gap centre | Z=25.33 |
+| `servosaverv7` printed top | Z=37.00 |
+| original `Servoholder` top in drawing orientation | Z=22.89 |
+| assumed floor-seated side-mounted DS3235SG shaft centre | Z≈10 |
+| assumed rear joint with vertical horn, documented 19.5/23.5 radii | Z≈29.5/33.5 |
+
+The holder is a 58 mm longitudinal ×22.89 mm high arch around the servo's side
+face, so the intended shaft is horizontal/lateral. The saver has a 2.90×2.97 mm
+through-bore and belongs on the front M3 pivot; it is not a 25T spline socket.
+
+Horn, long rod, ball ends, bolts, spacers, and their installed centre planes are
+not present in the STLs. Until ASM-08 measures them, reserve **provisional KO-01:
+X −80…+100, Z 22…38, |L|≤22**. Applying the 8 mm moving-part policy makes the
+provisional adjacent static boundary **|L|≥30** where vertical ranges overlap.
+The battery top (~28) and a P4≈20 deck now overlap KO-01 vertically, so neither is
+cleared by height alone. The UBEC shelf at ≤Z14 remains below it. ASM-08 must
+record shaft centre, horn hole, all three rod stations, spacers, lock-to-lock
+sweep, and suspension-bump clearance before nearby production geometry is fixed.
 
 ## 10. D-27 — deck-side mounting map. Status: **DIGITALLY CONFIRMED (positions ±0.2)** / **PARTIALLY RESOLVED (occupancy)** / **P1 physical stage OPEN**
 
@@ -276,8 +284,11 @@ invented.** CAD-01 correctly excludes the camera block (T row unchanged).
 2. **Right-side deck vertical envelope plausible?** Only as a **narrow,
    inboard-hugged, minimum-height deck** (plate ≈ L −50…−26, P4 ≈ 20, boards in a
    fore-aft row) and only in the S0 ≥ ~6 world. At S0=0: NO (fallback A).
-3. **D-26 corridor for the deck?** **YES** — the rod band (|L| ≤ 18–12, Z 35–62)
-   leaves |L| ≥ 26 free at deck heights; on the belt side this is L ≤ −26.
+3. **D-26 corridor for the deck?** **PROVISIONAL ONLY after the 2026-07-22
+   correction.** KO-01 is X−80…+100, |L|≤22, Z22…38 pending ASM-08; where the
+   deck overlaps vertically, the 8 mm moving clearance puts its inboard edge at
+   |L|≥30 (belt side L≤−30). This narrower/outboard corridor must be rechecked
+   against the S0 shell profile.
 4. **Airbox still a useful thermal chimney?** **YES** (continuous 14+ mm channel,
    58–72 crest, tail exit) — validate flow direction at P8 as planned.
 5. **ESP32 airbox fallback plausible?** **NO** as a module install (F-2's own
@@ -290,13 +301,13 @@ invented.** CAD-01 correctly excludes the camera block (T row unchanged).
    quantified and comfortable; DN-07 stays the owner's call.
 8. **CAD-01 dummy parameters change?** **NO** — dummy bodies + S3 stubs are
    register-driven and none of the P0 numbers touches them. CAD-01 may proceed.
-9. **Ready for diagnostic CAD (post-P0 numbers):** CAD-01 (already free);
-   CAD-02 battery tray (length 78 confirmed; parametrize height/strap for S0);
-   CAD-04 UBEC shelf + CAD-08 PS-15 junction block (rod-safe below Z 14; use
-   plate-clamp feet per D-27); CAD-06 posts (parametric height unchanged).
+9. **Ready for diagnostic CAD (post-P0 numbers):** CAD-01 remains free; CAD-04
+   UBEC shelf remains rod-safe below Z14. CAD-02 battery-tray inboard wall/strap,
+   CAD-05 deck, CAD-06 posts as a deck system, CAD-07 RX carrier, and CAD-08
+   junction top features require rechecking against corrected KO-01/ASM-08.
 10. **Still blocked:** CAD-05 deck plate final width/height (**S0 pin + P1**),
     CAD-03 ESC mount (D-08 + Gate A, unchanged), CAD-07 RX carrier geometry
-    fine-tune (D-26 physical stage), PS-10/11/14/17 (gates unchanged),
+    geometry (D-26 physical stage), PS-10/11/14/17 (gates unchanged),
     anything production (P10, unchanged).
 
 ## 14. Physical confirmations still required (P0 hand-off list)
@@ -305,7 +316,7 @@ invented.** CAD-01 correctly excludes the camera block (T row unchanged).
 |---|---|---|---|
 | 1 | **S0** — shell bottom-edge height above floor top | first body-on-floor placement (P1) | **highest on the car** |
 | 2 | Left/right naming vs belt side | same P1 glance | high (naming only) |
-| 3 | D-26 rod heights + lock-to-lock sweep | ASM-08 | high |
+| 3 | D-26 shaft/horn/rod heights, spacers + lock-to-lock/bump sweep | ASM-08 | high |
 | 4 | D-06 camera calipers (+ D-06b WiFi after possession confirm) | bench, now | high (hardware on hand) |
 | 5 | D-27 free-slot occupancy after mechanical build | P1 dry-fit | medium |
 | 6 | Servoholder / bracket-station consumers (which bolts belong to which bracket) | P1 dry-fit | medium |
@@ -321,9 +332,9 @@ invented.** CAD-01 correctly excludes the camera block (T row unchanged).
   handled per-station; no number was taken from an unpaired crossing).
 - Occupancy assignments for donor fasteners are drawing-level hypotheses where
   the consuming part is not staged (spring mounts verified by pattern only).
-- The front-suspension module's exact floor interface (blade landing, arm-bolt
-  holes) could not be matched to front-floor features — absolute D-26 stations
-  carry the stated bands; nothing downstream consumes them at better accuracy.
+- The 2026-07-22 D-26 correction matches four front-module M3 centres to the
+  floor within 0.025 mm. The remaining D-26 uncertainty is the absent physical
+  horn/rod/rod-end hardware, not the printed block's axis registration.
 - Rounding: mesh coordinates ±0.2 unless stated; policy clearances NOT deducted
   in raw tables.
 
@@ -338,3 +349,59 @@ p0_d27_deckside_map.md. Sections (`evidence/p0/sections/`): 13 transverse +
 5 longitudinal D-02 SVGs, 16 D-25 nose SVGs. Diagrams: p0_d01_floor_map.svg.
 Register updates tagged **(P0)**: D, I, J, K, S, T, README (this file is the
 detail; registers carry only the deltas).
+
+## 17. Remaining-component fit roll-up (2026-07-23)
+
+This later pass extends P0 without changing the frame or closing a physical
+measurement digitally. Reproduce:
+
+```text
+python3 10_assembly_architecture/evidence/scripts/p0_07_zone_fit_rollup.py
+python3 10_assembly_architecture/evidence/scripts/p0_08_zone_visualizations.py
+python3 10_assembly_architecture/evidence/scripts/p0_09_validate_zone_outputs.py
+```
+
+Results:
+
+1. **18 STL bboxes VERIFIED** against independent expected values within
+   0.12 mm; raw/historical meshes remained read-only.
+2. **58 component-envelope rows** separate VERIFIED/DERIVED/DOCUMENTED/
+   ASSUMPTION; full table `p0_d28_zone_component_envelopes.md`.
+3. **43 datum-placement rows** in `p0_d29_zone_placements.csv`.
+4. 48P arithmetic: 75T pitch Ø39.69, 28T pitch Ø14.82, theoretical centre
+   27.25 mm (**DERIVED**, not an assembly-fit claim).
+5. Official 10BL120 Sensored-G2 envelope **43×36.8×32.3 / 101.5 g**
+   invalidates the 36×32×18 planning block. Current side ESC candidate fails
+   S0=0; exact label/fit is D-28.
+6. BOM 2× battery becomes **one active onboard + one off-car swap** for the
+   selected architecture. Pack 1 itself still fails the S0=0 shoulder/KO-01
+   model and remains D-31-gated.
+7. `camera top 1.1` transforms to X−61.6…−44.8, L−8.8…+8.9,
+   Z73.35…80.27+S0 (**DERIVED**). The camera body remains unmeasured and the
+   IMX415/IMX335 identity conflict is open.
+8. Planning whole-car mass is 1455–2110 g (**ASSUMPTION**). Midpoint with one
+   active left pack/cockpit camera is 35.0% front and L-CG −1.7 mm; high pod
+   sensitivity is 33.2% front and raises modelled Z-CG from 22.2 to 23.2 mm
+   using an **ASSUMPTION** Z=70 group point at S0=0. D-39 scales own the result.
+9. Registered tyre arches provide only ≈3.5 mm front/4 mm rear context around
+   Ø64 tyres; D-37 full steer+bump is a production gate.
+10. Front shocks carry a **DOCUMENTED conflict**: 51 mm in the requirement,
+    52 mm on the received-stock record. Neither is a physical eye-to-eye
+    measurement; D-12/D-37 remains open.
+11. Eight fit studies and nine self-contained HTML pages carry every requested
+    non-steering component; `viz/index.html` is the master.
+12. `p0_09` passes **135/135** checks: required study structure/confidence/gates,
+    page CSP/theme/overflow/scale/links, requested component coverage, evidence
+    tables and a fresh 18-STL bbox reproduction.
+
+New evidence:
+
+- scripts: `p0_07_zone_fit_rollup.py`, `p0_08_zone_visualizations.py`,
+  `p0_09_validate_zone_outputs.py`;
+- tables: `p0_d28_zone_component_envelopes.md`,
+  `p0_d29_zone_placements.csv`, `p0_d30_mass_balance.md`,
+  `p0_d31_fit_gates.md`, `p0_d32_zone_output_validation.md`;
+- studies: `fit_studies/`;
+- visualizations: `viz/index.html` + eight zone HTML files.
+
+No production STL, relief or donor-model edit was emitted.

@@ -99,9 +99,12 @@ nothing is missing before printing all eight.
 `FloorBoard2.stl`, `Diffuser.stl` (the floor aero diffuser — not the brake light),
 `2023NEWSideVent1.stl` (⚠ multi-body), `2023NEWSideVent2.stl`,
 `Servoholder.stl` (23×10×58 — **Gate D resolved 2026-07-10**: drawing `[2]` labels it
-"Servo Holder" on the rear floor; drawing `[3]` shows the servo driving the servo-saver
-via a long rod. ⚠ confirm the ordered DS3235SG fits it when the servo arrives, before
-printing the floor batch).
+"Servo Holder" on the rear floor; drawing `[3]` shows the servo driving the front
+servo-saver via a long rod. **2026-07-22 correction:** stand the holder as a 58 mm
+long ×22.9 mm high arch and insert the servo side-on; its shaft is horizontal/lateral
+and a normal 25T horn is vertical. `servosaverv7` has an M3 pivot bore and does not go
+on the spline. ⚠ real fit remains open because the measured arch is 42×18.5 versus
+the DS3235SG's documented 40×20 side face; check without force before the floor batch).
 
 ### Group 06 — Body shell · **PLA matte black, 0.12–0.16 mm** (7)
 
@@ -217,8 +220,8 @@ Drawing `[2]` labels it "Servo Holder" on the rear floor; drawing `[3]`'s note "
 this hole with a rod to the steering servo motor" confirms the servo sits mid-chassis
 driving the servo-saver through a long rod (the Rev-1.1 "direct front facing servo"
 README corroborates: the *original* method was different, i.e. this rod layout).
-Residual check: DS3235SG fitment when the servo arrives — do **not** print the floor
-batch before that.
+Residual check: DS3235SG side-on fit in the 42×18.5 clear arch, followed by physical
+horn/rod sweep D-26 — do **not** print the floor batch before the no-force fit check.
 
 ## REJECTED (66) — keep on disk, never print
 

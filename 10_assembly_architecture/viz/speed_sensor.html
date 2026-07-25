@@ -1,0 +1,325 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; img-src data:; base-uri 'none'; form-action 'none'">
+<title>ZH · Rear speed sensor · W17 assembly architecture</title>
+<style>
+:root {
+  color-scheme:light dark;
+  --bg:#edf1f0; --paper:#fff; --ink:#15201f; --muted:#596866;
+  --line:#bdc9c7; --grid:#dce3e2; --ground:#d8dfde; --accent:#00857c;
+  --accent2:#00aa9c; --soft:#e7f4f2; --good:#1f8f5f; --warn:#b05b22;
+  --bad:#bf3f35; --assume:#687573; --scan:#111918;
+  --shadow:0 1px 2px rgba(20,32,31,.08),0 9px 25px rgba(20,32,31,.06);
+}
+@media (prefers-color-scheme: dark) {
+  :root { --bg:#0c1211; --paper:#121b1a; --ink:#e7eeed; --muted:#9aa9a6;
+    --line:#2a3a38; --grid:#263230; --ground:#1d2927; --accent:#27c9b9;
+    --accent2:#56e0d2; --soft:#163330; --good:#3bbd7f; --warn:#e08a4f;
+    --bad:#e06758; --assume:#9ba8a6; --scan:#0a0f0e;
+    --shadow:0 1px 2px rgba(0,0,0,.42),0 10px 30px rgba(0,0,0,.35); }
+}
+:root[data-theme="light"] {
+  --bg:#edf1f0; --paper:#fff; --ink:#15201f; --muted:#596866;
+  --line:#bdc9c7; --grid:#dce3e2; --ground:#d8dfde; --accent:#00857c;
+  --accent2:#00aa9c; --soft:#e7f4f2; --good:#1f8f5f; --warn:#b05b22;
+  --bad:#bf3f35; --assume:#687573; --scan:#111918;
+  --shadow:0 1px 2px rgba(20,32,31,.08),0 9px 25px rgba(20,32,31,.06);
+}
+:root[data-theme="dark"] {
+  --bg:#0c1211; --paper:#121b1a; --ink:#e7eeed; --muted:#9aa9a6;
+  --line:#2a3a38; --grid:#263230; --ground:#1d2927; --accent:#27c9b9;
+  --accent2:#56e0d2; --soft:#163330; --good:#3bbd7f; --warn:#e08a4f;
+  --bad:#e06758; --assume:#9ba8a6; --scan:#0a0f0e;
+  --shadow:0 1px 2px rgba(0,0,0,.42),0 10px 30px rgba(0,0,0,.35);
+}
+* { box-sizing:border-box; }
+html,body { margin:0; min-height:100%; }
+body { overflow-x:hidden; background:var(--bg); color:var(--ink);
+  font:15px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif; }
+a { color:var(--accent); text-underline-offset:.18em; }
+code,.mono,.tag,th,svg text { font-family:ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace; }
+header { background:var(--paper); border-bottom:1px solid var(--line); }
+.bar,.page { width:min(1420px,calc(100% - 32px)); margin:auto; }
+.bar { min-height:62px; display:flex; justify-content:space-between; align-items:center; gap:16px; }
+.brand { min-width:0; display:flex; gap:12px; align-items:baseline; }
+.brand b,.eyebrow { color:var(--accent); letter-spacing:.13em; text-transform:uppercase; }
+.brand span { color:var(--muted); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+button { border:1px solid var(--line); color:var(--ink); background:var(--paper);
+  border-radius:7px; padding:7px 10px; cursor:pointer; }
+main { padding:30px 0 58px; }
+h1 { font-size:clamp(1.8rem,4vw,3rem); line-height:1.07; margin:.15em 0 .3em; text-wrap:balance; }
+h2 { font:700 13px/1.4 ui-monospace,monospace; letter-spacing:.13em;
+  text-transform:uppercase; color:var(--muted); margin:0 0 5px; }
+h3 { margin:0 0 7px; font-size:1rem; }
+p { max-width:92ch; }
+.lede { font-size:clamp(15px,1.6vw,18px); color:var(--muted); margin-top:0; }
+.board { background:var(--paper); border:1px solid var(--line); border-radius:13px;
+  box-shadow:var(--shadow); padding:clamp(14px,2.4vw,26px); margin-top:24px; }
+.sub { color:var(--muted); margin:2px 0 14px; font-size:13.5px; }
+.status { display:flex; gap:12px; align-items:flex-start; border-radius:10px;
+  padding:12px 14px; margin:18px 0; border:1px solid var(--line); }
+.status.fail { background:color-mix(in srgb,var(--bad) 10%,var(--paper)); }
+.status.warn { background:color-mix(in srgb,var(--warn) 9%,var(--paper)); }
+.status .flag { flex:0 0 auto; font:800 12px/1.4 ui-monospace,monospace; letter-spacing:.06em; }
+.status.fail .flag { color:var(--bad); } .status.warn .flag { color:var(--warn); }
+.meta,.legend,.parts,.gategrid,.summary { display:grid; gap:12px; }
+.meta { grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); margin:20px 0 0; }
+.chip { border:1px solid var(--line); border-radius:9px; padding:11px 13px; background:var(--paper); }
+.chip b { display:block; color:var(--muted); font:700 10px/1.4 ui-monospace,monospace;
+  letter-spacing:.1em; text-transform:uppercase; margin-bottom:2px; }
+.drawing { width:100%; overflow-x:auto; overscroll-behavior-inline:contain;
+  border:1px solid var(--line); border-radius:9px; background:var(--paper); }
+.drawing svg { display:block; width:max(100%,var(--drawing-w,900px)); height:auto; }
+.views { display:grid; grid-template-columns:1fr; gap:20px; }
+@media(min-width:1080px) { .views.two { grid-template-columns:1fr 1fr; } }
+.legend { grid-template-columns:repeat(auto-fit,minmax(215px,1fr)); margin:13px 0 0; }
+.legend span { display:flex; align-items:center; gap:9px; color:var(--muted); font-size:12px; }
+.swatch { width:40px; height:16px; background:var(--soft); border:2px solid var(--accent); }
+.swatch.derived { border-width:1px; }
+.swatch.documented { border-style:dotted; }
+.swatch.assumption { border-color:var(--assume); border-style:dashed;
+  background:repeating-linear-gradient(135deg,transparent 0 5px,color-mix(in srgb,var(--assume) 20%,transparent) 5px 7px); }
+.parts { grid-template-columns:repeat(auto-fit,minmax(285px,1fr)); }
+.part { border:1px solid var(--line); border-radius:11px; overflow:hidden; background:var(--paper); }
+.partviz { position:relative; min-height:145px; display:grid; place-items:center;
+  background:var(--scan); border-bottom:1px solid var(--line); overflow:hidden; }
+.partviz img,.partviz svg { display:block; width:100%; height:auto; }
+.partviz .viewlabel { position:absolute; left:9px; bottom:7px; color:#91aaa6;
+  font:10px/1.3 ui-monospace,monospace; letter-spacing:.04em; }
+.partbody { padding:13px 14px 15px; }
+.partbody h3 { margin-bottom:4px; }
+.tag { display:inline-block; border:1px solid currentColor; border-radius:4px;
+  padding:2px 6px; font-size:10px; font-weight:800; letter-spacing:.05em; color:var(--accent); }
+.tag.derived { border-width:1px; }
+.tag.documented { border-style:dotted; }
+.tag.assumption { color:var(--assume); border-style:dashed; }
+.kv { display:grid; grid-template-columns:86px 1fr; gap:4px 9px; margin-top:10px; font-size:12.5px; }
+.kv b { color:var(--muted); font-weight:650; }
+.evidence { border-top:1px solid var(--grid); padding-top:9px; margin-top:10px;
+  color:var(--muted); font-size:11.5px; overflow-wrap:anywhere; }
+.tablewrap { width:100%; overflow-x:auto; border:1px solid var(--line); border-radius:9px; }
+table { border-collapse:collapse; width:100%; min-width:880px; background:var(--paper); }
+th,td { padding:9px 10px; text-align:left; vertical-align:top; border-bottom:1px solid var(--grid); }
+th { color:var(--muted); font-size:10px; letter-spacing:.06em; text-transform:uppercase; }
+tr:last-child td { border-bottom:0; }
+.result-fail { color:var(--bad); font-weight:750; } .result-pass { color:var(--good); font-weight:750; }
+.note { border-left:3px solid var(--accent); background:var(--soft); padding:12px 15px;
+  border-radius:0 9px 9px 0; margin:16px 0 0; color:var(--muted); font-size:13px; }
+.summary { grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); margin:20px 0 0; }
+.summary>div { background:var(--paper); border:1px solid var(--line); border-radius:9px; padding:14px; }
+.summary strong { display:block; color:var(--accent); font-size:1.35rem; }
+.summary span { color:var(--muted); font-size:11.5px; }
+.gategrid { grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); }
+.gate { display:block; color:var(--ink); text-decoration:none; border:1px solid var(--line);
+  border-left:5px solid var(--warn); border-radius:9px; padding:14px; background:var(--paper); }
+.gate.rank-high { border-left-color:var(--bad); }
+.gate.rank-watch { border-left-color:var(--accent); }
+.gate p { margin:4px 0 0; color:var(--muted); font-size:12.5px; }
+footer { border-top:1px solid var(--line); color:var(--muted); padding:22px 0 34px; font-size:12.5px; }
+svg .gridline { stroke:var(--grid); stroke-width:.7; }
+svg .axis { stroke:var(--ink); stroke-width:1.5; fill:none; }
+svg .floor { stroke:var(--ink); stroke-width:2; fill:none; }
+svg .shell { stroke:var(--muted); stroke-width:1.4; fill:color-mix(in srgb,var(--muted) 13%,transparent); }
+svg .shellmat { stroke:var(--muted); stroke-width:1.1; fill:color-mix(in srgb,var(--muted) 20%,transparent); fill-rule:evenodd; }
+svg .conf-verified { stroke:var(--accent); stroke-width:2.2; fill:color-mix(in srgb,var(--accent) 16%,transparent); }
+svg .conf-derived { stroke:var(--accent); stroke-width:1.2; fill:color-mix(in srgb,var(--accent) 9%,transparent); }
+svg .conf-documented { stroke:var(--accent); stroke-width:1.7; stroke-dasharray:2 4; fill:color-mix(in srgb,var(--accent) 8%,transparent); }
+svg .conf-assumption { stroke:var(--assume); stroke-width:1.7; stroke-dasharray:7 5; fill:url(#hatch); }
+svg .moving { stroke:var(--warn); stroke-width:1.6; stroke-dasharray:7 4; fill:url(#moveHatch); }
+svg .failure { stroke:var(--bad); stroke-width:1.7; fill:url(#failHatch); }
+svg .pass { stroke:var(--good); stroke-width:1.5; fill:color-mix(in srgb,var(--good) 13%,transparent); }
+svg .dim { stroke:var(--muted); stroke-width:1; fill:none; marker-start:url(#arrow); marker-end:url(#arrow); }
+svg .dim.conf-documented { stroke-dasharray:2 4; } svg .dim.conf-assumption { stroke-dasharray:7 5; }
+svg .tick { stroke:var(--muted); stroke-width:1; }
+svg .leader { stroke:var(--muted); stroke-width:1; fill:none; }
+svg .label { fill:var(--ink); font-size:11px; } svg .small { fill:var(--muted); font-size:9.5px; }
+svg .tiny { fill:var(--muted); font-size:8px; } svg .accent { fill:var(--accent); }
+svg .badtext { fill:var(--bad); font-weight:800; } svg .goodtext { fill:var(--good); font-weight:800; }
+@media(max-width:640px) { .bar,.page { width:min(100% - 20px,1420px); }
+  main { padding-top:20px; } .brand span { display:none; } .kv { grid-template-columns:74px 1fr; } }
+</style></head><body>
+<header><div class="bar">
+ <div class="brand"><b>W17 / RC-01</b><span>A3144 pickup, 3 × 1 mm magnet, gap and protected lead route.</span></div>
+ <div><a href="index.html">Overview</a> · <button data-theme-toggle type="button">Theme</button></div>
+</div></header><main><div class="page">
+<p class="eyebrow">ZH · assembly zone · datum X+ forward / L lateral / Z+ up</p>
+<h1>Rear speed sensor</h1>
+<p class="lede">UNRESOLVED — Hall gap and switching repeatability require the assembled rotating axle. Governing fit gate: <b>1.5 mm cold target inside a 1–3 mm test band; collar/runout unknown.</b></p>
+<div class="status warn"><span class="flag">⚠ OPEN GATE</span>
+ <span><b>D-38 / ASM-57</b> — production geometry remains stopped. S0=0 sections are measured lower bounds; add only a physically measured S0.</span></div>
+<div class="meta">
+ <div class="chip"><b>Governing station</b>X=-90.9 mm · true shell STL section</div>
+ <div class="chip"><b>Drawing scale</b>plan/side 4.0 px/mm · section 5.0 px/mm · details ≥5 px/mm</div>
+ <div class="chip"><b>Evidence cells</b>D-28 rows + D-29 coordinates + D-02 station + D-31 gate</div>
+ <div class="chip"><b>Legacy note</b>supersedes the old 1.6 px/mm schematic pages</div>
+</div>
+<div class="board"><h2>Orthographic plan</h2><p class="sub">Candidate installation envelopes and moving keep-outs; scroll horizontally without shrinking below 4 px/mm.</p>
+ <div class="drawing"><svg style="--drawing-w:352px" viewBox="0 0 352.0 458.0" role="img" aria-label="ZH plan view at 4 px per mm"><defs>
+<pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+ <path d="M40 0H0V40" class="gridline" fill="none"/>
+</pattern>
+<pattern id="hatch" width="9" height="9" patternUnits="userSpaceOnUse" patternTransform="rotate(35)">
+ <line x1="0" y1="0" x2="0" y2="9" stroke="var(--assume)" stroke-width="1" opacity=".38"/>
+</pattern>
+<pattern id="moveHatch" width="10" height="10" patternUnits="userSpaceOnUse" patternTransform="rotate(35)">
+ <line x1="0" y1="0" x2="0" y2="10" stroke="var(--warn)" stroke-width="2" opacity=".42"/>
+</pattern>
+<pattern id="failHatch" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(35)">
+ <rect width="8" height="8" fill="color-mix(in srgb,var(--bad) 12%,transparent)"/>
+ <line x1="0" y1="0" x2="0" y2="8" stroke="var(--bad)" stroke-width="2" opacity=".62"/>
+</pattern>
+<marker id="arrow" viewBox="0 0 8 8" refX="4" refY="4" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+ <path d="M0 0L8 4L0 8Z" fill="context-stroke"/>
+</marker>
+</defs><rect width="352.0" height="458.0" fill="url(#grid)"/><polygon class="shell conf-derived" points="-24.0,228.0 100.0,316.0 420.0,366.0 660.0,366.0 760.0,198.0 1260.0,152.0 1260.0,32.0 760.0,-14.0 660.0,-182.0 420.0,-182.0 100.0,-132.0 -24.0,-44.0"/><line class="axis" x1="52.0" y1="92.0" x2="300.0" y2="92.0"/><text class="small" x="57.0" y="86.0">L=0 · X+ → NOSE</text><circle class="conf-assumption" cx="176.4" cy="192.0" r="2.0"/><text class="label" x="173.4" y="185.0">Ø3×1 magnet</text><rect class="conf-assumption" x="168.1" y="201.8" width="16.7" height="12.4" rx="3"/><text class="label" x="171.1" y="196.8">A3144</text><rect class="conf-assumption" x="152.4" y="208.0" width="48.0" height="32.0" rx="3"/><text class="label" x="155.4" y="203.0">adjustable bracket</text><line class="dim conf-documented" x1="170.4" y1="213.0" x2="182.4" y2="213.0"/><rect x="63.0" y="197.0" width="226.8" height="15" fill="var(--paper)" opacity=".92"/><text class="small" text-anchor="middle" x="176.4" y="208.0">SNS-MAG X 3 mm [DOCUMENTED]</text><line class="dim conf-documented" x1="199.4" y1="190.0" x2="199.4" y2="194.0"/><rect x="119.6" y="176.0" width="159.6" height="15" fill="var(--paper)" opacity=".92"/><text class="small" text-anchor="middle" x="199.4" y="187.0">L 1 mm [DOCUMENTED]</text><line class="conf-derived" x1="176.4" y1="52.0" x2="176.4" y2="364.0"/><text class="accent label" x="181.4" y="67.0">SECTION X=-90.9</text><line class="tick" x1="52" y1="427.0" x2="252.0" y2="427.0"/><line class="tick" x1="52.0" y1="427.0" x2="52.0" y2="436.0"/><text class="tiny" x="52.0" y="447.0">0</text><line class="tick" x1="92.0" y1="427.0" x2="92.0" y2="433.0"/><text class="tiny" x="92.0" y="447.0">10</text><line class="tick" x1="132.0" y1="427.0" x2="132.0" y2="433.0"/><text class="tiny" x="132.0" y="447.0">20</text><line class="tick" x1="172.0" y1="427.0" x2="172.0" y2="433.0"/><text class="tiny" x="172.0" y="447.0">30</text><line class="tick" x1="212.0" y1="427.0" x2="212.0" y2="433.0"/><text class="tiny" x="212.0" y="447.0">40</text><line class="tick" x1="252.0" y1="427.0" x2="252.0" y2="436.0"/><text class="tiny" x="252.0" y="447.0">50</text><text class="small" x="52" y="421.0">50 mm ruler · 4.0 px/mm</text></svg></div></div>
+<div class="board"><h2>Orthographic side elevation</h2><p class="sub">DAT-F floor, S0=0 shell reference and Z-direction motion/service envelopes.</p>
+ <div class="drawing"><svg style="--drawing-w:352px" viewBox="0 0 352.0 530.0" role="img" aria-label="ZH side elevation at 4 px per mm"><defs>
+<pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+ <path d="M40 0H0V40" class="gridline" fill="none"/>
+</pattern>
+<pattern id="hatch" width="9" height="9" patternUnits="userSpaceOnUse" patternTransform="rotate(35)">
+ <line x1="0" y1="0" x2="0" y2="9" stroke="var(--assume)" stroke-width="1" opacity=".38"/>
+</pattern>
+<pattern id="moveHatch" width="10" height="10" patternUnits="userSpaceOnUse" patternTransform="rotate(35)">
+ <line x1="0" y1="0" x2="0" y2="10" stroke="var(--warn)" stroke-width="2" opacity=".42"/>
+</pattern>
+<pattern id="failHatch" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(35)">
+ <rect width="8" height="8" fill="color-mix(in srgb,var(--bad) 12%,transparent)"/>
+ <line x1="0" y1="0" x2="0" y2="8" stroke="var(--bad)" stroke-width="2" opacity=".62"/>
+</pattern>
+<marker id="arrow" viewBox="0 0 8 8" refX="4" refY="4" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+ <path d="M0 0L8 4L0 8Z" fill="context-stroke"/>
+</marker>
+</defs><rect width="352.0" height="530.0" fill="url(#grid)"/><line class="floor" x1="52.0" y1="404.0" x2="300.0" y2="404.0"/><text class="small" x="57.0" y="421.0">DAT-F · Z=0</text><polyline class="shell conf-derived" points="60.0,196.0 140.0,184.0 220.0,172.0 300.0,156.0 380.0,144.0 460.0,132.0 540.0,120.0 620.0,192.0"/><polyline class="shell conf-derived" points="900.0,236.0 1020.0,236.0 1140.0,256.0 1260.0,324.0"/><circle class="conf-assumption" cx="176.4" cy="296.0" r="6.0"/><text class="label" x="173.4" y="285.0">Ø3×1 magnet</text><rect class="conf-assumption" x="168.1" y="305.7" width="16.7" height="6.3" rx="3"/><text class="label" x="171.1" y="300.7">A3144</text><rect class="conf-assumption" x="152.4" y="284.0" width="48.0" height="48.0" rx="3"/><text class="label" x="155.4" y="279.0">adjustable bracket</text><line class="dim conf-documented" x1="170.4" y1="321.0" x2="182.4" y2="321.0"/><rect x="63.0" y="305.0" width="226.8" height="15" fill="var(--paper)" opacity=".92"/><text class="small" text-anchor="middle" x="176.4" y="316.0">SNS-MAG X 3 mm [DOCUMENTED]</text><line class="dim conf-documented" x1="199.4" y1="290.0" x2="199.4" y2="302.0"/><rect x="119.6" y="280.0" width="159.6" height="15" fill="var(--paper)" opacity=".92"/><text class="small" text-anchor="middle" x="199.4" y="291.0">Z 3 mm [DOCUMENTED]</text><line class="tick" x1="52" y1="499.0" x2="252.0" y2="499.0"/><line class="tick" x1="52.0" y1="499.0" x2="52.0" y2="508.0"/><text class="tiny" x="52.0" y="519.0">0</text><line class="tick" x1="92.0" y1="499.0" x2="92.0" y2="505.0"/><text class="tiny" x="92.0" y="519.0">10</text><line class="tick" x1="132.0" y1="499.0" x2="132.0" y2="505.0"/><text class="tiny" x="132.0" y="519.0">20</text><line class="tick" x1="172.0" y1="499.0" x2="172.0" y2="505.0"/><text class="tiny" x="172.0" y="519.0">30</text><line class="tick" x1="212.0" y1="499.0" x2="212.0" y2="505.0"/><text class="tiny" x="212.0" y="519.0">40</text><line class="tick" x1="252.0" y1="499.0" x2="252.0" y2="508.0"/><text class="tiny" x="252.0" y="519.0">50</text><text class="small" x="52" y="493.0">50 mm ruler · 4.0 px/mm</text></svg></div></div>
+<div class="board"><h2>Governing transverse cross-section</h2><p class="sub">Actual registered shell triangle section — curved shoulders/spine and holes preserved; occupant transforms remain visibly dashed.</p>
+ <div class="drawing"><svg style="--drawing-w:916px" viewBox="0 0 916.0 588.0" role="img" aria-label="True STL shell cross-section at X -90.9"><defs>
+<pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+ <path d="M40 0H0V40" class="gridline" fill="none"/>
+</pattern>
+<pattern id="hatch" width="9" height="9" patternUnits="userSpaceOnUse" patternTransform="rotate(35)">
+ <line x1="0" y1="0" x2="0" y2="9" stroke="var(--assume)" stroke-width="1" opacity=".38"/>
+</pattern>
+<pattern id="moveHatch" width="10" height="10" patternUnits="userSpaceOnUse" patternTransform="rotate(35)">
+ <line x1="0" y1="0" x2="0" y2="10" stroke="var(--warn)" stroke-width="2" opacity=".42"/>
+</pattern>
+<pattern id="failHatch" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(35)">
+ <rect width="8" height="8" fill="color-mix(in srgb,var(--bad) 12%,transparent)"/>
+ <line x1="0" y1="0" x2="0" y2="8" stroke="var(--bad)" stroke-width="2" opacity=".62"/>
+</pattern>
+<marker id="arrow" viewBox="0 0 8 8" refX="4" refY="4" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+ <path d="M0 0L8 4L0 8Z" fill="context-stroke"/>
+</marker>
+</defs><rect width="916.0" height="588.0" fill="url(#grid)"/><desc>Chunked Möller–Trumbore 2 mm ray-parity audit: 36 material cells; 0 enclosed void cells after exterior flood fill.</desc><path class="shellmat conf-verified" d="M505.5,283.7L505.5,286.3L505.5,286.3L505.6,286.4L505.6,286.6L505.7,286.6L505.7,286.6L505.7,286.6L505.8,286.7L505.8,286.7L505.8,286.7L506.7,287.0L507.4,287.3L507.6,287.4L507.9,287.7L508.3,287.8L508.5,288.0L509.2,288.4L509.7,288.7L509.8,288.8L509.9,288.9L510.3,289.0L510.4,289.2L510.5,289.3L510.5,289.3L511.3,289.7L511.4,289.9L511.8,290.0L512.0,290.2L512.5,290.4L512.9,290.6L513.2,291.0L513.5,291.2L514.0,291.6L514.0,291.7L514.7,292.1L514.9,292.3L515.6,292.7L516.3,293.0L516.8,293.4L517.2,293.7L517.5,294.0L517.9,294.2L518.4,294.5L519.3,295.2L519.9,295.8L520.4,296.3L520.6,296.3L520.9,296.5L521.3,296.7L521.6,297.3L521.9,297.6L522.4,297.9L522.6,297.9L523.3,298.6L524.0,299.1L524.1,299.1L524.6,299.6L524.9,299.7L525.3,300.0L525.3,300.1L525.4,300.1L525.7,300.5L525.8,300.8L525.8,300.9L526.0,301.0L526.3,301.4L527.1,302.1L527.1,302.1L527.3,302.5L527.4,302.6L527.5,302.7L528.0,302.9L528.1,303.1L528.2,303.1L529.1,303.6L529.1,303.6L529.1,303.8L529.4,304.1L529.5,304.3L531.2,304.3L542.9,304.4L542.9,303.7L543.1,301.7L543.1,301.7L542.9,299.2L542.9,298.7L542.9,298.3L542.2,295.9L542.0,295.5L541.1,293.3L540.9,293.0L539.5,290.8L539.2,290.5L537.6,288.5L537.3,288.2L535.5,286.7L535.1,286.5L533.3,285.3L532.9,285.1L530.8,284.2L530.3,284.1L528.1,283.5L524.1,282.9L523.7,282.8L519.6,282.9L514.8,282.9L514.8,282.0L514.8,279.6L514.8,274.8L514.8,274.7L514.8,274.3L514.8,273.9L514.8,271.8L514.8,271.5L514.8,269.5L514.8,269.3L514.8,267.8L514.8,267.6L514.8,266.8L514.8,266.6L514.8,265.8L514.8,265.7L514.8,265.3L514.8,265.2L514.6,264.5L514.6,264.4L514.6,263.8L514.5,263.7L514.3,263.5L514.3,263.4L514.1,263.0L514.0,262.9L513.3,262.1L513.1,261.8L511.6,260.7L511.5,260.7L510.9,260.2L510.8,260.1L510.6,259.7L510.6,259.7L510.4,259.3L510.4,259.2L510.4,259.0L510.3,258.9L510.1,258.2L510.1,258.1L509.9,257.3L509.9,257.2L509.9,256.8L509.8,256.6L509.6,255.3L509.6,254.8L509.4,252.0L509.4,251.5L509.5,250.0L509.4,250.0L509.2,249.7L509.1,249.6L509.1,249.6L509.0,249.5L509.1,249.5L509.1,249.4L509.0,249.4L509.1,249.4L509.0,249.4L508.5,248.7L507.4,247.0L507.0,246.5L505.5,244.2L505.1,243.4L503.6,240.7L503.3,239.9L502.1,237.4L501.8,236.6L501.1,235.3L500.9,234.8L500.1,233.3L499.9,232.8L499.3,231.4L499.2,231.0L498.6,229.6L498.4,229.2L497.8,228.3L497.7,227.9L497.6,227.6L497.6,227.5L497.6,227.5L497.6,227.4L497.4,227.2L497.4,227.1L496.9,226.4L496.7,225.8L496.6,225.7L496.6,225.6L496.3,225.1L496.1,224.9L496.0,224.6L495.7,224.1L494.4,221.4L494.2,221.0L492.9,218.1L492.7,217.7L491.6,214.6L491.4,214.2L490.5,211.1L490.4,210.6L489.2,207.3L489.1,206.8L488.4,204.6L488.3,204.3L487.6,202.1L487.4,201.8L486.8,199.6L486.6,199.3L486.1,198.4L485.6,197.3L485.1,196.6L484.7,195.9L484.1,194.5L483.3,193.2L480.5,190.0L480.0,189.3L478.1,187.6L477.4,186.9L475.4,185.4L474.3,184.7L470.9,182.8L469.5,182.1L466.0,180.9L465.1,180.6L465.0,180.6L464.9,180.6L464.8,180.3L464.6,179.9L462.4,172.3L460.0,163.6L458.2,163.6L456.0,163.6L454.4,169.3L451.8,178.5L448.8,179.0L446.6,179.3L445.8,179.4L445.2,179.5L444.9,179.6L444.7,179.6L444.6,179.7L444.5,179.7L444.5,179.7L441.5,180.6L441.4,180.6L441.2,180.6L441.2,180.6L440.5,180.9L437.6,182.2L434.9,184.0L434.2,184.5L432.0,186.5L431.7,186.8L429.9,189.0L429.7,189.3L428.1,191.5L427.8,192.2L426.5,195.6L426.3,196.3L425.5,199.4L424.8,203.4L424.6,206.3L424.5,207.7L424.5,209.3L424.5,209.3L424.5,209.3L424.5,209.4L424.5,209.5L424.5,209.7L424.6,210.0L424.5,210.8L424.4,211.9L424.4,212.7L424.2,213.2L424.2,213.3L424.4,214.0L424.3,214.3L424.3,214.4L424.3,214.7L424.1,217.6L424.0,218.0L423.4,222.3L423.4,222.9L423.2,224.4L423.1,224.6L422.2,227.5L422.2,227.9L420.8,231.1L420.7,231.4L418.9,234.6L418.8,235.0L416.6,238.4L416.4,238.8L413.9,241.7L413.7,242.0L411.0,245.1L410.7,245.5L409.4,246.8L409.3,247.0L408.4,247.9L408.3,248.0L407.6,248.7L407.5,248.7L407.4,248.9L407.4,248.9L407.3,249.1L407.3,249.0L407.3,249.0L407.2,249.0L407.2,249.0L407.1,249.1L407.2,249.1L407.1,249.2L407.1,249.3L407.1,249.3L407.0,249.3L407.0,249.3L407.0,249.3L407.0,249.3L407.0,249.3L407.0,249.3L407.0,249.3L407.0,249.3L407.0,249.4L407.0,249.4L406.8,249.5L406.6,249.7L406.5,249.9L406.5,250.9L406.6,252.8L406.4,255.0L406.2,256.3L406.1,257.5L406.0,258.1L405.8,258.6L405.7,258.9L405.6,259.1L405.5,259.2L405.3,259.5L405.2,259.7L405.2,259.9L405.1,260.0L405.0,260.1L404.9,260.3L404.5,260.6L404.4,260.7L403.9,261.2L403.5,261.5L402.9,262.0L402.4,262.3L402.2,262.7L402.2,262.7L402.0,262.9L401.8,263.1L401.6,263.4L401.6,263.6L401.4,263.8L401.4,263.9L401.4,264.3L401.3,264.4L401.3,264.7L401.3,265.0L401.1,265.5L401.1,265.7L401.1,266.9L401.1,267.6L401.1,268.7L401.1,269.4L401.1,269.9L401.1,270.3L401.1,271.1L401.1,271.7L401.1,273.3L401.1,274.3L401.1,274.6L401.1,274.8L401.0,281.9L401.0,282.8L401.0,282.9L396.4,282.9L392.0,282.8L391.7,282.9L387.8,283.5L387.3,283.6L385.1,284.2L384.7,284.4L382.7,285.3L382.3,285.5L380.5,286.7L380.2,287.0L378.6,288.5L378.3,288.8L376.5,290.8L376.3,291.1L374.8,293.3L374.7,293.6L373.8,295.8L373.7,296.1L373.2,298.6L373.2,299.1L372.7,301.7L372.7,301.7L372.8,304.4L377.5,304.4L377.9,304.5L378.9,304.4L381.0,304.4L387.0,304.5L387.7,303.6L387.7,303.6L388.1,303.1L388.2,303.0L388.3,303.0L388.3,302.9L388.7,302.7L388.8,302.6L389.0,302.5L389.2,302.3L389.2,302.1L389.4,302.1L389.4,302.1L389.4,301.9L390.2,301.4L390.6,301.0L390.7,300.9L390.7,300.8L391.0,300.5L391.5,300.1L391.5,300.0L391.6,299.9L391.9,299.6L392.6,299.1L392.9,298.7L393.1,298.7L393.4,298.4L394.1,297.9L394.6,297.6L394.8,297.4L395.1,297.0L395.5,296.7L395.8,296.5L396.1,296.3L396.3,296.1L396.6,295.8L397.3,295.3L397.5,295.1L398.2,294.5L398.7,294.2L399.1,293.8L399.3,293.7L399.9,293.3L400.3,293.0L401.0,292.7L401.7,292.1L401.8,292.1L402.5,291.7L402.7,291.6L403.2,291.2L403.3,291.1L403.6,290.9L403.9,290.6L404.3,290.5L404.6,290.2L404.8,290.0L405.1,289.9L405.3,289.7L406.0,289.4L406.1,289.4L406.1,289.2L406.5,289.1L406.9,289.0L406.9,289.0L407.1,288.9L407.4,288.6L407.5,288.6L407.5,288.4L407.7,288.3L407.8,288.3L408.2,288.1L408.5,287.8L408.6,287.7L409.2,287.4L409.4,287.3L409.8,287.1L409.8,287.0L410.6,286.7L410.6,286.6L410.7,286.6L410.7,286.6L410.7,286.6L410.8,286.6L410.8,284.4L410.8,283.9L410.8,270.9L410.8,270.3L413.2,270.3L415.1,270.3L415.1,269.8L415.1,263.3L415.1,258.2L415.1,257.4L417.5,257.4L419.4,257.4L419.4,256.7L419.4,255.0L419.4,253.6L419.4,252.8L421.7,252.8L423.5,252.8L423.5,252.1L423.5,250.0L423.5,248.2L423.5,247.2L425.9,247.2L427.8,247.2L427.8,246.5L427.8,243.4L427.8,240.8L427.8,239.8L430.2,239.8L432.1,239.8L432.1,239.1L432.1,223.3L432.1,210.7L432.1,209.1L434.5,209.1L436.4,209.1L436.4,208.0L436.4,203.3L436.4,199.9L436.4,198.9L438.8,198.9L440.7,198.9L440.7,198.1L440.7,196.5L440.7,195.4L440.7,194.4L443.2,194.4L445.1,194.4L445.1,193.6L445.1,193.0L445.1,192.6L445.1,191.6L447.5,191.6L449.4,191.6L449.4,190.9L449.4,190.8L449.4,189.8L451.8,189.8L453.7,189.8L453.7,189.4L453.7,188.8L456.1,188.8L458.0,188.8L458.0,189.3L458.0,190.3L458.0,191.0L458.0,191.6L460.4,191.6L462.3,191.6L462.3,191.8L462.3,192.7L462.3,193.3L462.3,193.6L464.8,193.6L466.6,193.6L466.6,194.2L466.6,195.0L466.6,195.7L466.6,196.4L469.1,196.4L471.0,196.4L471.0,197.7L471.0,198.6L471.0,199.3L471.0,201.0L473.4,201.0L475.3,201.0L475.3,203.4L475.3,204.3L475.3,204.9L475.3,208.1L477.7,208.1L479.6,208.1L479.6,212.9L479.6,213.9L479.6,215.0L479.6,221.5L482.0,221.5L483.9,221.5L483.9,225.3L483.9,226.7L483.9,227.7L483.9,232.5L486.3,232.5L488.2,232.5L488.2,235.2L488.2,236.7L488.2,237.6L488.2,240.8L490.7,240.8L492.6,240.8L492.6,244.0L492.6,245.2L492.6,246.0L492.6,249.7L495.0,249.7L496.9,249.7L496.9,252.2L496.9,253.2L496.9,253.8L496.9,256.9L499.3,256.9L501.2,256.9L501.2,262.2L501.2,263.0L501.2,263.6L501.2,270.3L503.6,270.3L505.5,270.3L505.5,271.0L505.5,283.7Z M407.2,249.1L407.2,249.1L407.2,249.1L407.2,249.1Z M407.2,249.1L407.2,249.1L407.2,249.2L407.2,249.1L407.2,249.1Z"/><line class="floor" x1="48.0" y1="473.0" x2="868.0" y2="473.0"/><line class="conf-derived" x1="458.0" y1="498.0" x2="458.0" y2="48.0"/><text class="label accent" x="53.0" y="64.0">REAL SHELL STL SECTION · X=-90.9 · S0=0 LOWER BOUND</text><text class="tiny" x="618.0" y="64.0">MT PARITY 2 mm · 36 material / 0 enclosed-void cells</text><text class="small" x="463.0" y="463.0">L=0</text><line class="axis" x1="168.0" y1="338.0" x2="508.0" y2="338.0"/><circle class="moving" cx="333.0" cy="338.0" r="15.0"/><rect class="conf-assumption" x="303.0" y="330.0" width="20.9" height="7.9"/><text class="badtext label" x="68.0" y="248.0">C1/C2 · 1.5 TARGET · 1–3 mm SWITCH BAND</text><line class="dim conf-documented" x1="330.5" y1="518.0" x2="335.5" y2="518.0"/><rect x="219.6" y="502.0" width="226.8" height="15" fill="var(--paper)" opacity=".92"/><text class="small" text-anchor="middle" x="333.0" y="513.0">SNS-MAG L 1 mm [DOCUMENTED]</text><line class="dim conf-documented" x1="355.5" y1="345.5" x2="355.5" y2="330.5"/><rect x="275.7" y="322.0" width="159.6" height="15" fill="var(--paper)" opacity=".92"/><text class="small" text-anchor="middle" x="355.5" y="333.0">Z 3 mm [DOCUMENTED]</text><line class="tick" x1="48" y1="557.0" x2="298.0" y2="557.0"/><line class="tick" x1="48.0" y1="557.0" x2="48.0" y2="566.0"/><text class="tiny" x="48.0" y="577.0">0</text><line class="tick" x1="98.0" y1="557.0" x2="98.0" y2="563.0"/><text class="tiny" x="98.0" y="577.0">10</text><line class="tick" x1="148.0" y1="557.0" x2="148.0" y2="563.0"/><text class="tiny" x="148.0" y="577.0">20</text><line class="tick" x1="198.0" y1="557.0" x2="198.0" y2="563.0"/><text class="tiny" x="198.0" y="577.0">30</text><line class="tick" x1="248.0" y1="557.0" x2="248.0" y2="563.0"/><text class="tiny" x="248.0" y="577.0">40</text><line class="tick" x1="298.0" y1="557.0" x2="298.0" y2="566.0"/><text class="tiny" x="298.0" y="577.0">50</text><text class="small" x="48" y="551.0">50 mm ruler · 5.0 px/mm</text></svg></div></div>
+<div class="board"><h2>Confidence legend</h2><div class="legend">
+ <span><i class="swatch"></i>VERIFIED · solid · measured mesh/physical evidence</span>
+ <span><i class="swatch derived"></i>DERIVED · thin · arithmetic/registration</span>
+ <span><i class="swatch documented"></i>DOCUMENTED · dotted · controlled reference</span>
+ <span><i class="swatch assumption"></i>ASSUMPTION · dashed + hatched · physically open</span>
+</div><p class="sub mono">VERIFIED / DERIVED / DOCUMENTED / ASSUMPTION — line style follows the weakest fact being shown.</p></div>
+<div class="board"><h2>Hard-interface detail inset</h2><p class="sub">Numeric interface detail at enlarged scale. UNKNOWN remains UNKNOWN; hatched regions are moving, unresolved or failing.</p>
+ <div class="drawing"><svg style="--drawing-w:1080px" viewBox="0 0 1080 500" role="img" aria-label="A3144 Hall switching gap band"><defs>
+<pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+ <path d="M40 0H0V40" class="gridline" fill="none"/>
+</pattern>
+<pattern id="hatch" width="9" height="9" patternUnits="userSpaceOnUse" patternTransform="rotate(35)">
+ <line x1="0" y1="0" x2="0" y2="9" stroke="var(--assume)" stroke-width="1" opacity=".38"/>
+</pattern>
+<pattern id="moveHatch" width="10" height="10" patternUnits="userSpaceOnUse" patternTransform="rotate(35)">
+ <line x1="0" y1="0" x2="0" y2="10" stroke="var(--warn)" stroke-width="2" opacity=".42"/>
+</pattern>
+<pattern id="failHatch" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(35)">
+ <rect width="8" height="8" fill="color-mix(in srgb,var(--bad) 12%,transparent)"/>
+ <line x1="0" y1="0" x2="0" y2="8" stroke="var(--bad)" stroke-width="2" opacity=".62"/>
+</pattern>
+<marker id="arrow" viewBox="0 0 8 8" refX="4" refY="4" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+ <path d="M0 0L8 4L0 8Z" fill="context-stroke"/>
+</marker>
+</defs><rect width="1080" height="500" fill="url(#grid)"/><text class="accent label" x="24" y="28">ZH HARD INTERFACE · 40 px/mm LOCAL GAP DETAIL</text><circle class="moving" cx="185" cy="250" r="120"/><rect class="conf-documented" x="165" y="205" width="40" height="120"/><text class="label" x="100" y="390">Ø3×1 magnet · one pulse/rev</text><rect class="conf-documented" x="265.0" y="218.6" width="166.8" height="62.800000000000004"/><rect class="moving" x="245.0" y="198.6" width="80.0" height="102.80000000000001"/><line class="dim conf-assumption" x1="205.0" y1="145.0" x2="265.0" y2="145.0"/><rect x="180.4" y="129.0" width="109.2" height="15" fill="var(--paper)" opacity=".92"/><text class="small" text-anchor="middle" x="235.0" y="140.0">1.5 mm TARGET</text><line class="dim conf-assumption" x1="245.0" y1="365.0" x2="325.0" y2="365.0"/><rect x="209.4" y="349.0" width="151.2" height="15" fill="var(--paper)" opacity=".92"/><text class="small" text-anchor="middle" x="285.0" y="360.0">1–3 mm SWITCH BAND</text><text class="badtext label" x="475" y="205">C1/C2 · PHYSICAL SPIN TEST REQUIRED</text><text class="small" x="475" y="232">A3144 max body 4.17×3.10×1.57 · DOCUMENTED</text><text class="small" x="475" y="255">shaft/collar runout, magnetic polarity/field and hot geometry UNKNOWN</text><rect class="conf-assumption" x="660" y="285" width="260" height="70" rx="7"/><line class="dim conf-assumption" x1="620" y1="320" x2="660" y2="320"/><text class="label" x="585" y="305">C3 ≥2 mm bracket/collar</text><path class="moving" d="M660 405h260v50H660Z"/><text class="badtext label" x="690" y="436">C4 ≥8 mm to belt / spur / wheel</text><line class="tick" x1="475" y1="420" x2="675" y2="420"/><line class="tick" x1="475" y1="420" x2="475" y2="429"/><text class="tiny" x="475" y="440">0</text><line class="tick" x1="575" y1="420" x2="575" y2="426"/><text class="tiny" x="575" y="440">10</text><line class="tick" x1="675" y1="420" x2="675" y2="426"/><text class="tiny" x="675" y="440">20</text><text class="small" x="475" y="414">20 mm ruler · 10.0 px/mm</text></svg></div></div>
+<div class="board"><h2>Clearance callouts</h2><p class="sub">The C1…C5 identifiers mirror the labels drawn above.</p><div class="tablewrap"><table><thead><tr><th>Callout</th><th>Interface</th>
+<th>Required / occupant</th><th>Measured evidence</th><th>Verdict</th><th>Confidence</th>
+</tr></thead><tbody><tr><td><code>C1</code></td><td>cold Hall face gap</td><td>1.5 mm target</td><td>shaft/collar runout UNKNOWN</td><td class="">OPEN</td><td><span class="tag assumption">ASSUMPTION</span></td></tr><tr><td><code>C2</code></td><td>switching test band</td><td>1–3 mm</td><td>hand-spin validation pending</td><td class="">OPEN</td><td><span class="tag assumption">ASSUMPTION</span></td></tr><tr><td><code>C3</code></td><td>bracket to collar</td><td>≥2 mm except face</td><td>bracket geometry UNKNOWN</td><td class="">OPEN</td><td><span class="tag assumption">ASSUMPTION</span></td></tr><tr><td><code>C4</code></td><td>Hall to belt/gear</td><td>≥8 mm</td><td>rear stack transform UNKNOWN</td><td class="">OPEN</td><td><span class="tag documented">DOCUMENTED</span></td></tr></tbody></table></div></div>
+<div class="board"><h2>Datum placement register</h2><p class="sub">Exact D-29 rows; OFF-CAR and TBD values are intentionally not converted into coordinates.</p><div class="tablewrap"><table><thead><tr><th>ID</th><th>X mm</th><th>L mm</th>
+<th>Z mm</th><th>Orientation</th><th>Confidence</th><th>Gate note</th></tr></thead>
+<tbody><tr><td><code>SNS-HALL</code></td><td>−90.9</td><td>belt-side collar TBD</td><td>+26…+27</td><td>sensitive face toward magnet</td><td><span class="tag assumption">X DERIVED; L/Z ASSUMPTION</span></td><td>Bracket requires 0.5 mm adjustment steps and a service loop.</td></tr><tr><td><code>SNS-MAG</code></td><td>−90.9</td><td>shaft collar TBD</td><td>+26…+27</td><td>radial face; one pulse/rev</td><td><span class="tag assumption">X DERIVED; L/Z ASSUMPTION</span></td><td>Target 1.5 mm cold gap, validate reliable range 1–3 mm.</td></tr></tbody></table></div></div>
+<div class="board"><h2>Per-part evidence gallery</h2><p class="sub">Every component is visually distinct. STL-backed parts use real dual-view silhouettes; non-mesh hardware uses labelled technical outlines only.</p>
+ <div class="parts"><article class="part">
+<div class="partviz"><svg viewBox="0 0 320 150" role="img" aria-label="Technical outline; no controlled mesh"><defs>
+<pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+ <path d="M40 0H0V40" class="gridline" fill="none"/>
+</pattern>
+<pattern id="hatch" width="9" height="9" patternUnits="userSpaceOnUse" patternTransform="rotate(35)">
+ <line x1="0" y1="0" x2="0" y2="9" stroke="var(--assume)" stroke-width="1" opacity=".38"/>
+</pattern>
+<pattern id="moveHatch" width="10" height="10" patternUnits="userSpaceOnUse" patternTransform="rotate(35)">
+ <line x1="0" y1="0" x2="0" y2="10" stroke="var(--warn)" stroke-width="2" opacity=".42"/>
+</pattern>
+<pattern id="failHatch" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(35)">
+ <rect width="8" height="8" fill="color-mix(in srgb,var(--bad) 12%,transparent)"/>
+ <line x1="0" y1="0" x2="0" y2="8" stroke="var(--bad)" stroke-width="2" opacity=".62"/>
+</pattern>
+<marker id="arrow" viewBox="0 0 8 8" refX="4" refY="4" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+ <path d="M0 0L8 4L0 8Z" fill="context-stroke"/>
+</marker>
+</defs><rect width="320" height="150" fill="var(--scan)"/><rect x="111" y="36" width="98" height="65" rx="5" fill="#1b4b47" stroke="#34c9b9" stroke-width="2"/><path d="M128 101v42M160 101v42M192 101v42" stroke="#34c9b9" fill="none" stroke-width="3"/><text x="12" y="139" fill="#91aaa6" font-size="11">SNS-HALL · TECHNICAL OUTLINE · NO STL</text></svg><span class="viewlabel">NO CONTROLLED MESH · OUTLINE ONLY</span></div><div class="partbody">
+ <h3>A3144 Hall switch</h3><span class="tag documented">DOCUMENTED</span>
+ <div class="kv">
+  <b>ID / qty</b><span>SNS-HALL / 1</span>
+  <b>Measured dims</b><span>4.04–4.17 × 2.97–3.10 × 1.47–1.57 mm package body</span>
+  <b>Installed</b><span>body + leads + 1–3 mm adjustable gap bracket</span>
+  <b>Mass</b><span>&lt;1 g</span>
+ </div>
+ <div class="evidence"><b>Visual:</b> No STL exists for this hardware; outline is illustrative, not evidence.<br>
+ <b>Evidence:</b> <code>p0_d28_zone_component_envelopes.md</code>, row
+ <code>SNS-HALL</code> — Allegro A3141–A3144 datasheet, UA package</div>
+</div></article><article class="part">
+<div class="partviz"><svg viewBox="0 0 320 150" role="img" aria-label="Technical outline; no controlled mesh"><defs>
+<pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+ <path d="M40 0H0V40" class="gridline" fill="none"/>
+</pattern>
+<pattern id="hatch" width="9" height="9" patternUnits="userSpaceOnUse" patternTransform="rotate(35)">
+ <line x1="0" y1="0" x2="0" y2="9" stroke="var(--assume)" stroke-width="1" opacity=".38"/>
+</pattern>
+<pattern id="moveHatch" width="10" height="10" patternUnits="userSpaceOnUse" patternTransform="rotate(35)">
+ <line x1="0" y1="0" x2="0" y2="10" stroke="var(--warn)" stroke-width="2" opacity=".42"/>
+</pattern>
+<pattern id="failHatch" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(35)">
+ <rect width="8" height="8" fill="color-mix(in srgb,var(--bad) 12%,transparent)"/>
+ <line x1="0" y1="0" x2="0" y2="8" stroke="var(--bad)" stroke-width="2" opacity=".62"/>
+</pattern>
+<marker id="arrow" viewBox="0 0 8 8" refX="4" refY="4" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+ <path d="M0 0L8 4L0 8Z" fill="context-stroke"/>
+</marker>
+</defs><rect width="320" height="150" fill="var(--scan)"/><ellipse cx="160" cy="48" rx="61" ry="22" fill="#1b4b47" stroke="#34c9b9" stroke-width="2"/><path d="M99 48v48c0 29 122 29 122 0V48" fill="#1b4b47" stroke="#34c9b9" stroke-width="2"/><text x="12" y="139" fill="#91aaa6" font-size="11">SNS-MAG · TECHNICAL OUTLINE · NO STL</text></svg><span class="viewlabel">NO CONTROLLED MESH · OUTLINE ONLY</span></div><div class="partbody">
+ <h3>rear-axle magnet</h3><span class="tag documented">DOCUMENTED</span>
+ <div class="kv">
+  <b>ID / qty</b><span>SNS-MAG / 1</span>
+  <b>Measured dims</b><span>Ø3 × 1 mm</span>
+  <b>Installed</b><span>recess/bond + retention witness mark</span>
+  <b>Mass</b><span>&lt;1 g</span>
+ </div>
+ <div class="evidence"><b>Visual:</b> No STL exists for this hardware; outline is illustrative, not evidence.<br>
+ <b>Evidence:</b> <code>p0_d28_zone_component_envelopes.md</code>, row
+ <code>SNS-MAG</code> — BOM v2 §7</div>
+</div></article></div></div>
+<div class="note"><b>Source chain:</b> <a href="../fit_studies/ZH_speed_sensor_fit_study.md">ZH_speed_sensor_fit_study.md</a> →
+ <code>p0_d28_zone_component_envelopes.md</code> / <code>p0_d29_zone_placements.csv</code> /
+ <code>p0_d31_fit_gates.md</code>. Shell geometry: <code>p0_d02_d03_d04_clearance.md</code>,
+ station X=-90.9; body meshes remain read-only.</div>
+</div></main><footer><div class="page">
+Generated by <code>10_assembly_architecture/evidence/scripts/p0_08_zone_visualizations.py</code>.
+Evidence: <code>p0_07</code> / D-28…D-39 plus the measured D-02 S0=0 shell sections.
+No production STL, hardware identity, or unresolved coordinate is authorized by these drawings.
+</div></footer><script>
+(() => {
+  const root=document.documentElement, btn=document.querySelector("[data-theme-toggle]");
+  if(!btn) return;
+  btn.addEventListener("click",()=>{
+    const current=root.dataset.theme;
+    root.dataset.theme=current==="dark"?"light":current==="light"?"dark":
+      matchMedia("(prefers-color-scheme: dark)").matches?"light":"dark";
+    btn.textContent=root.dataset.theme==="dark"?"Light":"Dark";
+  });
+})();
+</script></body></html>

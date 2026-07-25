@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760" role="img" aria-labelledby="t d">
+  <title id="t">W17 service and removal dependency map</title><desc id="d">Removal tree from master disconnect and body removal to battery, deck, controller, Wi-Fi, UBEC, connector bank, camera, speaker and steering service.</desc>
+  <defs><style>.bg{fill:#f7f5f0}.ink{fill:#17222b}.muted{fill:#65717a}.c{fill:#dff3e9;stroke:#227a5c}.r{fill:#dcebf8;stroke:#2f6fad}.p{fill:#fff0cf;stroke:#d98c2b}.x{fill:#fde4df;stroke:#c9564a}.o{fill:#eee6f8;stroke:#7456a3}.box{stroke-width:2}.wire{fill:none;stroke:#293943;stroke-width:3}.h{font:700 25px system-ui}.sub{font:700 15px system-ui}.small{font:12px system-ui}</style><marker id="arr" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0L8 4L0 8z" fill="#293943"/></marker></defs>
+  <rect class="bg" width="1200" height="760"/><text class="h ink" x="48" y="45">Service paths — disconnect, expose, remove as a module</text><text class="small muted" x="48" y="70">Rule zero: battery/master disconnected before hands-in service; normal maintenance has no vehicle-level desoldering.</text>
+  <rect class="x box" x="425" y="100" width="350" height="64" rx="10"/><text class="sub ink" x="479" y="127">0 · CN-02 MASTER KILL / CN-01 BATTERY</text><text class="small ink" x="494" y="148">first action · ≤2 s key target if DN-02 selected</text>
+  <path class="wire" marker-end="url(#arr)" d="M600 164V215"/>
+  <rect class="r box" x="430" y="215" width="340" height="72" rx="10"/><text class="sub ink" x="487" y="244">1 · REMOVE BODY SHELL</text><text class="small ink" x="477" y="266">3 M3 + CN-14 · lift vertically · ≤30 s target</text>
+  <path class="wire" d="M600 287V330H145V370M600 330H1055V370M345 330V370M600 330V370M855 330V370"/>
+
+  <rect class="r box" x="55" y="370" width="180" height="74" rx="9"/><text class="sub ink" x="101" y="398">BATTERY</text><text class="small ink" x="84" y="420">CN-01 + strap · top lift</text><text class="small ink" x="94" y="437">target &lt;60 s body-off</text>
+  <rect class="p box" x="255" y="370" width="180" height="74" rx="9"/><text class="sub ink" x="309" y="398">DECK</text><text class="small ink" x="274" y="420">CN-07 + CN-16 + U.FL guides</text><text class="small ink" x="294" y="437">2 M3 + rear hooks</text>
+  <rect class="x box" x="455" y="370" width="180" height="74" rx="9"/><text class="sub ink" x="490" y="398">CAM/GIMBAL</text><text class="small ink" x="472" y="420">CN-09/10/12/24/16</text><text class="small ink" x="483" y="437">whole module to bench</text>
+  <rect class="o box" x="655" y="370" width="180" height="74" rx="9"/><text class="sub ink" x="699" y="398">SPEAKER</text><text class="small ink" x="687" y="420">CN-21 + carrier</text><text class="small ink" x="680" y="437">optional / preserve port</text>
+  <rect class="r box" x="855" y="370" width="240" height="74" rx="9"/><text class="sub ink" x="913" y="398">RX / STEERING</text><text class="small ink" x="879" y="420">CN-19 peel / CN-08 + linkage</text><text class="small ink" x="880" y="437">steering requires re-centre + toe</text>
+
+  <path class="wire" d="M345 444V505H195V540M345 505V540M345 505H495V540M345 505H645V540"/>
+  <rect class="r box" x="105" y="540" width="180" height="72" rx="9"/><text class="sub ink" x="147" y="568">CTL-E1/E2</text><text class="small ink" x="124" y="590">local board off deck</text>
+  <rect class="r box" x="305" y="540" width="180" height="72" rx="9"/><text class="sub ink" x="350" y="568">AUD-AMP</text><text class="small ink" x="329" y="590">local board off deck</text>
+  <rect class="p box" x="505" y="540" width="180" height="72" rx="9"/><text class="sub ink" x="548" y="568">VID-WIFI</text><text class="small ink" x="530" y="590">repair-class solder/retest</text>
+  <rect class="r box" x="705" y="540" width="210" height="72" rx="9"/><text class="sub ink" x="746" y="568">LOWER LAYER</text><text class="small ink" x="731" y="590">UBEC / PS-15 now exposed</text>
+  <path class="wire" marker-end="url(#arr)" d="M810 612V654"/>
+  <rect class="c box" x="615" y="654" width="390" height="60" rx="10"/><text class="sub ink" x="669" y="681">POST-SERVICE CHECKS FOLLOW THE TOUCHED MODULE</text><text class="small ink" x="658" y="701">rail voltage · bind/RF · video · boresight · centre/toe · limited-power restart</text>
+  <text class="small muted" x="70" y="735">Rear LED/Hall tail is designed for draw-string pull-through; do not bare-pull wires or service a powered drivetrain.</text>
+</svg>

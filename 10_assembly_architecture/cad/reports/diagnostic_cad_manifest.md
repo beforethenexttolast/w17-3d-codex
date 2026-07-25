@@ -34,7 +34,7 @@ required task, part, value, unit, status, source, uncertainty, physical dependen
 selected diagnostic variant fields. It directly cross-references:
 
 - DAT-F at Z=0;
-- D-26 at Z 35–62 mm and its rear/forward lateral bands;
+- corrected provisional D-26 at Z22–38 mm, |L|≤22 (ASM-08 physical sweep open);
 - the one right-side free feature at X -39.99, L -32.86;
 - the mirror battery-side free feature at X -39.94, L +17.14;
 - the approximately 78 mm battery span;
@@ -60,7 +60,7 @@ contains no free M3 feature.
 | CTL-E2 | expected/unmeasured | same service envelope, separately identified |
 | VID-WIFI | only the authorized P9 maximum 60 × 32 × 12 | explicitly embossed `UNCONFIRMED ENVELOPE`, two aft pigtails, power exit, CN-16 boundary, cable bends, confirmed 28 × 28 × 3 heatsink and 5 mm cooling cage |
 | AUD-AMP | expected/unmeasured | body, I2S and speaker exits, bends, mount allowance, adjustment/tool-access cage and arrow |
-| SRV-STEER | expected/unmeasured KO-19 stand-in | body, lead/bend and maximum horn-sweep disc; never a mount |
+| SRV-STEER | expected/unmeasured generic gauge | body, lead/bend and maximum horn-radius disc; never a mount and not the corrected installed side orientation—use the real servo for D-09/D-26 |
 | PS-15 connector bank | expected diagnostic allocation | body, XT60 and three XT30 allowances, mating-hand cage, extraction/wire-bend cage, tool access and mating/removal arrows |
 
 The envelope register does not authorize numeric minimum/expected Wi-Fi variants beyond
@@ -151,7 +151,7 @@ that file carries source, status, uncertainty and physical dependency.
 | `cad01_ctl_e2.stl` | CTL-E2 dummy | CAD-01 | PS-13 / CTL-E2 | 80 × 44 × 13 | CSV `ESP-*` | DIAG-CAD | 1 | draft PLA/PETG | board plane on bed | distinct ID, header, USB plug/bend/access | board remains expected/unmeasured |
 | `cad01_vid_wifi_max.stl` | VID-WIFI max dummy | CAD-01 | PS-13 / VID-WIFI | 90 × 32 × 20 | CSV `WIFI-*` | DIAG-CAD / UNCONFIRMED | 1 | draft PLA/PETG | body base on bed; heatsink up | P9 max, coax/power/CN-16/cooling | no actual module claim; D-06b open |
 | `cad01_aud_amp.stl` | AUD-AMP dummy | CAD-01 | PS-13 / AUD-AMP | 37 × 19 × 8 | CSV `AMP-*` | DIAG-CAD | 1 | draft PLA/PETG | mount allowance on bed | I2S/speaker bends and tool access | expected body; adjustment location provisional |
-| `cad01_srv_steer.stl` | SRV-STEER dummy | CAD-01 | PS-13 / KO-19 | 52 × 40 × 42.9 | CSV `SERVO-*` | DIAG-CAD | 1 | draft PLA/PETG | body base on bed; horn disc up | body/lead/horn sweep and visible top ID | D-09/physical sweep open; disc support check in slicer |
+| `cad01_srv_steer.stl` | SRV-STEER generic gauge | CAD-01 | PS-13 / KO-19 | 52 × 40 × 42.9 | CSV `SERVO-*` | DIAG-CAD | 1 | draft PLA/PETG | body base on bed; horn disc up | loose body/lead/horn-radius gauging only; not installed side orientation | real DS required for D-09/D-26; disc support check in slicer |
 | `cad01_ps15_connector_bank.stl` | connector-bank dummy | CAD-01 | PS-13 / PS-15 allocation | 105 × 40 × 28 | CSV `JUNC-DUMMY-*`, `JUNC-HAND-*` | DIAG-CAD | 1 | draft PLA/PETG | body/access columns on bed | mating hand, wire/extraction, tool paths | allocation gauge, not PS-15 production packing |
 | `cad02_ps01_battery_tray.stl` | PS-01 tray | CAD-02 | PS-01 / PWR-BAT | 78 × 50 × 12 | CSV `TRAY-*`, `CLAMP-*` | DIAG-CAD | 1 | PETG | DAT-F ribs on bed | bay, insertion, strap, balance park/ballast | S0, floor and clamp fit remain P1 |
 | `cad02_ps01_plate_clamp_foot.stl` | PS-01 clamp coupon | CAD-02 | PS-01 / floor edge | 14 × 12 × 10.8 | CSV `CLAMP-*` | DIAG-CAD | 2 | PETG | flat jaw face on bed | reversible no-hole attachment coupon | unloaded until plate fit/pull-off test |

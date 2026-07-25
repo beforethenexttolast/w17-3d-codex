@@ -3,10 +3,10 @@ SH-DAT-F-Z,ALL,all supports,0,mm,confirmed,V section 3 and V section 4,plane dig
 SH-STATIC-CLEARANCE,ALL,all supports,5,mm,minimum,I section 1 safety clearance policy,policy minimum,body-on P3 check,minimum
 SH-MOVING-CLEARANCE,ALL,all supports,8,mm,minimum,I section 1 safety clearance policy,policy minimum,physical motion sweep,minimum
 SH-FAN-CLEARANCE,ALL,ESC dummy,10,mm,minimum,B section B.1 DRV-ESC and I section 1,policy minimum,body-on P3 check,minimum
-SH-D26-Z-MIN,CAD-02/CAD-04/CAD-06/CAD-08,all supports,35,mm,derived,V section 9 and p0_d26_rod_line.md,reserved-band lower boundary,ASM-08 physical rod sweep,P0
-SH-D26-Z-MAX,CAD-02/CAD-04/CAD-06/CAD-08,all supports,62,mm,derived,V section 9 and p0_d26_rod_line.md,reserved-band upper boundary,ASM-08 physical rod sweep,P0
-SH-D26-L-REAR,CAD-04/CAD-06/CAD-08,right-side supports,18,mm,derived,V section 9 and p0_d26_rod_line.md,rear lateral exclusion,ASM-08 physical rod sweep,P0
-SH-D26-L-FWD,CAD-06/CAD-08,right-side supports,12,mm,derived,V section 9 and p0_d26_rod_line.md,forward lateral exclusion,ASM-08 physical rod sweep,P0
+SH-D26-Z-MIN,CAD-02/CAD-04/CAD-06/CAD-08,all supports,22,mm,provisional,Y section 5 and p0_d09_d26_steering_servo_fit.md,conservative lower boundary because horn and rod ends are absent,ASM-08 physical rod sweep,2026-07-22 correction
+SH-D26-Z-MAX,CAD-02/CAD-04/CAD-06/CAD-08,all supports,38,mm,provisional,Y section 5 and p0_d09_d26_steering_servo_fit.md,conservative upper boundary because horn and rod ends are absent,ASM-08 physical rod sweep,2026-07-22 correction
+SH-D26-L-REAR,CAD-04/CAD-06/CAD-08,right-side supports,22,mm,provisional,Y section 5 and p0_d09_d26_steering_servo_fit.md,conservative lateral moving envelope before 8 mm policy clearance,ASM-08 physical rod sweep,2026-07-22 correction
+SH-D26-L-FWD,CAD-06/CAD-08,right-side supports,22,mm,provisional,Y section 5 and p0_d09_d26_steering_servo_fit.md,conservative lateral moving envelope before 8 mm policy clearance,ASM-08 physical rod sweep,2026-07-22 correction
 SH-FLOOR-THICKNESS,ALL,plate clamp feet,4,mm,derived,V section 4 and p0_d01_floor_datum.md,plain-plate class,assembled plate edge check,P0
 SH-FLOOR-EDGE-L,ALL,plate clamp feet,68.5,mm,derived,V section 4 floor silhouette,plus or minus at wide plate,physical edge/chamfer check,P0
 SH-M3-CLEARANCE,ALL,diagnostic fastener passages,3.4,mm,provisional,T common M3 constraint,diagnostic square passage not final fastener fit,physical screw fit,diagnostic

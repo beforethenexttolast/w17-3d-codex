@@ -233,11 +233,13 @@ def validate() -> str:
             raise AssertionError(f"{filename} has an open or inconsistently oriented shell")
         plate_audits[filename] = audit
 
-    # D-26 policy checks in DAT-F coordinates.
+    # Corrected D-26 policy checks in DAT-F coordinates. Only supports wholly
+    # below the provisional band can be cleared by height alone. H26/H32 are
+    # intentionally retained as diagnostic height gauges and require lateral
+    # placement plus the ASM-08 physical sweep before selection.
     d26_min = p.f("SH-D26-Z-MIN")
     for filename in ("cad02_ps01_battery_tray.stl", "cad04_ps03_ubec_shelf.stl",
-                     "cad08_ps15_junction_support.stl", "cad06_ps05_post_h20.stl",
-                     "cad06_ps05_post_h26.stl", "cad06_ps05_post_h32.stl"):
+                     "cad08_ps15_junction_support.stl", "cad06_ps05_post_h20.stl"):
         if audits[filename].bbox[1][2] >= d26_min:
             raise AssertionError(f"{filename} enters D-26 at Z={d26_min}")
 
@@ -272,7 +274,7 @@ def validate() -> str:
         "share geometry; this local tool proves closed, consistently oriented shells but does not Boolean-union them.",
         "- Generated SHA-256 values do not equal any donor STL under `02_ready_to_slice/`.",
         "- Output filenames and task metadata contain no blocked CAD/PS/production geometry.",
-        f"- CAD-02/CAD-04/CAD-06/CAD-08 geometry stays below D-26's Z={d26_min:g} mm lower boundary.",
+        f"- CAD-02 tray, CAD-04 shelf, CAD-08 junction support and CAD-06 H20 gauge stay below corrected provisional D-26 Z={d26_min:g} mm; H26/H32 overlap it vertically and remain physical-placement gauges only.",
         f"- All six grouped layouts contain the exact declared part/count membership, have no XY bounding-box "
         f"overlap and fit the confirmed {plate_limit:g} x {plate_limit:g} mm build plate.",
         "- Two isolated regenerations produced byte-identical STL sets; no stale file survived the exact-set check.",

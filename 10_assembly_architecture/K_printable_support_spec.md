@@ -13,9 +13,11 @@ not final dimensions.
   grid mostly does NOT exist** (one free M3 feature per side bay; none in the Z2R
   patch — `V` §10): supports may therefore also **share donor screw stacks or use
   plate-clamp/edge feet** — the no-new-holes rule is unchanged. PS-04's inboard
-  edge gets the measured KO-01 number: **|L| ≥ 26 rear / ≥ 20 fwd at deck heights**
-  (**L ≤ −26/−20** on the architecture-right belt side);
-  PS-01 is parametrized for the S0 outcome (pack top ~28 passes under the rod band).
+  edge uses the corrected provisional KO-01: **|L| ≥30 where its Z range overlaps
+  Z22…38** (**L≤−30** on the architecture-right belt side), including the 8 mm
+  moving clearance. The exact edge remains an ASM-08 physical output. PS-01 is
+  parametrized for S0, but its ~Z28 pack/strap no longer clears the rod by height
+  alone and its inboard boundary is also an ASM-08 check.
 - Repeated-service fasteners (≥3 cycles) get **heat-set M3×5 inserts** (HW-INSERT,
   ASSEMBLY_NOTES plastic-thread rule); single-assembly joints may self-thread.
 - Print material default **PETG** (warm chassis interior, near-heat brackets in
@@ -208,6 +210,8 @@ the chassis (one CN-BODY clip suffices; a wall adds mass and blocks airflow).
 ### PS-13 — Dummy-envelope block set *(diagnostic prints allowed now)*
 - **Purpose:** Gate P1 dry-fit bodies. Set: battery 75×45×25; ESC 36×32×18 + 8 fan disc;
   ESP32 55×28×13 + pin rails to 44 wide; UBEC 30×14×10 ×2; DS3235SG 40×20×40.5 + horn
+  radius gauge (**generic CAD-01 envelope only; not an installed-orientation dummy
+  after the 2026-07-22 side-mount correction — use the real servo for D-09/D-26**)
   disc (KO-19 stand-in until the real servo arrives); **WiFi dummy at the P9 max
   envelope 60×32×12 labelled "DUMMY — RST-06"**; camera stand-in only after D-06 sets
   numbers (until then the camera is *not* dry-fitted with a guessed block).
@@ -259,8 +263,12 @@ the chassis (one CN-BODY clip suffices; a wall adds mass and blocks airflow).
 
 Reproducible sources, the authoritative parameter CSV, generated-output manifest,
 automated bbox/topology report and exact P1 checklist now live under [`cad/`](cad/).
-The implementation preserves DAT-F, the D-26 Z 35–62 band, the one-free-feature
-finding and the permitted donor/free/clamp attachment rule. PS-01 uses reversible
+The implementation preserves DAT-F, the one-free-feature finding and the permitted
+donor/free/clamp attachment rule. Its original blanket “below D-26 Z35” validation
+is superseded by the corrected provisional band Z22–38. The tray, UBEC shelf,
+junction support and H20 post remain wholly below Z22 as printed; H26/H32 posts
+overlap the band vertically and are diagnostic height gauges only until their
+lateral placement and ASM-08 clearance are proved. PS-01 uses reversible
 outboard clamp feet because its mirror free feature is too close to the KO-19 policy
 boundary for a useful diagnostic ear; PS-03 uses the verified right-side single plus
 a clamp; PS-15 uses clamps because Z2R has no free feature. Clamp feet are unloaded
@@ -274,3 +282,29 @@ PS-05 shoulders: the recovered positions overlapped its connector gauges, and ch
 a replacement before physical S0/P1 would hard-code the blocked deck interface. CAD-06
 shoulder fit remains testable on PS-03; PS-15 shoulder placement is carried to P1.
 Nothing in this hand-off advances CAD-03/05/07, PS-10/11/14/17 or any production geometry.
+
+## K.4 Remaining-component support delta (2026-07-23)
+
+No row below authorizes production STL. Existing M3 kit/5 mm inserts are reused;
+supports attach by shared donor screws, the mapped free singles or reversible
+plate clamps—never new donor-floor holes.
+
+| Support | Fit-study requirement | Status / production gate |
+|---|---|---|
+| **PS-01 battery tray** | one active pack only; 75×45×25 + XT60/strap dummy; open-top removal; no pack-2 seat | **HOLD** — S0 + ASM-08 + D-31 + selected pack |
+| **PS-02 ESC carrier** | replace stale 36×32×18 input with exact D-28 label/calipers; ≥10 fan air; 12 AWG bends | **FROZEN** — current Z5R candidate fails lower-bound fit |
+| **PS-03 UBEC/cap shelf** | caliper both UBECs/caps; keep installed top ≤Z14; independent Rail A/B lanes | diagnostic planning only; D-32/D-24 |
+| **PS-04/05 deck/posts** | measured ESP32/Wi-Fi/amp; narrow inboard geometry; USB/U.FL service; no KO-01 entry | **HOLD** — S0 + ASM-08 + D-32/33 |
+| **PS-09 tail guide** | carry brake/indicator/DRS leads ≥8 mm from rear motion; draw string before closure | Gate A/B + D-36 |
+| **PS-10 gimbal base** | measured camera, A/B choice, roll trim, two-axis ≥8 mm sweep | **NO CAD** — D-34/35 |
+| **PS-11 duct interface** | all nine SCAD values from camera/blower; inlet/outlet/service proven | **NO CAD** — D-34/D-19 |
+| **PS-12 antenna posts** | chassis-mounted, ≥10 mm coax bend, 65/70 mm route samples, body-cycle proof | D-33 + D-20 |
+| **PS-13 dummies** | old ESC dummy is obsolete; battery dummies are two labelled blocks; no camera block before measure | regenerate ESC gauge only after label; pack gauges diagnostic |
+| **PS-14 speaker carrier** | actual basket/holes/cone/port; compliant ring; left sidepod | **NO CAD** — D-36 |
+| **PS-16 Hall bracket** | final carrier; 0.5 mm adjustment; 1.5 target/1–3 mm proven gap; ASA | **NO CAD** — Gate A + D-38 |
+| **PS-18 light anchors/lenses** | proposed seven-pixel cut layout; optical faces unpainted; body disconnect | new concept only; D-36 |
+| **PS-19 suspension clearance gauges** | ride-height block and non-contact arch/steer-bump gauges; never a vehicle part | diagnostic concept; D-37 |
+
+Heat-set inserts are used only in new repeated-service bosses with enough wall
+and depth. Servo ears, PCB holes, bearing seats and donor motor faces do not get
+enlarged to accept M3 inserts.
