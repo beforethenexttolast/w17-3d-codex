@@ -19,7 +19,7 @@ and a non-conflicting ganged dock remain open.
 | PDB target vs KO-01 | PDB top Z19 to provisional moving envelope start Z22 = 3 mm | DERIVED from TARGET placement | HOLD: 5 mm short of 8 mm moving policy until ASM-08 replaces KO-01 |
 | Lower named stuffing | PDB target + rear charge target + insulated amp/RP1 deck | TARGET/ASSUMPTION | packs in the stepped-T gauge; real holes/exits/thermal faces remain |
 | Decoupled pedestal | gimbal is floor/front-structure referenced; old cassette Z38 + 60 = Z98 arithmetic retired | architecture VERIFIED / geometry ASSUMPTION | old roof failure removed; halo/FOV/sweep/conduit open |
-| Battery/ESC side bodies | no cassette plan overlap; inner faces are only 0.5/1.5 mm outside raw KO-01, not 8 mm | DERIVED plan + DOCUMENTED ESC | CONDITIONAL on measured steering, shell, pack and ESC service volumes |
+| Battery/ESC floor stations | battery has no cassette plan overlap; VERIFIED ESC body X−49.2…−5/L−60.5…−26.8/Z1.5…35.5 and intake plane Z45.5 conflict with KO-01 policy and the shell shoulder | DERIVED plan + VERIFIED ESC / station ASSUMPTION | ESC **FAIL-STATION** pending re-derivation; battery remains conditional on measured steering, shell, strap/leads and removal |
 | Wi-Fi + straight dock | Wi-Fi ≤60×32×12 remains uncalipered/unplaced; straight dock body projection X+42…+58/L±32 overlaps pedestal X+51…+65/L±11 | ASSUMPTION | full layout OPEN; D-06b + wrapped/notched connector dummy |
 | Existing floor holes | front candidates are vent/body-seat territory; rear candidates are single/asymmetric or servo/axle contested | VERIFIED feature map / ASSUMPTION occupancy | no clean four-point pattern |
 

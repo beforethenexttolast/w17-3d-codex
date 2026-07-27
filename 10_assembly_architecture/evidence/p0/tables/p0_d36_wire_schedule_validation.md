@@ -2,11 +2,11 @@
 
 | Check | Result | Detail |
 |---|---|---|
-| authoritative connector map exists | **PASS** | /Users/vitaliykhomenko/Documents/projects/w17-electrical-inputs-for-codex.md |
+| authoritative connector map exists | **PASS** | ../w17-electrical-inputs-for-codex.md |
 | authoritative connector map hash | **PASS** | e7b96a8fdbaeeed47352c208777743f70e0b4f60b252527eff12d9fb43d6fd51 |
-| authoritative control PinMap exists | **PASS** | /Users/vitaliykhomenko/Documents/projects/w17-control-fw/lib/config/include/config/PinMap.hpp |
-| authoritative control PinMap hash | **PASS** | 6afca81526092adfabb8dd65484867cef40a1c9d625d8997692437b18f8dbcd2 |
-| authoritative sound/light PinMap exists | **PASS** | /Users/vitaliykhomenko/Documents/projects/w17-soundlight-fw/lib/config/include/config/PinMap.hpp |
+| authoritative control PinMap exists | **PASS** | ../w17-control-fw/lib/config/include/config/PinMap.hpp |
+| authoritative control PinMap hash | **PASS** | bf6cfe79aa4eedfcf356e92e393dd0d6789b19b9f74009a205ca308bf0dbaf8b |
+| authoritative sound/light PinMap exists | **PASS** | ../w17-soundlight-fw/lib/config/include/config/PinMap.hpp |
 | authoritative sound/light PinMap hash | **PASS** | 71e0a93a63f1c899717454ebcbe55ae37e5bb6122d63f15d5b69b1ad90510f5d |
 | control firmware pin tokens | **PASS** | 11 exact assignments |
 | sound/light firmware pin tokens | **PASS** | 6 exact assignments |
@@ -19,7 +19,7 @@
 | Markdown exists | **PASS** | 10_assembly_architecture/Z_wire_schedule.md |
 | Markdown wire-ID coverage | **PASS** | all IDs present |
 | Markdown Joint-ID links | **PASS** | every row has one or more clickable Joint Register links |
-| Markdown sources and totals | **PASS** | source hashes + wire/connector totals + ASM checks |
+| Markdown sources and totals | **PASS** | source hashes + control-pin provenance + wire/connector totals + ASM checks |
 | connector-count manifest | **PASS** | 34 mating pairs/receptacles; 67 housings/halves; 175 loaded contacts/mapped pads |
 | cut arithmetic | **PASS** | route + slack + relief = cut for every row |
 | rounded estimate discipline | **PASS** | all route/slack/relief/cut values are 10 mm increments |

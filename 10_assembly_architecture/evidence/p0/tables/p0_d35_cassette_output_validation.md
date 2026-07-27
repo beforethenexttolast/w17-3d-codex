@@ -38,6 +38,7 @@
 | umbilical.html: local links | **PASS** | 2 links checked |
 | umbilical.html: confidence vocabulary | **PASS** | four-state vocabulary present |
 | layout: three scaled views | **PASS** | 3 SVG views |
+| layout: measured ESC failed station | **PASS** | measured body + intake plane + failed station visible |
 | layout: explicit conditional verdict and keep-outs | **PASS** | governors visibly named |
 | layout: embedded real STL assets | **PASS** | 7 data-URI mesh silhouettes |
 | exploded: order and balloons | **PASS** | order strip + scaled exploded SVG |
@@ -59,4 +60,4 @@
 | viz master cassette link | **PASS** | bounded link block present |
 | no cassette STL output | **PASS** | visualization directory contains no STL |
 
-**Verdict: PASS — 56/56 checks passed.**
+**Verdict: PASS — 57/57 checks passed.**

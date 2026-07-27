@@ -20,7 +20,11 @@ CSV_OUT = ARCH / "Z_wire_schedule.csv"
 MD_OUT = ARCH / "Z_wire_schedule.md"
 
 ELECTRICAL_SOURCE_SHA256 = "e7b96a8fdbaeeed47352c208777743f70e0b4f60b252527eff12d9fb43d6fd51"
-CONTROL_PINMAP_SHA256 = "6afca81526092adfabb8dd65484867cef40a1c9d625d8997692437b18f8dbcd2"
+CONTROL_PINMAP_SHA256 = "bf6cfe79aa4eedfcf356e92e393dd0d6789b19b9f74009a205ca308bf0dbaf8b"
+CONTROL_PINMAP_BASIS = (
+    "w17-control-fw@37ebe46 (CB3, 2026-07-25): comment-only PinMap note correction; "
+    "pin values unchanged"
+)
 SOUNDLIGHT_PINMAP_SHA256 = "71e0a93a63f1c899717454ebcbe55ae37e5bb6122d63f15d5b69b1ad90510f5d"
 
 BUNDLES = ("on-PDB", "on-cassette", "pedestal-conduit", "umbilical")
@@ -43,7 +47,7 @@ XYZ = {
     "DOCK_SIG": "X +42…+58, L near +32, Z local TBD",
     "DOCK_PED": "X +42…+58, L near 0, Z local TBD",
     "STEER": "X −84…−16 station, L ≈0, Z 0…+22.9",
-    "ESC": "X −49.2…−5, L −60.5…−23.5, Z +1.5…+25.7",
+    "ESC": "FAIL-STATION: prior X −49.2…−5, L −60.5…−26.8, body Z +1.5…+35.5, intake plane Z +45.5; replacement endpoint TBD",
     "DRS": "X ≈−125, L ≈0, Z +55…+80",
     "LED": "tail input ≈X −125, L 0, Z +35",
     "HALL": "X −90.9, L collar TBD, Z +26…+27",
@@ -805,6 +809,7 @@ def write_md() -> None:
         "connector families are transcribed from the supplied `w17-electrical-inputs-for-codex.md`",
         f"(SHA-256 `{ELECTRICAL_SOURCE_SHA256}`) and the firmware pin maps it cites",
         f"(control `{CONTROL_PINMAP_SHA256}`; sound/light `{SOUNDLIGHT_PINMAP_SHA256}`).",
+        f"Control PinMap basis: `{CONTROL_PINMAP_BASIS}`; exact pin tokens are validated separately.",
         "This file adds physical cuts/routes only; it does not revise the existing analysis, component",
         "values, placements, Joint Register or any STL.",
         "",

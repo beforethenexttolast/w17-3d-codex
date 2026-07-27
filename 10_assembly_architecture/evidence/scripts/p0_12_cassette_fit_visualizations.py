@@ -87,8 +87,9 @@ BAT_X = (-80.0, -5.0)
 BAT_L = (22.5, 67.5)
 BAT_Z = (1.5, 26.5)
 ESC_X = (-49.2, -5.0)
-ESC_L = (-60.5, -23.5)
-ESC_Z = (1.5, 25.7)
+ESC_L = (-60.5, -26.8)
+ESC_Z = (1.5, 35.5)
+ESC_AIR_Z = (35.5, 45.5)
 BOSS_POINTS = [(-15.0, -12.0), (-15.0, 12.0), (35.0, -12.0), (35.0, 12.0)]
 
 # Connector family/count is FIRM.  Body allocations remain ASSUMPTION until
@@ -337,7 +338,7 @@ def layout_plan_svg() -> str:
         rect_svg(*PEDESTAL_X, *PEDESTAL_L, mp, "conf-assumption", "fixed hollow pedestal foot"),
         rect_svg(*DOCK_X, *DOCK_L, mp, "failure", "straight dock body projection · REJECT"),
         rect_svg(*BAT_X, *BAT_L, mp, "defer", "2S pack ≤75×45 · DEFER"),
-        rect_svg(*ESC_X, *ESC_L, mp, "conf-documented", "ESC 44.2×37"),
+        rect_svg(*ESC_X, *ESC_L, mp, "failure", "ESC 44.2×33.7 · VERIFIED · FAIL-STATION"),
         rect_svg(-132, -78, -18, 18, mp, "conf-documented", "motor Ø36×54"),
         rect_svg(-125, -82, -61, -24, mp, "moving", "belt/pulley sweep"),
     ]
@@ -395,10 +396,11 @@ def layout_side_svg(shell_tris) -> str:
         rect_svg(*PEDESTAL_X, *PEDESTAL_Z, mp, "conf-assumption", "fixed hollow pedestal"),
         rect_svg(*GIMBAL_X, *GIMBAL_Z, mp, "defer", "floor-ref gimbal reserve"),
         rect_svg(*BAT_X, *BAT_Z, mp, "defer", "battery"),
-        rect_svg(*ESC_X, *ESC_Z, mp, "conf-documented", "ESC"),
+        rect_svg(*ESC_X, *ESC_Z, mp, "failure", "ESC VERIFIED · FAIL-STATION"),
+        rect_svg(*ESC_X, *ESC_AIR_Z, mp, "failure", "10 mm intake"),
         rect_svg(-132, -78, 9, 45, mp, "conf-documented", "motor"),
         '<text class="accent label" x="25" y="26">SIDE · REGISTERED L=0 SHELL · S0=0 SOLID / S0+11 DASHED</text>',
-        '<text class="small" x="25" y="46">PDB top Z19 is shell-safe but only 3 mm below KO-01 Z22: 5 mm short of the 8 mm moving policy until ASM-08.</text>',
+        '<text class="small" x="25" y="46">PDB top Z19 is 5 mm short of KO-01 policy; measured ESC reaches Z35.5 / intake Z45.5 and FAILS this station.</text>',
         f'<line class="axis" x1="{mp(-140,-10)[0]:.1f}" y1="{mp(-140,-10)[1]:.1f}" x2="{mp(-90,-10)[0]:.1f}" y2="{mp(-90,-10)[1]:.1f}"/>',
         f'<text class="small" x="{mp(-140,-10)[0]:.1f}" y="{mp(-140,-10)[1]-8:.1f}">50 mm ruler · 2.6 px/mm</text>',
         "</svg>",
@@ -425,7 +427,8 @@ def layout_section_svg(shell_tris) -> str:
         rect_svg(*MINI_L_POS, *MINI_Z, mp, "conf-documented", "ESP #2"),
         rect_svg(*KO_L, *KO_Z, mp, "moving", "KO-01"),
         rect_svg(*BAT_L, *BAT_Z, mp, "failure", "battery"),
-        rect_svg(*ESC_L, *ESC_Z, mp, "failure", "ESC"),
+        rect_svg(*ESC_L, *ESC_Z, mp, "failure", "ESC VERIFIED · FAIL-STATION"),
+        rect_svg(*ESC_L, *ESC_AIR_Z, mp, "failure", "10 mm intake"),
         '<text class="accent label" x="24" y="25">SECTION X=+20 · REAL REGISTERED SHELL</text>',
         '<text class="small" x="24" y="44">Wall seats retain 8 mm lateral separation; central PDB top Z19 has only 3 mm vertical separation to KO-01.</text>',
         f'<line class="axis" x1="{mp(-65,-7)[0]:.1f}" y1="{mp(-65,-7)[1]:.1f}" x2="{mp(-15,-7)[0]:.1f}" y2="{mp(-15,-7)[1]:.1f}"/>',
@@ -438,7 +441,7 @@ def layout_section_svg(shell_tris) -> str:
 def layout_page(shell_tris) -> str:
     page = page_start("Everything-inside re-audit", "plan + side + real shell section")
     page += """<p class="eyebrow">cassette audit / sheet A</p><h1>Everything-inside revised reference gauge</h1>
-<div class="status"><b>LOWER TARGET PACK REPACKS; EVERYTHING-INSIDE DOES NOT YET CLOSE.</b> The 55×45×18 PDB target (including 2× UBEC + capacitor), 30×25×10 charge target, amp and RP1 fit a re-tightened stepped-T gauge. The PDB top is only 3 mm below provisional KO-01, the Wi-Fi body is still uncalipered/unplaced, and the straight three-bank dock projection collides with the fixed pedestal. A full-scale dummy remains allowed; production does not.</div>
+<div class="status"><b>LOWER TARGET PACK REPACKS; EVERYTHING-INSIDE DOES NOT YET CLOSE.</b> The 55×45×18 PDB target (including 2× UBEC + capacitor), 30×25×10 charge target, amp and RP1 fit a re-tightened stepped-T gauge. The measured 44.2×33.7×34.0 ESC fails its current floor station and needs re-derivation; the PDB top is only 3 mm below provisional KO-01, the Wi-Fi body is still uncalipered/unplaced, and the straight three-bank dock projection collides with the fixed pedestal. A full-scale dummy remains allowed; production does not.</div>
 <div class="board"><h2>Plan</h2><p class="sub">Real P0 floor outline, derived fixed occupancies and documented/assumed hardware at one common scale.</p><div class="drawing">"""
     page += layout_plan_svg()
     page += """</div></div><div class="board"><h2>Longitudinal side</h2><p class="sub">Registered shell section at L=0. Solid is the S0=0 lower bound; the dashed copy shows the optimistic, still-unverified +11 mm seat bound.</p><div class="drawing">"""
@@ -455,7 +458,7 @@ def layout_page(shell_tris) -> str:
 <tr><td>PDB TARGET vs KO-01</td><td>8 mm moving policy</td><td>KO starts Z22; PDB top Z19 leaves 3 mm</td><td><b>HOLD · 5 mm DEFICIT / ASM-08</b></td></tr>
 <tr><td>Lower named stuffing</td><td>PDB 55×45×18 + charge 30×25×10 + amp + RP1</td><td>rotated PDB X+1…+46; rear charge X−31…−1; amp/RP1 deck Z13…16</td><td><b>PACKS AS ASSUMPTION</b></td></tr>
 <tr><td>Gimbal stack</td><td>not carried above cassette</td><td>old Z38+60=Z98 retired; floor-referenced pedestal remains fixed</td><td><b>PASS ARCHITECTURE / SWEEP DEFER</b></td></tr>
-<tr><td>Battery + ESC</td><td>5 mm static, 8 mm moving</td><td>no cassette plan overlap; shell, real leads/air and measured KO-01 remain open</td><td><b>CONDITIONAL / DEFER PACK</b></td></tr>
+<tr><td>Battery + ESC</td><td>5 mm static, 8 mm moving</td><td>battery remains conditional; VERIFIED ESC body X−49.2…−5/L−60.5…−26.8/Z1.5…35.5 and intake plane Z45.5 conflict with KO-01 policy and shell shoulder</td><td><b>ESC FAIL-STATION / DEFER PACK</b></td></tr>
 <tr><td>Wi-Fi + connector dock</td><td>complete body/bends + service pull</td><td>Wi-Fi ≤60×32×12 allocation remains uncalipered; straight 16×64 dock projection overlaps pedestal X51…58/L±11</td><td><b>HOLD · FULL LAYOUT OPEN</b></td></tr>
 </tbody></table></div></div>
 <div class="board"><h2>Real mesh silhouettes used</h2><p class="sub">These are directly loaded STL silhouettes. Hardware without a mesh remains a technical outline.</p>{asset_cards()}</div>
@@ -764,7 +767,7 @@ def evidence_markdown(shell_tris) -> str:
         "| PDB target vs KO-01 | PDB top Z19 to provisional moving envelope start Z22 = 3 mm | DERIVED from TARGET placement | HOLD: 5 mm short of 8 mm moving policy until ASM-08 replaces KO-01 |",
         "| Lower named stuffing | PDB target + rear charge target + insulated amp/RP1 deck | TARGET/ASSUMPTION | packs in the stepped-T gauge; real holes/exits/thermal faces remain |",
         "| Decoupled pedestal | gimbal is floor/front-structure referenced; old cassette Z38 + 60 = Z98 arithmetic retired | architecture VERIFIED / geometry ASSUMPTION | old roof failure removed; halo/FOV/sweep/conduit open |",
-        "| Battery/ESC side bodies | no cassette plan overlap; inner faces are only 0.5/1.5 mm outside raw KO-01, not 8 mm | DERIVED plan + DOCUMENTED ESC | CONDITIONAL on measured steering, shell, pack and ESC service volumes |",
+        "| Battery/ESC floor stations | battery has no cassette plan overlap; VERIFIED ESC body X−49.2…−5/L−60.5…−26.8/Z1.5…35.5 and intake plane Z45.5 conflict with KO-01 policy and the shell shoulder | DERIVED plan + VERIFIED ESC / station ASSUMPTION | ESC **FAIL-STATION** pending re-derivation; battery remains conditional on measured steering, shell, strap/leads and removal |",
         "| Wi-Fi + straight dock | Wi-Fi ≤60×32×12 remains uncalipered/unplaced; straight dock body projection X+42…+58/L±32 overlaps pedestal X+51…+65/L±11 | ASSUMPTION | full layout OPEN; D-06b + wrapped/notched connector dummy |",
         "| Existing floor holes | front candidates are vent/body-seat territory; rear candidates are single/asymmetric or servo/axle contested | VERIFIED feature map / ASSUMPTION occupancy | no clean four-point pattern |",
         "",
@@ -830,7 +833,7 @@ def index_page() -> str:
     page = page_start("Electronics cassette audit", "separate physical-feasibility visualization set")
     page += f"""<p class="eyebrow">10_assembly_architecture / viz / cassette</p>
 <h1>Lift-out electronics cassette audit</h1>
-<div class="status"><b>CONDITIONAL-GO TO A FULL-SCALE REPACK DUMMY; EVERYTHING-INSIDE NOT CLOSED.</b> The supplied PDB/charge targets repack under the shell, but the PDB leaves only 3 mm to provisional KO-01, the Wi-Fi body is still unplaced, and a straight ganged dock overlaps the fixed pedestal. The old 110 mm board-row and Z98 gimbal failures remain removed. No production STL or relief.</div>
+<div class="status"><b>CONDITIONAL-GO TO A FULL-SCALE REPACK DUMMY; EVERYTHING-INSIDE NOT CLOSED.</b> The supplied PDB/charge targets repack under the shell, but the measured ESC is FAIL-STATION pending re-derivation, the PDB leaves only 3 mm to provisional KO-01, the Wi-Fi body is still unplaced, and a straight ganged dock overlaps the fixed pedestal. The old 110 mm board-row and Z98 gimbal failures remain removed. No production STL or relief.</div>
 <div class="summary">
 <div class="card"><strong>+58.4 mm</strong><span>39 mm mini row residual in the clean X interval</span></div>
 <div class="card fail"><strong>S0≥9.82</strong><span>wall-seat shoulder condition with 5 mm static policy</span></div>
@@ -838,7 +841,7 @@ def index_page() -> str:
 <div class="card"><strong>{illustrative[4]:.1f}/{100-illustrative[4]:.1f}</strong><span>illustrative front/rear at C25 + P20 · ASSUMPTION</span></div>
 </div>
 <div class="board"><h2>Sheets</h2><div class="cards">
-<a class="card fail" href="layout.html"><span class="tag assumption">SHEET A</span><b> Plan + side + shell section</b><p>Stepped-T target repack, wall minis, unresolved Wi-Fi/dock, battery, ESC, motor, belt and pedestal.</p></a>
+<a class="card fail" href="layout.html"><span class="tag assumption">SHEET A</span><b> Plan + side + shell section</b><p>Stepped-T target repack, wall minis, unresolved Wi-Fi/dock, battery, measured ESC FAIL-STATION, motor, belt and pedestal.</p></a>
 <a class="card fail" href="exploded.html"><span class="tag assumption">SHEET B</span><b> Exploded cassette</b><p>Floor → saddle → PDB/charge → amp/RP1 deck → wall minis; Wi-Fi and dock visibly open.</p></a>
 <a class="card fail" href="pedestal.html"><span class="tag defer">SHEET C</span><b> Cockpit pedestal</b><p>Floor/front joint, floor-referenced gimbal reserve and hollow USB/2×MG90S path.</p></a>
 <a class="card fail" href="umbilical.html"><span class="tag assumption">SHEET D</span><b> Umbilical route</b><p>Firm XT60/XT30/3-pin/XH/U.FL map, assumed body seats, 10×18 conduit and rejected straight dock.</p></a>

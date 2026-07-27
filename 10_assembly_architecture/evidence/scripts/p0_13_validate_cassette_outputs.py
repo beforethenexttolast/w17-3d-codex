@@ -94,6 +94,10 @@ def main() -> int:
                 and all(term in layout for term in
                         ("50 mm ruler", "S0=0", "SECTION X=+20")),
                 f"{scans.get('layout.html', Scan()).svg_count} SVG views", rows)
+    ok &= check("layout: measured ESC failed station",
+                all(term in layout for term in
+                    ("44.2×33.7×34.0", "ESC FAIL-STATION", "Z45.5")),
+                "measured body + intake plane + failed station visible", rows)
     ok &= check("layout: explicit conditional verdict and keep-outs",
                 all(term in layout for term in
                     ("EVERYTHING-INSIDE DOES NOT YET CLOSE", "55×45×18",
@@ -152,7 +156,7 @@ def main() -> int:
                     all(term in e for term in
                         ("58.36", "9.82", "55×45×18", "30×25×10",
                          "3 mm", "5 mm short", "C=25", "CONDITIONAL-GO",
-                         "No STL")),
+                         "No STL", "VERIFIED ESC", "Z45.5", "FAIL-STATION")),
                     "target repack, KO deficit, sensitivity and production stop present", rows)
     if study.is_file():
         s = study.read_text(encoding="utf-8")

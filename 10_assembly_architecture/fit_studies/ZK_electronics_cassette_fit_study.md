@@ -379,8 +379,9 @@ failed station. The old 110 mm board-row and Z98 additive-gimbal failure
 mechanisms stay retired; the former four-boss coordinates and straight dock face
 remain rejected implementations inside open mounting/service gates.
 
-The existing generated `p0_d34`/cassette visualization set encodes the preceding
-Z19/unplaced-Wi-Fi/24.2 mm ESC revision and must not be used as evidence for this
-batch-1 recomputation until its generator is synchronized. No script was run and
-no STL or relief was produced here. A2 remains NOT-EXECUTED and Phase B remains
-BLOCKED; nothing is to be powered.
+The generated `p0_d34`/cassette visualization set still encodes the preceding
+Z19/unplaced-Wi-Fi cassette cells and must not be used as evidence for the full
+batch-1 recomputation. Its ESC overlay is synchronized to the measured body and
+failed station; that synchronization emits no STL or relief and authorizes no
+print. A2 remains NOT-EXECUTED and Phase B remains BLOCKED; nothing is to be
+powered.

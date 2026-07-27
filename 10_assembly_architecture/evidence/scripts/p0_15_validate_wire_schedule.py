@@ -33,6 +33,10 @@ def sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def workspace_relative(path: Path) -> str:
+    return str(Path("..") / path.relative_to(REPO.parent))
+
+
 def check(name: str, passed: bool, detail: str, rows: list[tuple[str, str, str]]) -> bool:
     rows.append((name, "PASS" if passed else "FAIL", detail))
     return passed
@@ -55,7 +59,7 @@ def main() -> int:
     }
     for label, (path, expected_sha) in source_paths.items():
         exists = path.is_file()
-        ok &= check(f"authoritative {label} exists", exists, str(path), checks)
+        ok &= check(f"authoritative {label} exists", exists, workspace_relative(path), checks)
         if exists:
             actual = sha256(path)
             ok &= check(f"authoritative {label} hash", actual == expected_sha, actual, checks)
@@ -116,12 +120,13 @@ def main() -> int:
                 all(value in md_text for value in (
                     data.ELECTRICAL_SOURCE_SHA256,
                     data.CONTROL_PINMAP_SHA256,
+                    data.CONTROL_PINMAP_BASIS,
                     data.SOUNDLIGHT_PINMAP_SHA256,
                     "## Wire totals for ordering",
                     "## Connector and contact totals",
                     "## Prioritized open ASM checks",
                 )),
-                "source hashes + wire/connector totals + ASM checks", checks)
+                "source hashes + control-pin provenance + wire/connector totals + ASM checks", checks)
     connector_families = [row[0] for row in data.CONNECTORS]
     connector_totals_ok = (
         len(connector_families) == len(set(connector_families))

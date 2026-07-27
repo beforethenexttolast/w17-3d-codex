@@ -146,7 +146,7 @@ cassette attempt only; it does not authorize a mount.
 | VID-WIFI-CAS | **UNPLACED** | **UNPLACED** | must clear KO-01/shell | ≤60×32×12 allocation + 28×28×3 sink; USB/U.FL/airflow exits unmeasured | ASSUMPTION; D-06b blocks full layout closure |
 | VID-CAM-PED | outer core +51…+65; camera axis TBD | core L±11; boresight centred by fit gate | floor-referenced; gimbal datum TBD | 10×18 clear conduit, 2 mm wall; fixed to floor/front structure | ASSUMPTION; MG90S **DEFER**; old Z38…98 stack retired |
 | PWR-BAT-CAS-REF | −80…−5 | +22.5…+67.5 | 1.5…26.5 | floor, off cassette; strap/removal outward | exact pack DEFER; shell/sweep candidate remains conditional |
-| DRV-ESC-CAS-REF | −49.2…−5 | −60.5…−23.5 | 1.5…25.7 | floor, fan up; natural leads/air volume TBD | body DOCUMENTED, station ASSUMPTION/conditional |
+| DRV-ESC-CAS-REF | −49.2…−5 | −60.5…−26.8 | body 1.5…35.5; intake plane 45.5 | floor, fan up; natural leads/air volume TBD | body VERIFIED; outboard-anchored station ASSUMPTION / **FAIL-STATION**, replacement TBD |
 | CAS-DOCK | straight trial +42…+58 | ±32 | local TBD | firm minimum XT60×1/XT30×2/3-pin×5/XH3×3/USB4×1; immediate R1/R2 turn | map FIRM; body/topology ASSUMPTION; straight trial overlaps pedestal |
 | CAS-BOSS-4 | former −15/+35 | ±12 | floor interface | former four points lie inside charge/PDB targets | **REJECTED implementation**; external four-point saddle/clamp dummy required, no donor drilling |
 
