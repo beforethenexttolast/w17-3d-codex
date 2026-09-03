@@ -16,7 +16,7 @@
 //  would be a lie you could check in ten seconds. A number used by
 //  exactly one file is declared at the top of that file, still named and
 //  still tagged. Today those are: the coupon plate/label constants
-//  (fit_check_coupons.scad:30-34), the print-plate spacing in
+//  (fit_check_coupons.scad:30-32,:42,:89,:224-228), the print-plate spacing in
 //  second_floor_cage.scad, gcs_box.scad's local constants, and two
 //  shape-proportion defaults in lib/w17_lib.scad (:109 extra_h, :135
 //  relief_frac), both of them named default arguments. What is banned is an ANONYMOUS literal in geometry — a
