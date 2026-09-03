@@ -116,7 +116,14 @@ lightly pressed** — not clamped, not lifted.
 **Tool:** depth gauge or feeler stack. Coupon **C-4**
 ([`11_cad/fit_check_coupons.scad`](11_cad/fit_check_coupons.scad),
 `coupon="c4"`) is a stepped gauge printed for exactly this: slide it in and read the
-tallest step that still passes.
+tallest step that still passes. **Nothing on that gauge stands proud of a step** — the
+step numbers are cut *into* the step tops and the handle is deliberately shorter than
+the lowest step, so the only thing that can ever stop the gauge going in is the step
+itself. (An earlier version had the numbers raised 0.6 mm, which would have made every
+reading 0.6 mm high against a margin of 1.18 mm, and in the unsafe direction.) The
+steps run **2…11 mm**: if the shell edge is lower than the 2 mm step, record
+*"below the lowest step"* — that is a real answer and a serious one, not a failed
+measurement.
 **Tolerance:** ±0.5 mm.
 **Parameter:** `s0_measured`.
 
@@ -164,7 +171,7 @@ provisional band is `Z 22…38` at `|L| ≤ 22`, and the PDB sits `8.00 mm` belo
 
 ---
 
-## M-03 — The MH-ET D1-Mini board · **feeds five parameters and OP-H**
+## M-03 — The MH-ET D1-Mini board · **feeds seven parameters, OP-H and OP-I**
 
 **What / datum / tool:** PCB edge; calipers; ±0.2 mm.
 
@@ -174,10 +181,17 @@ provisional band is `Z 22…38` at `|L| ≤ 22`, and the PDB sits `8.00 mm` belo
 | b | PCB thickness | | `esp_pcb_t` |
 | c | total thickness **with headers fitted**, at its thickest | | `esp_thk_headers` |
 | d | mounting-hole pitch, X and Y, and hole Ø | | `esp_hole_dx/dy/d` |
-| e | **which edge carries the USB-C** — long or short, and which end | | (decides the clip notch) |
-| f | USB-C shell width × height, and how far it protrudes past the PCB edge | | `esp_usb_w/h` |
+| e | **which edge carries the service port** — long or short, and which end | | `esp_usb_edge` (and it decides the clip notch) |
+| f | **which connector it actually is** — USB-C, micro-USB B, or something else — then its shell width × height and how far it protrudes past the PCB edge | | `esp_usb_type`, `esp_usb_w/h` |
 | g | with a cable plugged in: how far the plug body sticks out, and its bend radius | | (service access) |
 | h | **component-free zones**: how far in from each edge is the board bare on the outboard face? | | **OP-H / clip stations** |
+
+Row **(f)** is not a formality. **Two project documents disagree about the connector
+itself**: `w17-electrical-inputs-for-codex.md:8,10` says *"onboard micro-USB serial …
+micro-USB on one short edge"*, and the ZK cassette study's line 102 says *"both USB-C
+service ends face X+42"*. Neither is a caliper record, and the CAD, the service-opening
+story and the clip notch have all been written for USB-C. **Look at the board and say
+which it is** — one sentence retires the whole conflict (study **OP-I**).
 
 Row **(h)** is the one nobody thinks to take and it decides the cage's retention. The
 board band is *exactly one board thick*, so the two clips necessarily stand where the
