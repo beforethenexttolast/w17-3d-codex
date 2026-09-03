@@ -32,11 +32,16 @@
 //  above the base plate anywhere over the PDB, and no legal wall beside
 //  a board above Z14. The cage that survives is:
 //
-//      base plate  Z0..1, full width  ... the only centreline crossing
-//      register walls  |L| 27.5..30, Z1..14  ... PDB register + board back
-//      low outboard rails  Z1..4  ... they form the board's bottom slot
-//      aft end guides  X+1..+3, |L| 30..43  ... the only full-height part
-//      two clips per board     ... flush at the board top, zero added height
+//      base plate       Z0..1, full width      ... the only centreline crossing
+//      register walls   |L| 27.7..30, Z1..14    ... PDB register + board back
+//                       (27.7, not 27.5: the PDB has to DROP IN — w17_params §6)
+//      low outboard rails  Z1..4                ... the board's bottom slot
+//      aft end guide, per side, in two pieces:
+//          block        X+1..+3, |L| 27.7..33.6, Z1..14
+//          post         X+3..+5, |L| 31.8..35.8, Z1..30  ... the only full-height
+//                       member, and it stops BELOW the board top, not at it
+//      two clips per board                      ... flush at the board top,
+//                                                   zero added height
 //
 //  The boards stand on edge. That is not a stylistic choice: laid flat a
 //  board needs 31 mm of lateral band and the car has 13 (AA §5.1, SF-B).
@@ -58,8 +63,20 @@ include <lib/w17_lib.scad>
 render_mode = "part";
 
 // Sub-part selector, so render.sh can export the clip separately:
-//   "all" | "cage" | "clip"
+//   "all"         cage + all four clips, every one in its INSTALLED position
+//   "cage"        the cassette-mounted geometry only
+//   "clip"        the four clips, still in their installed positions. This is a
+//                 VIEW, not a print job -- it exports four towers standing 31 mm
+//                 in the air, which is neither how they are printed nor a plate
+//                 you could slice.
+//   "clip_print"  the same four clips laid down in their PRINT orientation on a
+//                 plate at Z0. THIS is the one to slice.
 part = "all";
+
+// Print-plate layout (a layout number, not a fit dimension -- see the editing
+// rules in README.md).
+clip_plate_gap = 4.0;   // POLICY(gap between parts on the plate, wide enough for
+                        //   a brim and for a knife to get between them)
 
 
 // =====================================================================
@@ -89,9 +106,10 @@ module cage_register_wall() {
 
         // two cable pass-throughs so every PDB rail tap reaches the board
         // above it as a short vertical run (AA §4.2)
-        for (px = [wing_x0 + 9, wing_x1 - 9])
-            translate([px, wall_l_in - EPS, base_t + pass_slot_h/2 + 1])
-                w17_cable_pass(pass_slot_w, pass_slot_h, wall_std + 2*EPS);
+        for (px = [wing_x0 + pass_slot_inset, wing_x1 - pass_slot_inset])
+            translate([px, wall_l_in - EPS,
+                       base_t + pass_slot_h/2 + pass_slot_z0])
+                w17_cable_pass(pass_slot_w, pass_slot_h, wall_t + 2*EPS);
     }
 }
 
@@ -105,12 +123,18 @@ module cage_outboard_rail() {
 }
 
 module cage_aft_guide() {
-    // The only place in the cassette where full-height structure is legal:
-    // outboard of |L| 30 (clear of KO-01) and aft of the PDB in X.
+    // The only place in the cassette where full-height structure is legal,
+    // and the reason is LATERAL, not fore-aft. The post sits at |L| 31.8..35.8:
+    // outboard of the KO-01 guard at |L| 30, and outboard of the PDB's own
+    // L±27.5 edge. It is NOT clear of the PDB in X -- X+1..+5 lies inside the
+    // PDB's X+1..+46 -- and an earlier version of this comment claimed it was.
+    // The guide passes BESIDE the PDB, not behind it.
     //
-    // Three pieces:
-    //   block  X+1..+3, |L| 27.5..33.6, Z1..14 -- ties wall to rail and
-    //          gives the board's aft edge something to butt against
+    // Two pieces:
+    //   block  X+1..+3, |L| 27.7..33.6, Z1..14 -- ties wall to rail and
+    //          gives the board's aft edge something to butt against. Capped
+    //          at wall_top_z like the wall, because inboard of |L| 30 it is
+    //          inside the KO-01 guard band.
     //   post   X+3..+5, |L| 31.8..35.8, Z1..30 -- the full-height member,
     //          reaching over the board's aft 2 mm on the OUTBOARD side
     // The post stops at guide_top_z, which is BELOW board_top_z: it is the
@@ -142,8 +166,9 @@ module cage_base_features() {
         // cable-tie slot pairs down the centre of each side bay, so a loom
         // is clamped every <=60 mm near motion (AA §4.9)
         w17_both_sides()
-            for (px = [wing_x0 + 10, wing_x0 + 24, wing_x0 + 36])
-                translate([px, (wall_l_in + wall_l_out)/2 + 6, 0])
+            for (dx = zip_station_dx)
+                translate([wing_x0 + dx,
+                           (wall_l_in + wall_l_out)/2 + zip_line_offset, 0])
                     w17_zip_slot_pair(zip_slot_w, zip_slot_l, zip_slot_bridge, base_t);
 
         // peg holes for the two board clips (see clip(), below)
@@ -155,8 +180,8 @@ module cage_base_features() {
         // LED / Hall tail exit at the rear outboard corner, PS-09 route.
         // Rounded, because this is exactly where a loom flexes.
         w17_both_sides()
-            translate([wing_x0 + 4, wing_l_half - 6, -EPS])
-                cylinder(h = base_t + 2*EPS, d = 8);
+            translate([wing_x0 + tail_hole_x, wing_l_half - tail_hole_l_inset, -EPS])
+                cylinder(h = base_t + 2*EPS, d = tail_hole_d);
     }
 }
 
@@ -181,13 +206,14 @@ module cage() {
 //  A single bar across both boards would cross |L| 30 at Z32, which is
 //  inside the KO-01 + policy volume. Two bars, one per side, never do.
 //
-//  Printed and used lying flat; shown here in its installed position.
+//  Drawn here in its INSTALLED position; printed lying down, which is a
+//  different orientation and a separate export (part="clip_print", below).
 //  Its forward end is OP-H: with the registered seat X+3..+42 the board
 //  already reaches the cassette wing's forward edge, so there is nothing
 //  to land a forward post on. Either this bar cantilevers (as drawn) or
 //  board_seat_x0 moves ~2 mm aft. M-03 decides.
 
-module clip(station_x) {
+module clip_body() {
     // One board clip. Two per board. It drops onto a printed peg hole in
     // the base plate, stands up outboard of the low rail, and reaches over
     // the board's top edge with a short finger.
@@ -201,7 +227,7 @@ module clip(station_x) {
     // service, pull the two clips off their pegs with a fingernail. No
     // tool, no fastener, and nothing loaded through the PCB's own holes.
     finger_y0 = board_l_in + clip_finger_gap;   // just clear of the PCB face
-    translate([station_x - clip_len/2, 0, 0]) {
+    union() {
         // the peg that locates it (a real peg/hole fit -- coupon C-1)
         translate([clip_len/2, rail_out + clip_foot_w/2, 0])
             cylinder(h = base_t, d = clip_peg_d);
@@ -217,10 +243,57 @@ module clip(station_x) {
     }
 }
 
+// One clip where it lives on the car.
+module clip(station_x) {
+    translate([station_x - clip_len/2, 0, 0]) clip_body();
+}
+
 module clips() {
     w17_both_sides()
         for (px = clip_station_x)
             clip(px);
+}
+
+
+// ---------------------------------------------------------------------
+// The clip as it is PRINTED, which is not how it is drawn above.
+// ---------------------------------------------------------------------
+//
+// Installed, the clip is a 31 mm tower 2 mm thick. Printed that way it is a
+// tall thin wall whose layers all run across the load: the finger holds a
+// board against a 20 g crash and the first thing that would give is a layer
+// line at the foot. So it is printed LYING DOWN -- rotated a quarter turn
+// about L, so the 6 mm that was its length along the car becomes its height
+// on the bed. Every layer then runs the full 31 mm of the upright, and the
+// load crosses layers nowhere.
+//
+// The one thing that costs: the locating peg now points sideways, printed as
+// a short 3 mm horizontal cylinder off a vertical face. That is exactly the
+// feature coupon C-1's ladder measures, and it is measured in this same
+// orientation -- print the coupon flat, as the file draws it, and read the peg
+// row. If the peg comes out oval, its long axis is the vertical one.
+//
+// The file previously said "printed and used lying flat" and then exported
+// only the installed view, which is a slicing trap. Both now exist and the
+// README says which is which.
+module clip_print() {
+    translate([0, 0, clip_len])
+        rotate([0, 90, 0])
+            translate([0, -rail_out, 0])
+                clip_body();
+}
+
+// Four clips: two boards, two stations each. One plate, one print.
+module clip_print_plate() {
+    // Lying down, the clip is WIDER than its foot: the finger reaches back
+    // inboard past the rail line, so the real span is the foot plus that
+    // overhang. Spacing on the foot alone left 0.8 mm between parts, which is
+    // not a gap, it is a fused plate.
+    span  = clip_foot_w - (board_l_in + clip_finger_gap - rail_out);   // = 8.2
+    pitch = span + clip_plate_gap;
+    for (i = [0 : len(clip_station_x)*2 - 1])
+        translate([0, i * pitch, 0])
+            clip_print();
 }
 
 
@@ -259,8 +332,11 @@ module context() {
 // =====================================================================
 
 module assembly() {
+    assert(part == "all" || part == "cage" || part == "clip" || part == "clip_print",
+           "part must be all | cage | clip | clip_print");
     if (part == "all" || part == "cage") cage();
     if (part == "all" || part == "clip") clips();
+    if (part == "clip_print")           clip_print_plate();
 }
 
 if (render_mode == "part") {
