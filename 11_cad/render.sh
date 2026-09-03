@@ -150,7 +150,9 @@ check_max_z() {
     FAILED=$((FAILED + 1)); return
   fi
   local got
-  got="$(python3 -c '
+  # PYTHONDONTWRITEBYTECODE: importing stl_stats would otherwise leave a
+  # tools/__pycache__/ directory in the working tree on every run.
+  got="$(PYTHONDONTWRITEBYTECODE=1 python3 -c '
 import sys
 from pathlib import Path
 sys.path.insert(0, sys.argv[1])
