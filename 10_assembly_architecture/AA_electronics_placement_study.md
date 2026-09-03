@@ -89,6 +89,27 @@ and `18.3 × 31 mm` footprint in a `≤10 mm` cell in
 Neither is a caliper record. No pocket may be cut to either until ASM-59 measures the
 purchased SKU.
 
+**A second pair of inputs conflicts, and this study had been quietly picking a side**
+(**OP-I**, §10; also §12). The two ESP32 boards' service connector is recorded as
+**micro-USB** in
+[`w17-electrical-inputs-for-codex.md:8`](../../w17-electrical-inputs-for-codex.md)
+(*"onboard micro-USB serial"*) and
+[`:10`](../../w17-electrical-inputs-for-codex.md) (*"micro-USB on one short edge →
+face it to a service edge"*), and as **USB-C** in
+[`fit_studies/ZK_electronics_cassette_fit_study.md:102`](fit_studies/ZK_electronics_cassette_fit_study.md)
+(*"both USB-C service ends face X+42"*). Neither is a caliper record either. §4.7,
+§5.6 and every `esp_usb_*` parameter in
+[`../11_cad/w17_params.scad`](../11_cad/w17_params.scad) were written for USB-C without
+saying so; they now carry `esp_usb_type = "usb_c"` as an explicit **ASSUMED** value.
+
+The mechanical exposure is small and the product exposure is not. Mechanically, the
+opening is sized for the larger family (a USB-C receptacle is roughly 8.9 × 3.2 mm
+against micro-B's 7.5 × 2.5 mm), which is the safe direction to be wrong in for a
+clearance hole. But a micro-USB service port changes what a **cable** at that edge
+looks like, what the clip may notch around (§5.6), and whether the one service opening
+of §4.7 can be shared with a modern cable the owner already has. **M-03(e)/(f) now
+records the connector TYPE, not only its position and edge.**
+
 ---
 
 ## 2. Frame, datums and the two numbers everything hangs on
@@ -126,7 +147,7 @@ with the body; `WING` = on the rear wing assembly; `REAR` = rear drivetrain zone
 
 | # | Module | Body (provenance) | Zone / deck | Station (S0=0 gauge) | Why there |
 |---|---|---|---|---|---|
-| 1 | **ESP32 #1 (control)**, MH-ET D1-Mini | 39 × 31 × ~13 with headers — DOCUMENTED(SKU class, [`w17-electrical-inputs-for-codex.md:9`](../../w17-electrical-inputs-for-codex.md)); ASSUMED installed height | **CAS-W**, belt side | X +3…+42, L −43…−30, Z 1…32 | on edge is the only orientation that fits: it needs 13 mm of lateral band, and the only band outside KO-01 (\|L\|≥30) and inside the shell shoulder (≲43) is 13 mm wide (§5.2). USB-C faces the X+42 service edge. All 11 control signals fan out forward/inboard to the dock |
+| 1 | **ESP32 #1 (control)**, MH-ET D1-Mini | 39 × 31 × ~13 with headers — DOCUMENTED(SKU class, [`w17-electrical-inputs-for-codex.md:9`](../../w17-electrical-inputs-for-codex.md)); ASSUMED installed height | **CAS-W**, belt side | X +3…+42, L −43…−30, Z 1…32 | on edge is the only orientation that fits: it needs 13 mm of lateral band, and the only band outside KO-01 (\|L\|≥30) and inside the shell shoulder (≲43) is 13 mm wide (§5.2). The service port faces the X+42 service edge (its TYPE is OP-I). All 11 control signals fan out forward/inboard to the dock |
 | 2 | **ESP32 #2 (sound + light)** | same | **CAS-W**, mirror side | X +3…+42, L +30…+43, Z 1…32 | mirrored, same access edge; puts the **WS2812 data pin (GPIO4)** and the **I2S trio (26/25/22)** on the side the LED loom and the speaker already live on, so the two most timing-sensitive single-ended runs stay short (§4.2) |
 | 3 | **RP1 ELRS RX + T-antenna** | 13.4 × 11.4 × 4.05, 1.6 g — MEASURED([`w17-batch1-measurements-for-codex.md:48`](../../w17-batch1-measurements-for-codex.md)); 65 mm antenna DOCUMENTED | **CAS-L1** body; antenna to **SHELL-line forward guide** | body X −12.2…+0.8, L −6…+5, Z 13…16.05; antenna dressed forward along the inner shell line | tiny and light, so it costs nothing to put it on the insulated rear service deck next to the dock; the antenna is the part that needs placement, not the board — it goes forward, away from the 5.8 GHz roots and away from the ESC/motor metal (KO-17, KO-26) |
 | 4 | **BL-M8812EU2 Wi-Fi + 28×28×3 heatsink** | 32.4 × 32.0 × 7.0 incl. heatsink, 11.2 g with antennas — MEASURED([`w17-batch1-measurements-for-codex.md:40`](../../w17-batch1-measurements-for-codex.md)) | **CAS-L1**, rear stem, heatsink **up** | X −31…+1, L −16.2…+16.2, Z 12…19; clear-air reserve Z 19…29 | it is the hottest thing on the cassette and it must sit under the airbox draft, which is the rear stem; heatsink up into moving air, U.FL roots at its X+1 edge turning outward (I-13) |
@@ -148,7 +169,7 @@ with the body; `WING` = on the rear wing assembly; `REAR` = rear drivetrain zone
 | 20 | **2S LiPo pack** | selected pack 69 × 35 × 18, 88 g — MEASURED([`fit_studies/ZK_electronics_cassette_fit_study.md:70`](fit_studies/ZK_electronics_cassette_fit_study.md)); hard limit ≤75 × 45 × 25 | **FLOOR**, left, off the cassette | X −77…−8, trial L +30…+65, Z 1.5…19.5 | heaviest single removable mass → lowest possible, and **left** to fight the right-heavy ledger. Nothing may be mounted above it: the top must stay open for the swap. Bay length ≈78 mm ✔ (I-10) |
 | 21 | **DS3235SG steering servo + `Servoholder`** | 40.25 (54.5 with lugs) × 37.8 × 20.2, 70.3 g — MEASURED([`w17-batch1-measurements-for-codex.md:43`](../../w17-batch1-measurements-for-codex.md)) | **FLOOR**, mid-chassis centreline — **an occupant, not a placement** | holder X −85.76…−27.76, Z 0…22.89 | fixed by drawing `[2]`. Everything else is placed *around* it. The measured 20.2 mm side face against the 18.5 mm arch is a real **~1.7 mm interference** (§10, OP-B) |
 | 22 | **MG90S ×3 (pan, tilt, DRS)** | 22.8 × 12.2 × 28.5, 13.4 g each — DOCUMENTED(genuine TowerPro; clones vary) | pan/tilt → **PED**; DRS → **WING** pocket | pan/tilt at the pedestal head; DRS at X ≈ −125, L ≈ 0, Z ≈ 55…80 | pan/tilt follow the camera by definition; DRS is fixed by the donor wing's own pocket. Reserve a **15 mm horn radius** around every spline until the real horns are measured ([`fit_studies/ZA_accessory_servo_fit_study.md:42`](fit_studies/ZA_accessory_servo_fit_study.md)) |
-| 23 | **SP3T boot-mode selector** (GPIO27 = SOLO, GPIO32 = SHOW, centre = LAPTOP) | slide-switch body **ASSUMED** | **CAS**, on the cassette's X+42 service edge, beside the two USB-C ports | — | the design already commits to *"a labeled slide switch on the cassette, reachable under the engine cover — the shell itself stays unmodified"* (I-22). Putting it on the same edge as the USB-C ports means **one** access opening serves flashing, mode selection and service. Common goes to the ground star; both throws are ordinary GPIO with internal pull-ups (I-21) |
+| 23 | **SP3T boot-mode selector** (GPIO27 = SOLO, GPIO32 = SHOW, centre = LAPTOP) | slide-switch body **ASSUMED** | **CAS**, on the cassette's X+42 service edge, beside the two board service ports | — | the design already commits to *"a labeled slide switch on the cassette, reachable under the engine cover — the shell itself stays unmodified"* (I-22). Putting it on the same edge as the service ports means **one** access opening serves flashing, mode selection and service. Common goes to the ground star; both throws are ordinary GPIO with internal pull-ups (I-21) |
 
 ### 3.1 Rows this table deliberately changes
 
@@ -228,9 +249,11 @@ adversarial review's Schottky **data-line margin finding (`safety-3`) was REFUTE
 (I-25) and **must not be reopened**; the routing guidance above stands on
 signal-integrity grounds alone, not on that finding.
 
-### 4.7 USB-C reachability and the one service opening
-Both board USB-C connectors face the **X+42 cassette edge**, and the SP3T selector
-joins them there. That single edge is the whole service story: flash board #1, flash
+### 4.7 Service-port reachability and the one service opening
+Both board service connectors face the **X+42 cassette edge**, and the SP3T selector
+joins them there. *(Whether those connectors are USB-C or micro-USB is an open
+conflict — see §1 and **OP-I**. The edge is the same either way; the cable, and what a
+clip may notch around, are not.)* That single edge is the whole service story: flash board #1, flash
 board #2, choose the boot mode. It is reached **under the engine cover** with the
 shell otherwise untouched (I-22) — which is also exactly the access the booklet
 promises the giftee for the selector, and no more (I-23). The **charge** USB-C is a
@@ -297,6 +320,17 @@ the car has room for.
 `43 − 30 = 13 mm` — the band is exactly one board thick. There is no second
 arrangement hiding here.
 
+**And if M-03 returns a board thinner than 13 mm?** Nothing breaks, and nothing is
+won. The band assert in [`../11_cad/w17_params.scad`](../11_cad/w17_params.scad) is
+deliberately **one-sided** — `board_l_out − board_l_in ≥ esp_thk_headers` — so it
+fires only on a board *fatter* than the band, which is the case that ends the design
+and has to reopen this section. A *thinner* board passes it and simply leaves slack,
+and the slack is **lateral**: it appears in the one direction that was never the
+constraint. The gate in §5.3 is `board_top_z`, which comes from the board's 31 mm
+**width** standing on edge, and no amount of lateral slack lowers it. So a thinner
+board buys an easier assembly and a little more room outboard for the clips' fingers
+(§5.6), and it buys **nothing at all** against the S0 coin flip.
+
 ### 5.3 Deck height from the seated-shell datum, and the S0 gate
 
 Board top = **Z32**. Static policy adds 5 mm, so the shell roof must be at **Z37**
@@ -310,7 +344,7 @@ required S0 = 32 + 5 − 27.18 = 9.82 mm
 S0 is bounded 0…~11 (I-10). **9.82 of an 11 mm ceiling is not a margin — it is a
 coin flip**, and it is the single measurement that decides whether this cage is built
 at all. It is measurement **M-01** in §9 and it is the reason the cage's board-top
-height is a parameter (`cage_board_top_z`), not a constant.
+height is a parameter (`board_top_z`), not a constant.
 
 Two parametric escape routes are built into the model so a bad S0 is a number change,
 not a redesign:
@@ -353,15 +387,35 @@ What survives:
   It lies *below* the PDB's Z1 seat, in what is already the isolation layer. The cage
   is therefore **a feature of the cassette base, not a separate box bolted on top of
   it**;
-- **two low register walls** at **\|L\| 27.5…30.0**, **Z1…14** (2.5 mm thick, capped at
-  Z14 by constraint 1). The inner face lands exactly on the PDB's L±27.5 edge and gives
-  it a lateral register; the outer face is where the board's PCB plane starts. They
-  back the boards' lower 13 mm and are the boards' guard against the steering rod.
-  **They stop at Z14 — that cap is the "step"**;
-- **two aft end guides** at **X +1…+3, \|L\| 30…43**, rising from the base plate to the
-  board top: a U-channel per side that the board's aft short edge slides down into.
-  This is the *only* place in the cassette where full-height structure is legal —
-  outboard of \|L\| 30 (constraint 1) and clear of the PDB in X (constraint 2);
+- **two low register walls** at **\|L\| 27.7…30.0**, **Z1…14** (**2.3 mm** thick,
+  capped at Z14 by constraint 1). The inner face lands **0.2 mm outboard** of the PDB's
+  L±27.5 edge and gives it a lateral register; the outer face is where the board's PCB
+  plane starts. They back the boards' lower 13 mm and are the boards' guard against the
+  steering rod. **They stop at Z14 — that cap is the "step"**.
+  The 0.2 mm is `fit_clearance`, and it is not decoration: a wall face landing *exactly*
+  on L±27.5 is an interference fit with the thing it is supposed to locate, in an
+  assembly whose whole test of success (§5.8) is that one hand lifts it out. Because the
+  outer face cannot move — it is simultaneously the PCB plane and the KO-01 lateral
+  guard — the clearance is paid for out of **wall thickness**, so the wall is 2.3 mm
+  rather than the 2.5 mm nominal, and `../11_cad/w17_params.scad` asserts that it stays
+  above the four-perimeter minimum of 1.6 mm. When coupon **C-1** retires
+  `fit_clearance`, this wall gets thinner or thicker with it, automatically;
+- **two aft end guides**, one per side, each in **two pieces** — this is what the model
+  actually builds
+  ([`../11_cad/second_floor_cage.scad`](../11_cad/second_floor_cage.scad)):
+  a **block** at **X +1…+3, \|L\| 27.7…33.6, Z1…14**, which ties the register wall to
+  the outboard rail and gives the board's aft short edge something to butt against, and
+  a **post** at **X +3…+5, \|L\| 31.8…35.8, Z1…30**, which is the full-height member and
+  reaches over the board's aft 2 mm on the outboard side. The block is capped at Z14
+  like the wall, because inboard of \|L\| 30 it is inside the KO-01 guard band; the post
+  stops at `guide_top_z` = **Z30**, which is *below* the board top at Z32, not at it —
+  that gap is the §5.3 escape route and it is 2 mm of it.
+  This is the *only* place in the cassette where full-height structure is legal, and
+  **the reason is lateral, not fore-aft**. The post sits outboard of \|L\| 30, which
+  clears the KO-01 guard (constraint 1), *and* outboard of the PDB's own L±27.5 edge
+  (constraint 2). It is **not** clear of the PDB in X — X +1…+5 lies wholly inside the
+  PDB's X +1…+46 — and an earlier draft of this bullet claimed it was. The guide passes
+  **beside** the PDB, not behind it;
 - **two per-side retainers** over the board tops (§5.6) — not one bar;
 - **no top bridge, no forward end wall, no cross-member between X+1 and X+46.**
   Torsional stiffness comes from the base plate, the two register walls, and the two
@@ -430,8 +484,16 @@ edge** — that last rule is the one the CAD found, and it is load-bearing.
   measured from that plane: a 3 mm bar lying *over* the board turns `32 + 5 − 27.18 =
   9.82` into `35 + 5 − 27.18 = 12.82` mm, which is **outside the 0…11 mm bound S0 is
   known to live in**. A retainer that adds height does not make the cage worse — it
-  ends it. [`../11_cad/w17_params.scad`](../11_cad/w17_params.scad) asserts
-  `s0_required ≤ 11` on every render so this cannot come back by accident.
+  ends it. Two mechanisms now hold that rule, and they check different things:
+  [`../11_cad/w17_params.scad`](../11_cad/w17_params.scad) asserts `s0_required ≤ 11`
+  on every render, which tests the **arithmetic**; and
+  [`../11_cad/render.sh`](../11_cad/render.sh) reads the **exported `cage_all` solid**
+  back through `tools/stl_stats.py` and fails the run unless its maximum Z equals
+  `board_top_z` — the parameter, read out of `w17_params.scad` rather than hardcoded,
+  so the check follows the number instead of duplicating it. An assert cannot catch a
+  member that is drawn too tall; a bounding box can. The check is stated in these terms
+  because the value it derives from is `board_top_z`: if a measured S0 ever moves the
+  board's top plane, the check moves with it and nothing has to be remembered.
 - **There is no screw and no heat-set insert**, and that is arithmetic, not taste. An
   M3×5 insert needs an 8 mm boss; the aft end guide is **2 mm long in X**, and above
   Z14 the only legal band is \|L\| 30…43, which the board fills. There is nowhere in
@@ -444,11 +506,13 @@ edge** — that last rule is the one the CAD found, and it is load-bearing.
 - **The PCB's own mounting holes are never used, never enlarged, never loaded** — the
   same rule the package already applies to servo ears and bearing seats
   ([`K_printable_support_spec.md:308-310`](K_printable_support_spec.md)).
-- A clip may be **notched at its USB-C station** if M-03 puts the port on a long edge;
-  if the port is on the forward short edge, as currently assumed, the clips are already
-  clear of it and flashing needs no disassembly either way.
+- A clip may be **notched at its service-port station** if M-03 puts the port on a long
+  edge; if the port is on the forward short edge, as currently assumed
+  (`esp_usb_edge = "fwd_short"`), the clips are already clear of it and flashing needs
+  no disassembly either way. M-03 must also return the connector **type** — the notch a
+  USB-C cable needs is not the notch a micro-USB cable needs (**OP-I**).
 - The SP3T selector mounts in the cassette's **X+42 dock face**, below Z14 and inboard
-  of the boards, beside the two USB-C openings, so one hand reaches both ports and the
+  of the boards, beside the two service openings, so one hand reaches both ports and the
   switch.
 
 ### 5.7 Pass-throughs
@@ -459,7 +523,7 @@ edge** — that last rule is the one the CAD found, and it is load-bearing.
 | U.FL coax roots ×2 | X +1 module edge, L −8 / +8 | 12 × 12 × 6 reserve each, ≥10 mm bend, never clamp a plug |
 | pedestal conduit | fixed pedestal, **not through the cage** | 10 × 18 clear target / 14 × 22 outer; camera USB + 2 × 3-pin descend sequentially |
 | LED / Hall tail | rear floor edge via PS-09 | pre-routed before the rear stack closes |
-| USB-C service ×2 + SP3T | X +42 dock face, below Z14 | one opening, three functions |
+| board service ports ×2 + SP3T | X +42 dock face, below Z14 | one opening, three functions; connector type is **OP-I** |
 | charge USB-C + pack balance | **dock/edge route, never the pedestal conduit** | explicit ZK rule (I-13 §7) |
 
 ### 5.8 It stays a lift-out cassette
@@ -467,7 +531,7 @@ edge** — that last rule is the one the CAD found, and it is load-bearing.
 The cage is *part of* the cassette, not a second thing bolted to the floor. Test of
 success: with the body off, pulling the master key, unplugging the dock and releasing
 the saddle must let **one hand** lift base plate + PDB + cage + both boards + the rear
-service deck **straight up**, past the fixed pedestal, with both USB-C plugs and the
+service deck **straight up**, past the fixed pedestal, with both service plugs and the
 selector still fitted. That is a timed drill at CAS-34 / Q, and it is not passed
 today.
 
@@ -618,7 +682,7 @@ printable owner session is
 | **M-00** | **Printed-parts inventory** — which donor parts physically exist, and their condition | everything; the print log says nothing is printed and the owner says otherwise | — | eyes + labels | — | — | | |
 | **M-01** | **S0** — shell bottom edge above floor top, ≥4 points | D-04 / CAS-02; **the whole cage** | DAT-F ↔ shell bottom edge, shell seated and lightly pressed | depth gauge / feeler | ±0.5 | `s0_measured` | | |
 | **M-02** | Steering lock-to-lock + bump sweep: rod height at 3 stations, lateral extent | D-26 / ASM-08 / CAS-01; replaces provisional KO-01 | DAT-F | rule + marker | ±2 | `ko01_z_lo`, `ko01_z_hi`, `ko01_l_half` | | |
-| **M-03** | MH-ET board: outline, thickness bare and with headers, hole pattern + Ø, **which short edge carries USB-C**, plug protrusion, live-plug bend | CAS-03; cage slots | PCB edge | calipers | ±0.2 | `esp_len/wid/thk_hdr`, `esp_hole_*`, `esp_usb_*` | | |
+| **M-03** | MH-ET board: outline, thickness bare and with headers, hole pattern + Ø, **which connector the service port is and which edge carries it** (OP-I), plug protrusion, live-plug bend | CAS-03; cage slots | PCB edge | calipers | ±0.2 | `esp_len/wid/thk_hdr`, `esp_hole_*`, `esp_usb_*` | | |
 | **M-04** | Female-header + male-pin stack height, seated | the socketing GO/NO-GO ([`w17-socket-stack-caliper-prompt.md`](../../w17-socket-stack-caliper-prompt.md)) | seated stack | calipers | ±0.1 | `esp_socket_stack` | | |
 | **M-05** | Tallest PDB part: 1000 µF cap height, XT60 body height, loop-key body | CAS-04 / ASM-22; **PDB top governs the KO-01 gap** | PCB top | calipers | ±0.2 | `pdb_stack_h` | | |
 | **M-06** | PDB finished outline + mounting holes + connector exits | CAS-04 | board edge | calipers | ±0.2 | `pdb_len/wid` | | |
@@ -662,6 +726,7 @@ New or re-stated open problems this study raises:
 | **OP-E** | **BX100 in or out?** 40.1 × 28.6 × 13.0 MEASURED, duplicating a firmware function | it competes for exactly the volume OP-A needs | owner call; this study recommends **out** |
 | **OP-F** | **Charge flap CF-1 vs CF-2** | a product decision (showpiece vs invisibility) with a mechanical consequence | owner call after M-12 / M-15 |
 | **OP-G** | **The three centreline splice screws** as a shared donor stack (§5.5) | it would give the cassette a real datum, or it is occupied and the idea dies | M-20 |
+| **OP-I** | **Is the board's service port USB-C or micro-USB?** (§1) | two documents give two different connectors; the package, §4.7 and every `esp_usb_*` parameter were written for USB-C without saying so | **M-03(f)** — record the connector TYPE, not just its edge |
 | **OP-H** | **The boards' forward end has nothing to land on.** KO-01 + the PDB leave no legal structure above Z14 except outboard of \|L\| 30, and the registered seat X+3…+42 already reaches the wing's forward edge (§5.4) | it decides whether each retainer cantilevers or the seat shifts ~2 mm aft — a difference in stiffness, not in cosmetics | **M-03**, then a C-3 coupon with a real board |
 
 ---
@@ -676,10 +741,28 @@ settings, and **never installed on the car**
 
 | Coupon | What it answers | Pass criterion | Feeds |
 |---|---|---|---|
-| **C-1 peg/hole tolerance ladder** | what clearance this printer + this filament actually needs for an M3 through-hole and a 3 mm peg (7 steps, −0.15…+0.30) | the first step that assembles by hand without force, recorded per material | `fit_clearance` for every model |
-| **C-2 standoff height gauge** | does a printed standoff hit its nominal height after squish and shrink | ±0.15 mm over 5 heights | `cage_*_z`, `pdb_seat_z` |
-| **C-3 MH-ET hole-pattern + edge-slot coupon** | does a real board drop into the printed edge slot, and does the hole pattern line up | board seats by hand, no bow, no forcing; USB-C plug seats with the coupon fitted; **both clip stations land on bare PCB, not on a component** | `esp_*`, `cage_slot_w` |
+| **C-1 peg/hole tolerance ladder** | how much bigger than a nominal 3 mm printed peg a printed hole has to be, on this printer and this filament, before the two go together by hand (7 steps, −0.15…+0.30) | the first step that assembles by hand without force and stays put when shaken, recorded per material | `fit_clearance` for every model |
+| **C-2 standoff height gauge** | does a printed standoff hit its nominal height after squish and shrink | ±0.15 mm over 5 heights | any printed pillar height — `rail_h`, `wall_top_z`, `guide_top_z`, `pdb_z0` |
+| **C-3 MH-ET hole-pattern + edge-slot coupon** | does a real board drop into the printed edge slot, and does the hole pattern line up | board seats by hand, no bow, no forcing; the service plug seats with the coupon fitted; **both clip stations land on bare PCB, not on a component** | `esp_*`, `slot_w` |
 | **C-4 S0 / deck-height gauge** | a stepped gauge that reads S0 directly under the seated shell at ≥4 points | consistent step reading at all points, ±0.5 | `s0_measured` (M-01) |
+
+**Two things about C-1 that decide whether it is worth printing.** Every peg on the
+ladder is the **same**, at the nominal `clip_peg_d`; only the hole varies, as
+`clip_peg_d + 2 × step`. So the radial gap at step *i* **is** step *i*, and the number
+recorded at the bench is `fit_clearance` with no arithmetic in between — which is also
+exactly the pair the cage builds (peg nominal, hole `+ 2 × fit_clearance`). An earlier
+version of the coupon shrank the peg *and* grew the hole by the same step, giving a
+radial gap of `2 × step`: reading it would have set `fit_clearance` to twice what the
+printer needs, in the one parameter every peg, slot and pocket in `11_cad/` derives its
+clearance from. And steps 1 and 2 are **negative** — their holes are smaller than the
+peg. If either assembles by hand, this printer is running under size, which is a result
+worth reporting rather than something to force.
+
+**And one about C-4: nothing on that gauge stands proud of a step.** The step numbers
+are cut *into* the step tops, not raised on them. A 0.6 mm raised digit would make every
+reading 0.6 mm high, against the 1.18 mm of margin this whole section turns on, and in
+the unsafe direction. The exported gauge's bounding box tops out at exactly its tallest
+step, 11.0 mm, which is the check that the property still holds.
 
 **Order:** C-1 first (it calibrates everything else), then C-2 and C-3 together, then
 C-4 with the shell. Do not print a cage before C-1 and C-3 pass.
@@ -697,7 +780,8 @@ explicit `ASSUMED` banner. None of them is a measurement.
 | `s0_measured` | 9.82 (the *requirement*, used as a placeholder) | S0 has never been physically measured; 0…11 bound only | **M-01** |
 | `esp_thk_headers` | 13.0 | "with headers" from the SKU class, not our board | M-03 |
 | `esp_hole_dx`, `esp_hole_dy`, `esp_hole_d` | 33.0 / 25.0 / 3.2 | no MH-ET hole pattern exists in any project document | M-03 |
-| `esp_usb_edge`, `esp_usb_w/h/offset` | X+ short edge, 9.0 / 3.5 / centred | ZK records the USB-C edge as unresolved | M-03 |
+| `esp_usb_type` | `"usb_c"` | **two documents disagree** — micro-USB in `w17-electrical-inputs-for-codex.md:8,10`, USB-C in `ZK:102` (§1, OP-I) | **M-03(f)** |
+| `esp_usb_edge`, `esp_usb_w/h/offset` | `"fwd_short"`, 9.0 / 3.5 / centred | ZK records the service edge as unresolved; the sizes are for the larger connector family | M-03(e) |
 | `esp_socket_stack` | 11.0 | the socketing GO/NO-GO measurement is owed | M-04 |
 | `pdb_len`, `pdb_wid`, `pdb_stack_h` | 55 / 45 / 13 | TARGET envelope; the tall part is unknown since the UBEC turned out to be 9.1 mm | M-05, M-06 |
 | `guide_top_z` | 30 | the aft end guide's top, derived from a board top that is itself gated on S0 | M-07 |
