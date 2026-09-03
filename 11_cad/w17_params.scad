@@ -1,5 +1,5 @@
 // =====================================================================
-// w17_params.scad — the single source of every dimension in 11_cad/
+// w17_params.scad — the source of every SHARED dimension in 11_cad/
 // =====================================================================
 //
 //  Repo:    w17-3d-codex          Branch: design/placement-and-cage
@@ -8,8 +8,20 @@
 //
 //  RULE OF THIS FILE (it is the whole point of it):
 //  ------------------------------------------------------------------
-//  Every number below carries a provenance tag. No number appears
-//  anywhere else in 11_cad/ — models import this file and use names.
+//  Every number below carries a provenance tag, and every dimension
+//  SHARED by more than one model lives here — models import this file
+//  and use names.
+//
+//  It is NOT the only place a number may be written, and claiming that
+//  would be a lie you could check in ten seconds. A number used by
+//  exactly one file is declared at the top of that file, still named and
+//  still tagged. Today those are: the coupon plate/label constants
+//  (fit_check_coupons.scad:30-34), the print-plate spacing in
+//  second_floor_cage.scad, gcs_box.scad's local constants, and two
+//  shape-proportion defaults in lib/w17_lib.scad (:97 extra_h, :126
+//  relief_frac). What is banned is an ANONYMOUS literal in geometry — a
+//  bare 8 inside a cylinder() — because nobody can later tell whether it
+//  was measured or invented.
 //
 //    MEASURED(file:line)  a real instrument touched a real part
 //    DERIVED(source)      arithmetic on registered geometry / MEASURED values
@@ -41,7 +53,14 @@
 nozzle_d          = 0.4;    // DOCUMENTED(Bambu X1C 0.4 mm, repo CLAUDE.md)
 layer_h           = 0.20;   // POLICY(PRINT_SPEC.md starting profile)
 wall_min          = 1.6;    // DERIVED(4 perimeters x 0.4 nozzle) minimum load-bearing wall
-wall_std          = 2.5;    // POLICY(AA §5.4 register wall thickness)
+wall_std          = 2.5;    // POLICY(AA §5.4 NOMINAL register/box wall). The cage's
+                            //   actual register wall is wall_t (§6): this nominal
+                            //   less the PDB's drop-in clearance.
+fit_clearance     = 0.20;   // ASSUMED (see §9) per-side print clearance, retired by
+                            //   coupon C-1. It lives here, with the other process
+                            //   constants, because it is a property of THIS printer
+                            //   and THIS filament rather than of any one part — and
+                            //   because §6's register wall is derived from it.
 $fn               = 48;     // render quality; not a physical dimension
 
 
@@ -66,7 +85,9 @@ insert_boss_wall  = 2.0;    // POLICY(hoop wall around a heat-set insert, >= 2 m
 s0_measured       = 9.82;   // ASSUMED (see §9)
 
 // The worst finite shell roof sampled over BOTH board seats at S0 = 0.
-roof_z_worst      = 27.18;  // DERIVED(ZK:117, at approximately X+3 / L-37)
+roof_z_worst      = 27.18;  // DERIVED(ZK:123 the limiting shell point sampled over both
+                            //   seats, at approximately X+3 / L-37; the arithmetic that
+                            //   turns it into required S0 is ZK:125)
 
 // KO-01, the steering rod sweep. PROVISIONAL until the ASM-08 lock-to-lock
 // sweep is physically run. It is the most restrictive keep-out in the car.
@@ -119,11 +140,12 @@ esp_wid           = 31.0;   // DOCUMENTED(same)
 esp_pcb_t         = 1.6;    // DOCUMENTED(standard 1.6 mm FR4)
 esp_thk_headers   = 13.0;   // ASSUMED (see §9) installed thickness with headers, M-03
 
-// Registered on-edge seats (ZK:99-100 / AA §3 rows 1-2)
+// Registered on-edge seats (ZK:101-102, the two ESP32 wall-seat rows / AA §3 rows 1-2.
+// ZK:99 and ZK:100 are the RP1 and BL-M8812EU2 seats and have nothing to do with these.)
 board_seat_x0     = 3.0;    // ASSUMED (see §9) OP-H turns on whether this can move aft
-board_seat_z0     = 1.0;    // DERIVED(ZK:99 seat Z1..32) parametric escape route, AA §5.3
+board_seat_z0     = 1.0;    // DERIVED(ZK:101 seat Z1..32) parametric escape route, AA §5.3
 board_l_in        = 30.0;   // DERIVED(ko01_l_guard) PCB plane inboard face
-board_l_out       = 43.0;   // DERIVED(ZK:99 outer face) == wing_l_half
+board_l_out       = 43.0;   // DERIVED(ZK:101 outer face L-43) == wing_l_half
 board_top_z       = 32.0;   // DERIVED(board_seat_z0 + esp_wid: the 31 mm side stands up)
 
 // hole pattern + USB-C: no MH-ET drawing exists in any project document
@@ -135,13 +157,36 @@ esp_usb_h         = 3.5;    // ASSUMED (see §9) M-03
 esp_usb_offset    = 0.0;    // ASSUMED (see §9) offset of the port from the edge centreline, M-03
 esp_socket_stack  = 11.0;   // ASSUMED (see §9) seated female+male header stack, M-04
 
+// TWO PROJECT DOCUMENTS DISAGREE ABOUT THE CONNECTOR ITSELF, and the whole package
+// has so far assumed one of them without saying so:
+//   w17-electrical-inputs-for-codex.md:8,10 — "onboard micro-USB serial",
+//                                             "micro-USB on one short edge"
+//   ZK:102                                  — "both USB-C service ends face X+42"
+// Neither is a caliper record. AA §1 now records the conflict; M-03(e)/(f) records
+// the connector TYPE as well as its position and edge. The two strings below are
+// what the models currently believe, written down so the belief is visible.
+// esp_usb_w/h above are sized for the LARGER family (USB-C receptacle ~8.9 x 3.2
+// against micro-B ~7.5 x 2.5), which is the safe direction to be wrong in for a
+// clearance opening — but a micro-USB board also changes AA §4.7's service story
+// and §5.6's clip-notch rule, not just a hole size.
+esp_usb_type      = "usb_c";      // ASSUMED (see §9) M-03(f)
+esp_usb_edge      = "fwd_short";  // ASSUMED (see §9) M-03(e) — the forward short edge
+
 
 // ---------------------------------------------------------------------
 // 6. The cage itself (AA §5.4, as corrected 2026-09-03)
 // ---------------------------------------------------------------------
 
-wall_l_in         = 27.5;   // DERIVED(== pdb_l_half; the wall registers the PDB edge)
-wall_l_out        = 30.0;   // DERIVED(== board_l_in)
+// The register wall. Its INNER face registers the PDB and its OUTER face is where the
+// board's PCB plane begins. The outer face cannot move: it is both board_l_in and the
+// KO-01 lateral guard. So the PDB's drop-in clearance is paid for out of wall
+// thickness, and the wall ends up thinner than the wall_std nominal. That is the right
+// trade — a wall face sitting exactly on the PDB's L±27.5 edge is an interference fit
+// with the thing it is supposed to locate, and the cassette is a LIFT-OUT assembly:
+// the PDB has to drop in by hand.
+wall_l_in         = pdb_l_half + fit_clearance;  // DERIVED = 27.7
+wall_l_out        = board_l_in;                  // DERIVED = 30 (== ko01_l_guard)
+wall_t            = wall_l_out - wall_l_in;      // DERIVED = 2.3, asserted vs wall_min
 wall_top_z        = 14.0;   // DERIVED(== ko01_z_guard; the wall MUST stop here)
 
 rail_h            = 3.0;    // ESTIMATED(enough to catch a 1.6 mm PCB edge without a tall thin wall)
@@ -191,7 +236,7 @@ clip_peg_d        = 3.0;    // ESTIMATED(matches coupon C-1's 3 mm peg/hole ladd
 clip_finger_h     = 2.0;    // ESTIMATED(overlap onto the board's top edge)
 clip_finger_gap   = 0.4;    // ESTIMATED(so the finger clears the PCB face, not clamps it)
 clip_station_x    = [10, 34];  // ESTIMATED(two stations, spread over the 39 mm board)
-fit_clearance     = 0.20;   // ASSUMED (see §9) per-side print clearance, retired by coupon C-1
+// fit_clearance is in §1 with the other process constants.
 
 zip_slot_w        = 4.0;    // ASSUMED (see §9) fits a 3 mm cable tie; tie stock not calipered
 zip_slot_l        = 2.5;    // ASSUMED (see §9)
@@ -199,6 +244,27 @@ zip_slot_bridge   = 3.0;    // ESTIMATED(material left between a slot pair)
 
 pass_slot_w       = 10.0;   // ESTIMATED(a 4-way silicone bundle plus dressing room)
 pass_slot_h       = 6.0;    // ESTIMATED(same)
+pass_slot_inset   = 9.0;    // ESTIMATED(each pass-through set this far in from its end
+                            //   of the wing, so neither lands on the aft end guide)
+pass_slot_z0      = 1.0;    // ESTIMATED(material left between the base plate and the
+                            //   bottom of the pass-through opening)
+
+// Cable-tie stations on the base plate (AA §4.9 wants a loom clamped every <=60 mm
+// near motion; three stations over a 41 mm wing is far tighter than that).
+zip_station_dx    = [10, 24, 36];  // ESTIMATED(stations measured forward from wing_x0)
+zip_line_offset   = 6.0;    // ESTIMATED(the tie line sits this far outboard of the
+                            //   register wall's mid-plane -> |L| 34.85, which is
+                            //   outboard of the rail at 33.6 and inboard of the wing
+                            //   edge at 43: a loom lane under the board's outboard face)
+
+// LED / Hall tail exit at the rear outboard corner, PS-09 route.
+tail_hole_d       = 8.0;    // ESTIMATED(same basis as pass_slot_w/h — a 4-way silicone
+                            //   bundle plus dressing room. The loom is NOT calipered;
+                            //   this is a chosen generosity, not a gauge over a body,
+                            //   and it is a hole in free plate, so being 2 mm large
+                            //   costs nothing and being 2 mm small costs a re-print)
+tail_hole_x       = 4.0;    // ESTIMATED(inset forward of the wing's aft edge)
+tail_hole_l_inset = 6.0;    // ESTIMATED(inset inboard of the wing's outer edge)
 
 // Declared encroachment, and it must stay declared:
 // the board's PCB plane starts exactly at board_l_in = ko01_l_guard = 30.
@@ -284,6 +350,8 @@ gcs_clear         =  6.0;   // POLICY(air around the TX module, the box's only r
 //  M-03  esp_thk_headers                                13.0
 //  M-03  esp_hole_dx / esp_hole_dy / esp_hole_d  33/25/3.2
 //  M-03  esp_usb_w / esp_usb_h / esp_usb_offset   9/3.5/0.0
+//  M-03  esp_usb_type                              "usb_c"  <- sources conflict, AA §1
+//  M-03  esp_usb_edge                          "fwd_short"
 //  M-03  board_seat_x0                                   3.0  <- OP-H
 //  M-04  esp_socket_stack                               11.0
 //  M-05  pdb_stack_h                                    13.0
@@ -313,8 +381,15 @@ assert(wall_top_z == ko01_z_guard,
        "register wall must stop exactly at the KO-01 guard height (AA §5.4)");
 assert(wall_l_out == ko01_l_guard,
        "register wall outer face must sit on the KO-01 lateral guard (AA §5.4)");
+// DELIBERATELY ONE-SIDED. It fires if the real board turns out FATTER than the band,
+// which is the failure that ends the design. A board that measures THINNER than 13 mm
+// passes it and simply leaves slack in the band — AA §5.2's "exactly one board thick"
+// stops being exact, in the harmless direction. See AA §5.2 for what that slack does
+// and does not buy.
 assert(board_l_out - board_l_in >= esp_thk_headers - 1e-9,
        "the 13 mm band is exactly one board thick — AA §5.2 no longer holds");
+assert(wall_t >= wall_min,
+       "the register wall has thinned below the 4-perimeter minimum (AA §5.4)");
 assert(pdb_z1 <= ko01_z_guard,
        "PDB audit top has risen above the KO-01 guard: zero reserve is now negative");
 assert(guide_top_z <= board_top_z,
@@ -327,6 +402,11 @@ assert(s0_required <= s0_upper_bound,
        "the cage's tallest point now needs an S0 outside the 0..11 mm bound (AA §5.3)");
 assert(is_undef(drs_arm_pivot_span),
        "drs_arm_pivot_span was given a value — the 58 mm figure is a bbox, not a pivot span");
+
+// Machine-readable, and load-bearing: render.sh reads board_top_z from this line and
+// asserts that cage_all's exported STL tops out at exactly that Z. That is what turns
+// "nothing rises above the board top" from a claim in prose into a check that runs.
+echo(str("PARAM board_top_z = ", board_top_z));
 
 echo(str("[w17_params] S0 placeholder = ", s0_measured,
          " mm (REQUIREMENT, unmeasured) | KO-01 guard: nothing above Z",
