@@ -248,7 +248,7 @@ Every part of that path is a **gate**, not a proof: the saddle does not exist ye
 ### 4.9 Vibration and crash
 20 g forward is the design crash load ([`K_printable_support_spec.md:70-71`](K_printable_support_spec.md)).
 Consequences: the pack is strapped, not clipped; boards are retained by edge guides
-plus a retainer bar, never by their own PCB holes; every printed load path prints with
+plus a per-side retainer, never by their own PCB holes; every printed load path prints with
 layers across the load, not along it; ties every ≤60 mm near motion; and the front
 crash zone (E-24) carries **nothing** — the nose has no protected cavity at all (D-25
 found cowl-only forward of the installation ring).
@@ -317,9 +317,9 @@ not a redesign:
 
 - `board_seat_z0` — lift the boards off the cassette floor (default 1 mm). Lowering to
   0 buys 1 mm.
-- `cage_wall_top_margin` — the cage wall may stop **below** the board's top edge
-  (the retainer bar then becomes the only structure at full height, and it can be
-  local, at two narrow stations, instead of a continuous wall).
+- `guide_top_margin` — the aft end guide (§5.4, the only full-height member) may stop
+  **below** the board's top edge, leaving the per-side retainer as the only structure
+  at full height, local rather than continuous.
 
 If S0 measures below ~9.8 mm the honest answer is **not** to shave the cage: it is to
 reopen the board orientation with a real number in hand, which is what
@@ -328,20 +328,56 @@ already demands as a production stop.
 
 ### 5.4 Shape: why it steps
 
-The cage cannot be a simple box. Anything spanning the centreline above **Z14** is
-either inside the provisional KO-01 band (Z22…38) or inside its 8 mm approach. So:
+The cage cannot be a simple box. Two independent constraints forbid the obvious
+shapes, and between them they leave exactly one legal envelope for structure.
 
-- **base plate**, Z1…3, full width — the only continuous member;
-- **two side walls**, at \|L\| ≈ 27…30 (inboard of the boards, outboard of KO-01 + 5 mm
-  static), rising to the board-retention height;
-- **two end ribs** at X ≈ +3 and X ≈ +42 that are **capped at Z14 across the centre
-  band** (\|L\| ≤ 27) and only rise to full height outboard of it — the "step";
-- **no top bridge.** Torsional stiffness comes from the base plate, the two capped end
-  ribs, and the retainer bar (§5.6), not from a roof.
+1. **KO-01 forbids height near the centreline.** The provisional band is Z22…38 at
+   \|L\| ≤ 22 (I-08); applying the 8 mm static-to-moving policy (I-12) on **both**
+   axes, nothing may be taller than **Z14** anywhere inside **\|L\| ≤ 30**.
+2. **The PDB forbids structure in the middle.** The PDB cell is `X +1…+46,
+   L ±27.5, Z 1…14` (I-13). Any member crossing that X band inside \|L\| ≤ 27.5 above
+   Z1 lands on the board it is supposed to sit *above* — including a Z14-capped one,
+   because **Z14 *is* the PDB's audit top**.
 
-The boards clip to the **outboard** faces of the side walls, which puts the cage
-structure between the boards and the steering rod — the walls are also the boards'
-guard against KO-01.
+Intersect the two. Above Z14 the only legal lateral band is \|L\| 30…43, and §5.2
+already showed that band is **exactly one board thick**. Therefore:
+
+> **There is no legal cross-member anywhere above the cassette base plate between
+> X+1 and X+46, and no legal wall *beside* a board above Z14.** Any sketch of this
+> cage as a full-height twin-wall box is arithmetically wrong, and the two lines above
+> are why.
+
+What survives:
+
+- **Base plate, Z0…1, full width** — the *only* member that crosses the centreline.
+  It lies *below* the PDB's Z1 seat, in what is already the isolation layer. The cage
+  is therefore **a feature of the cassette base, not a separate box bolted on top of
+  it**;
+- **two low register walls** at **\|L\| 27.5…30.0**, **Z1…14** (2.5 mm thick, capped at
+  Z14 by constraint 1). The inner face lands exactly on the PDB's L±27.5 edge and gives
+  it a lateral register; the outer face is where the board's PCB plane starts. They
+  back the boards' lower 13 mm and are the boards' guard against the steering rod.
+  **They stop at Z14 — that cap is the "step"**;
+- **two aft end guides** at **X +1…+3, \|L\| 30…43**, rising from the base plate to the
+  board top: a U-channel per side that the board's aft short edge slides down into.
+  This is the *only* place in the cassette where full-height structure is legal —
+  outboard of \|L\| 30 (constraint 1) and clear of the PDB in X (constraint 2);
+- **two per-side retainers** over the board tops (§5.6) — not one bar;
+- **no top bridge, no forward end wall, no cross-member between X+1 and X+46.**
+  Torsional stiffness comes from the base plate, the two register walls, and the two
+  aft end guides acting as C-channels closed by the retainers.
+
+The boards clip to the **outboard** faces of the register walls: PCB plane at
+\|L\| 30…31.6, components projecting outboard to \|L\| ≤ 43.
+
+**What this leaves open, as a parameter and not a fudge.** Each board's *forward* end
+has no post to land on. The registered seat runs X+3…+42 and the cassette wing ends at
+X+42; forward of that the tapered tongue narrows to \|L\| ≤ 29.5 (I-13) and cannot
+carry outboard structure, and the 5 mm from the tongue to the pedestal is a static
+clearance, not free volume. So the forward end is either a **cantilevered retainer** or
+the board seat shifts ~2 mm aft to buy a forward drop-leg. `board_seat_x0` exists in
+[`../11_cad/w17_params.scad`](../11_cad/w17_params.scad) for exactly this, and **M-03**
+(the board's real length) decides it. Recorded as **OP-H**.
 
 ### 5.5 Mounting: what it may attach to, and what it may not
 
@@ -379,18 +415,28 @@ side and `(−39.94, +17.14)` mirror side, plus `b2 (−80.18, ±30.75)` and
 
 ### 5.6 Retention: tool-less, and it never touches a PCB hole
 
-- Boards drop into **PCB edge guides** (a 1.8 mm slot per long edge, chamfered lead-in)
-  moulded into the wall's outboard face. The PCB's own mounting holes are never used,
-  never enlarged, never loaded — the same rule the package already applies to servo
-  ears and bearing seats ([`K_printable_support_spec.md:308-310`](K_printable_support_spec.md)).
-- One **retainer bar** spans both boards' top edges, captured by two M3 thumbscrews
-  into **heat-set M3×5 inserts** in the wall tops (repeated-service bosses ≥3 cycles
-  get inserts, per the plastic-thread rule).
-- The bar is **notched at the USB-C stations** so a live plug can seat with the bar
-  fitted — the whole point of the X+42 service edge is that flashing does not mean
-  disassembly.
-- The SP3T selector mounts in a slot in the same X+42 end rib, so one hand reaches
-  both ports and the switch.
+Three edges, no fastener through the board.
+
+- The board's **bottom long edge** drops into a 1.8 mm slot in the base plate
+  (chamfered lead-in), and its **aft short edge** slides down the aft end guide's
+  U-channel (§5.4). Two edges located before anything is tightened.
+- Its inboard face is backed for its lower 13 mm by the register wall; above Z14
+  nothing may stand beside it, so the **top long edge** is captured instead — by a
+  **per-side retainer** lying along `X+3…+42, |L| 30…43` at the board top. **Two
+  retainers, one per board.** A single bar across both would cross \|L\| ≤ 30 at Z32,
+  which is inside the KO-01 + policy volume.
+- Each retainer is captured by an M3 thumbscrew into a **heat-set M3×5 insert** in its
+  aft end guide (repeated-service bosses ≥3 cycles get inserts, per the plastic-thread
+  rule). Its forward end is the open question of §5.4 (**OP-H**).
+- The retainer is **notched at its USB-C station** so a live plug can seat with the
+  retainer fitted — the whole point of the X+42 service edge is that flashing does not
+  mean disassembly.
+- **The PCB's own mounting holes are never used, never enlarged, never loaded** — the
+  same rule the package already applies to servo ears and bearing seats
+  ([`K_printable_support_spec.md:308-310`](K_printable_support_spec.md)).
+- The SP3T selector mounts in the cassette's **X+42 dock face**, below Z14 and inboard
+  of the boards, beside the two USB-C openings, so one hand reaches both ports and the
+  switch.
 
 ### 5.7 Pass-throughs
 
@@ -400,7 +446,7 @@ side and `(−39.94, +17.14)` mirror side, plus `b2 (−80.18, ±30.75)` and
 | U.FL coax roots ×2 | X +1 module edge, L −8 / +8 | 12 × 12 × 6 reserve each, ≥10 mm bend, never clamp a plug |
 | pedestal conduit | fixed pedestal, **not through the cage** | 10 × 18 clear target / 14 × 22 outer; camera USB + 2 × 3-pin descend sequentially |
 | LED / Hall tail | rear floor edge via PS-09 | pre-routed before the rear stack closes |
-| USB-C service ×2 + SP3T | X +42 end rib | one opening, three functions |
+| USB-C service ×2 + SP3T | X +42 dock face, below Z14 | one opening, three functions |
 | charge USB-C + pack balance | **dock/edge route, never the pedestal conduit** | explicit ZK rule (I-13 §7) |
 
 ### 5.8 It stays a lift-out cassette
@@ -563,7 +609,7 @@ printable owner session is
 | **M-04** | Female-header + male-pin stack height, seated | the socketing GO/NO-GO ([`w17-socket-stack-caliper-prompt.md`](../../w17-socket-stack-caliper-prompt.md)) | seated stack | calipers | ±0.1 | `esp_socket_stack` | | |
 | **M-05** | Tallest PDB part: 1000 µF cap height, XT60 body height, loop-key body | CAS-04 / ASM-22; **PDB top governs the KO-01 gap** | PCB top | calipers | ±0.2 | `pdb_stack_h` | | |
 | **M-06** | PDB finished outline + mounting holes + connector exits | CAS-04 | board edge | calipers | ±0.2 | `pdb_len/wid` | | |
-| **M-07** | Cassette deck candidate heights: clear height available at X+3, +20, +42 over \|L\| 27…46 | cage wall height | DAT-F, shell seated | depth gauge | ±1 | `cage_wall_top_z` | | |
+| **M-07** | Cassette deck candidate heights: clear height available at X+3, +20, +42 over \|L\| 27…46 | aft end guide height (§5.4) | DAT-F, shell seated | depth gauge | ±1 | `guide_top_z` | | |
 | **M-08** | Module weights: both boards, PDB assembled, charge module, XT90-S, cassette, pedestal | D-39 / CAS-11 | — | scale | ±1 g | — | | |
 | **M-09** | **Four-corner weights**, rolling assembly | D-39 / ASM-58 | four scales | scales | ±5 g | — | | |
 | **M-10** | Tyre arch clearance at full steer + full bump, both ends | D-37 / E-30 (margins are only 3.5 / 4 mm) | body-on | feeler | ±0.5 | — | | |
@@ -603,6 +649,7 @@ New or re-stated open problems this study raises:
 | **OP-E** | **BX100 in or out?** 40.1 × 28.6 × 13.0 MEASURED, duplicating a firmware function | it competes for exactly the volume OP-A needs | owner call; this study recommends **out** |
 | **OP-F** | **Charge flap CF-1 vs CF-2** | a product decision (showpiece vs invisibility) with a mechanical consequence | owner call after M-12 / M-15 |
 | **OP-G** | **The three centreline splice screws** as a shared donor stack (§5.5) | it would give the cassette a real datum, or it is occupied and the idea dies | M-20 |
+| **OP-H** | **The boards' forward end has nothing to land on.** KO-01 + the PDB leave no legal structure above Z14 except outboard of \|L\| 30, and the registered seat X+3…+42 already reaches the wing's forward edge (§5.4) | it decides whether each retainer cantilevers or the seat shifts ~2 mm aft — a difference in stiffness, not in cosmetics | **M-03**, then a C-3 coupon with a real board |
 
 ---
 
@@ -640,7 +687,8 @@ explicit `ASSUMED` banner. None of them is a measurement.
 | `esp_usb_edge`, `esp_usb_w/h/offset` | X+ short edge, 9.0 / 3.5 / centred | ZK records the USB-C edge as unresolved | M-03 |
 | `esp_socket_stack` | 11.0 | the socketing GO/NO-GO measurement is owed | M-04 |
 | `pdb_len`, `pdb_wid`, `pdb_stack_h` | 55 / 45 / 13 | TARGET envelope; the tall part is unknown since the UBEC turned out to be 9.1 mm | M-05, M-06 |
-| `cage_wall_top_z` | 30 | derived from a board top that is itself gated on S0 | M-07 |
+| `guide_top_z` | 30 | the aft end guide's top, derived from a board top that is itself gated on S0 | M-07 |
+| `board_seat_x0` | 3.0 (ZK's registered seat) | an ASSUMPTION gauge, and OP-H turns on whether it can move ~2 mm aft | M-03 |
 | `ko01_z_lo/hi`, `ko01_l_half` | 22 / 38 / 22 | **provisional** steering band, physically unmeasured | **M-02** |
 | `esc_l/w/h`, `esc_air_gap` | 44.2 / 33.7 / 34.0 MEASURED, air gap 10 ASSUMED | body is measured; the required intake plane is a policy number, not a datasheet | M-11 |
 | `chg_l/w/h` | 30 / 25 / 10 | two conflicting sources (§1) | **M-16** |
