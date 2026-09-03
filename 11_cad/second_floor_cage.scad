@@ -78,6 +78,12 @@ part = "all";
 clip_plate_gap = 4.0;   // POLICY(gap between parts on the plate, wide enough for
                         //   a brim and for a knife to get between them)
 
+// Where the "section" preview cuts. A VIEWING choice, not a part dimension --
+// nothing here is ever exported -- but it is named rather than typed inline so
+// the file has no anonymous number in a geometry call anywhere.
+section_cut_x  = 22.0;  // POLICY(mid-wing, through a pass-through and a tie slot)
+section_box    = 400;   // POLICY(a half-space big enough to swallow the model)
+
 
 // =====================================================================
 //  The cage
@@ -347,7 +353,8 @@ if (render_mode == "part") {
 } else if (render_mode == "section") {
     intersection() {
         union() { assembly(); context(); }
-        translate([-200, -200, -100]) cube([200 + 22, 400, 400]);   // cut at X+22
+        translate([-section_box/2, -section_box/2, -section_box/4])
+            cube([section_box/2 + section_cut_x, section_box, section_box]);
     }
 } else {
     assert(false, "render_mode must be part | context | section");
