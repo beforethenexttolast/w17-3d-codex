@@ -47,6 +47,9 @@ Filament stock snapshot lives in `MATERIAL_DECISION_MATRIX.md` (update it there)
 | `02_ready_to_slice/` | copies of selected files only, + `MANIFEST.md` (SHA-256) |
 | `04_test_prints/`, `05_printed_parts_log/`, `06_finishing/`, `07_assembly_notes/` | TP / P / FIN / ASM records |
 | `09_rejected_or_uncertain/REVIEW.md` | why each rejected/uncertain file is parked |
+| `10_assembly_architecture/` | electronics placement study (`AA_electronics_placement_study.md`): what goes where, zone keep-outs, every dimension tagged MEASURED / ESTIMATED / ASSUMED with its source |
+| `11_cad/` | Claude-owned parametric OpenSCAD (`w17_params.scad` is the single parameter home; `render.sh --table` regenerates `out/`, which is gitignored): trays, second-floor cage, GCS box, fit-check coupons — fit-check prints before production prints |
+| `w17-mechanical-measurement-session-prompt.md` | the owner's no-power caliper session (M-rows); measured values flow into `w17_params.scad`, never the reverse |
 
 **Status lives in logs** (`PRINT_LOG.md`, inventory statuses, GENERAL_PLAN open list) —
 never in this file. Edit this CLAUDE.md only when an invariant changes.
