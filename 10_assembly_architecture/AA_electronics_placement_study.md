@@ -415,25 +415,38 @@ side and `(−39.94, +17.14)` mirror side, plus `b2 (−80.18, ±30.75)` and
 
 ### 5.6 Retention: tool-less, and it never touches a PCB hole
 
-Three edges, no fastener through the board.
+Three edges, no fastener through the board, and **nothing above the board's top
+edge** — that last rule is the one the CAD found, and it is load-bearing.
 
 - The board's **bottom long edge** drops into a 1.8 mm slot in the base plate
-  (chamfered lead-in), and its **aft short edge** slides down the aft end guide's
-  U-channel (§5.4). Two edges located before anything is tightened.
+  (chamfered lead-in), and its **aft short edge** butts the aft end guide's block,
+  with a 2 mm post reaching over its aft-outboard corner (§5.4). Two edges located
+  before anything is fitted.
 - Its inboard face is backed for its lower 13 mm by the register wall; above Z14
-  nothing may stand beside it, so the **top long edge** is captured instead — by a
-  **per-side retainer** lying along `X+3…+42, |L| 30…43` at the board top. **Two
-  retainers, one per board.** A single bar across both would cross \|L\| ≤ 30 at Z32,
-  which is inside the KO-01 + policy volume.
-- Each retainer is captured by an M3 thumbscrew into a **heat-set M3×5 insert** in its
-  aft end guide (repeated-service bosses ≥3 cycles get inserts, per the plastic-thread
-  rule). Its forward end is the open question of §5.4 (**OP-H**).
-- The retainer is **notched at its USB-C station** so a live plug can seat with the
-  retainer fitted — the whole point of the X+42 service edge is that flashing does not
-  mean disassembly.
+  nothing may stand beside it, so the **top long edge** is captured instead — by
+  **two clips per board**, at two short stations, each dropping onto a printed peg in
+  the base plate and reaching over the top edge with a 2 mm finger.
+- **The clips' top faces are flush with the board top (Z32).** §5.3's required S0 is
+  measured from that plane: a 3 mm bar lying *over* the board turns `32 + 5 − 27.18 =
+  9.82` into `35 + 5 − 27.18 = 12.82` mm, which is **outside the 0…11 mm bound S0 is
+  known to live in**. A retainer that adds height does not make the cage worse — it
+  ends it. [`../11_cad/w17_params.scad`](../11_cad/w17_params.scad) asserts
+  `s0_required ≤ 11` on every render so this cannot come back by accident.
+- **There is no screw and no heat-set insert**, and that is arithmetic, not taste. An
+  M3×5 insert needs an 8 mm boss; the aft end guide is **2 mm long in X**, and above
+  Z14 the only legal band is \|L\| 30…43, which the board fills. There is nowhere in
+  the cage to put one. The clips are tool-less: board in, clips on, fingernail off.
+- **Retention necessarily touches the component zone.** The band is exactly one board
+  thick (§5.2), so anything reaching over a board stands where its outboard components
+  are. The only variables are *how much* and *at how few stations*. Two clips per board
+  is the smallest answer that still resists the 20 g crash load; **where** they may sit
+  is decided by the real board — **M-03**, then coupon **C-3** with a board in hand.
 - **The PCB's own mounting holes are never used, never enlarged, never loaded** — the
   same rule the package already applies to servo ears and bearing seats
   ([`K_printable_support_spec.md:308-310`](K_printable_support_spec.md)).
+- A clip may be **notched at its USB-C station** if M-03 puts the port on a long edge;
+  if the port is on the forward short edge, as currently assumed, the clips are already
+  clear of it and flashing needs no disassembly either way.
 - The SP3T selector mounts in the cassette's **X+42 dock face**, below Z14 and inboard
   of the boards, beside the two USB-C openings, so one hand reaches both ports and the
   switch.
@@ -665,7 +678,7 @@ settings, and **never installed on the car**
 |---|---|---|---|
 | **C-1 peg/hole tolerance ladder** | what clearance this printer + this filament actually needs for an M3 through-hole and a 3 mm peg (7 steps, −0.15…+0.30) | the first step that assembles by hand without force, recorded per material | `fit_clearance` for every model |
 | **C-2 standoff height gauge** | does a printed standoff hit its nominal height after squish and shrink | ±0.15 mm over 5 heights | `cage_*_z`, `pdb_seat_z` |
-| **C-3 MH-ET hole-pattern + edge-slot coupon** | does a real board drop into the printed edge slot, and does the hole pattern line up | board seats by hand, no bow, no forcing; USB-C plug seats with the coupon fitted | `esp_*`, `cage_slot_w` |
+| **C-3 MH-ET hole-pattern + edge-slot coupon** | does a real board drop into the printed edge slot, and does the hole pattern line up | board seats by hand, no bow, no forcing; USB-C plug seats with the coupon fitted; **both clip stations land on bare PCB, not on a component** | `esp_*`, `cage_slot_w` |
 | **C-4 S0 / deck-height gauge** | a stepped gauge that reads S0 directly under the seated shell at ≥4 points | consistent step reading at all points, ±0.5 | `s0_measured` (M-01) |
 
 **Order:** C-1 first (it calibrates everything else), then C-2 and C-3 together, then
@@ -700,7 +713,8 @@ explicit `ASSUMED` banner. None of them is a measurement.
 | `gcs_ftdi_*`, `gcs_wifi_*`, `gcs_hub_*` | 45×18×10 / 60×25×12 / 90×40×15 | **nothing is recorded anywhere**; hub not procured | M-17 |
 | `spk_*` | 35.3 × 25.1 × 6.1 MEASURED body; port Ø 22 ASSUMED | the port aperture is a design choice with no acoustic evidence | M-18 |
 | `hall_gap` | 1.5 | target inside a 1–3 mm band, never achieved on hardware | M-19 |
-| `insert_*`, `screw_*` | M3×5 insert Ø4.0 × 5.7, M3 clearance 3.4 | typical brass-insert values; brand-dependent | C-1 |
+| `insert_*`, `screw_*` | M3×5 insert Ø4.0 × 5.7, M3 clearance 3.4 | typical brass-insert values; brand-dependent. **The cage uses none** (§5.6); the GCS box lid does | C-1 |
+| `clip_*`, `fit_clearance` | 6 × 2 mm clip at X+10 / X+34, 0.20 mm per side | station positions are guesses until a real board is looked at; the clearance is what coupon C-1 measures | M-03, **C-1**, C-3 |
 
 ---
 
