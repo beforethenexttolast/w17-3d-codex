@@ -103,9 +103,10 @@ face it to a service edge"*), and as **USB-C** in
 saying so; they now carry `esp_usb_type = "usb_c"` as an explicit **ASSUMED** value.
 
 The mechanical exposure is small and the product exposure is not. Mechanically, the
-opening is sized for the larger family (a USB-C receptacle is roughly 8.9 × 3.2 mm
-against micro-B's 7.5 × 2.5 mm), which is the safe direction to be wrong in for a
-clearance hole. But a micro-USB service port changes what a **cable** at that edge
+opening is sized for the larger of the two families — a USB-C shell is wider and
+taller than a micro-B one, which is connector-family general knowledge rather than a
+project record, and is used here only to say *which way* to be wrong, never as a
+dimension — and over-sizing a clearance hole is the safe direction. But a micro-USB service port changes what a **cable** at that edge
 looks like, what the clip may notch around (§5.6), and whether the one service opening
 of §4.7 can be shared with a modern cable the owner already has. **M-03(e)/(f) now
 records the connector TYPE, not only its position and edge.**

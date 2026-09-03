@@ -165,9 +165,11 @@ esp_socket_stack  = 11.0;   // ASSUMED (see §9) seated female+male header stack
 // Neither is a caliper record. AA §1 now records the conflict; M-03(e)/(f) records
 // the connector TYPE as well as its position and edge. The two strings below are
 // what the models currently believe, written down so the belief is visible.
-// esp_usb_w/h above are sized for the LARGER family (USB-C receptacle ~8.9 x 3.2
-// against micro-B ~7.5 x 2.5), which is the safe direction to be wrong in for a
-// clearance opening — but a micro-USB board also changes AA §4.7's service story
+// esp_usb_w/h above are sized for the LARGER family. That ordering is CONNECTOR
+// FAMILY GENERAL KNOWLEDGE, not a project record and not a caliper reading -- a
+// USB-C shell is wider and taller than a micro-B one -- and it is used only to
+// say WHICH WAY to be wrong, never as a dimension. Over-sizing a clearance
+// opening is the safe direction — but a micro-USB board also changes AA §4.7's service story
 // and §5.6's clip-notch rule, not just a hole size.
 esp_usb_type      = "usb_c";      // ASSUMED (see §9) M-03(f)
 esp_usb_edge      = "fwd_short";  // ASSUMED (see §9) M-03(e) — the forward short edge
