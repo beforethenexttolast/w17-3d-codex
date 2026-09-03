@@ -45,6 +45,12 @@ shoe_grip   = 3.0;    // ESTIMATED(how far the channel comes up the board's face
 bench_h     = 6.0;    // ESTIMATED(standoff height: clears the board's underside pins)
 bench_wall  = 2.0;    // ESTIMATED
 bench_lip   = 3.0;    // ESTIMATED(a rim, so the tray does not slide off a desk edge)
+bench_chamfer   = 2.5;  // ESTIMATED(corner chamfer; a sharp printed corner starts cracks)
+bench_boss_wall = 1.5;  // ESTIMATED(hoop around the locating pip)
+bench_pip_depth = 2.5;  // ESTIMATED(blind locator depth -- a locator, never a fastener)
+shoe_window_l   = 10.0; // ESTIMATED(relief window, so the shoe cannot trap a low component)
+shoe_window_at  = [0.30, 0.70];  // ESTIMATED(fractions along the shoe's length)
+shoe_end_stop_h = 2.0;  // ESTIMATED(how far the end stops stand above the grip)
 
 
 // ---------------------------------------------------------------------
@@ -66,19 +72,19 @@ module esp_shoe() {
             // end stops, so the board cannot slide out lengthwise
             for (sx = [0, len - shoe_t])
                 translate([sx, -out_w/2, 0])
-                    cube([shoe_t, out_w, shoe_t + shoe_grip + 2]);
+                    cube([shoe_t, out_w, shoe_t + shoe_grip + shoe_end_stop_h]);
         }
         // the channel the PCB sits in
         translate([shoe_t, -ch_w/2, shoe_t])
-            cube([len - 2*shoe_t, ch_w, shoe_grip + EPS + 2]);
+            cube([len - 2*shoe_t, ch_w, shoe_grip + EPS + shoe_end_stop_h]);
         // chamfered mouth, so the board finds it blind
         translate([shoe_t, 0, shoe_t + shoe_grip])
             w17_slot_lead_in(len - 2*shoe_t, ch_w, slot_lead_in);
         // a relief window per side, so the shoe cannot trap a component
         // that sits low on the board's edge -- and so you can see the board
-        for (sx = [len*0.30, len*0.70])
-            translate([sx - 5, -out_w/2 - EPS, shoe_t + 1])
-                cube([10, out_w + 2*EPS, shoe_grip]);
+        for (f = shoe_window_at)
+            translate([len*f - shoe_window_l/2, -out_w/2 - EPS, shoe_t + slot_lead_in])
+                cube([shoe_window_l, out_w + 2*EPS, shoe_grip]);
     }
 }
 
@@ -93,14 +99,14 @@ module esp_bench_tray() {
     difference() {
         union() {
             // base plate with chamfered corners
-            w17_chamfered_box([plate_l, plate_w, bench_wall], 2.5);
+            w17_chamfered_box([plate_l, plate_w, bench_wall], bench_chamfer);
             // four standoffs on the board's hole pattern
             translate([plate_l/2, 0, bench_wall])
                 w17_standoff_pattern(esp_hole_dx, esp_hole_dy,
-                                     bench_h, esp_hole_d + 3.0, 0);
+                                     bench_h, esp_hole_d + 2*bench_boss_wall, 0);
             // a low rim
             difference() {
-                w17_chamfered_box([plate_l, plate_w, bench_wall + bench_lip], 2.5);
+                w17_chamfered_box([plate_l, plate_w, bench_wall + bench_lip], bench_chamfer);
                 translate([bench_wall, -(plate_w/2 - bench_wall), bench_wall])
                     cube([plate_l - 2*bench_wall, plate_w - 2*bench_wall,
                           bench_lip + EPS]);
@@ -111,16 +117,16 @@ module esp_bench_tray() {
         // (AA §5.6). On a desk, locating the board is the entire job, so
         // this is the one place they are used -- and only as a locator,
         // never with a screw pulled down through them.
-        translate([plate_l/2, 0, bench_wall + bench_h - 2.5])
+        translate([plate_l/2, 0, bench_wall + bench_h - bench_pip_depth])
             w17_board_holes(esp_hole_dx, esp_hole_dy,
-                            esp_hole_d - 2*fit_clearance, 2.5);
+                            esp_hole_d - 2*fit_clearance, bench_pip_depth);
         // USB-C access notch through the rim, on the +X short edge
         translate([plate_l - bench_wall - EPS,
                    esp_usb_offset,
                    bench_wall + bench_h - esp_usb_h/2])
-            w17_usb_notch(esp_usb_w, esp_usb_h, bench_wall + 2*EPS, fit_clearance + 1);
+            w17_usb_notch(esp_usb_w, esp_usb_h, bench_wall + 2*EPS, fit_clearance + bench_boss_wall);
         // cable-tie pair, so a USB lead is strain-relieved on the desk
-        translate([bench_lip + 4, 0, 0])
+        translate([bench_lip + bench_chamfer, 0, 0])
             w17_zip_slot_pair(zip_slot_w, zip_slot_l, zip_slot_bridge, bench_wall);
     }
 }

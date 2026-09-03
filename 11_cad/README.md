@@ -38,7 +38,7 @@ and they are TP-class: draft settings, physically labelled `TP`, logged in
 
 | File | What it is |
 |---|---|
-| [`w17_params.scad`](w17_params.scad) | **The only place a dimension may live.** Every value carries a provenance tag; every `ASSUMED` value is repeated in §9 against the measurement that retires it. Six `assert()`s encode the study's arithmetic so a later edit cannot silently break it. |
+| [`w17_params.scad`](w17_params.scad) | **The only place a *shared* dimension may live** (model-local ones are declared at the top of their own model, still named and still tagged). Every value carries a provenance tag; every `ASSUMED` value is repeated in §9 against the measurement that retires it. Six `assert()`s encode the study's arithmetic so a later edit cannot silently break it. |
 | [`lib/w17_lib.scad`](lib/w17_lib.scad) | Shared shapes: cells, standoffs, insert bosses, board pockets, hole patterns, edge slots with lead-ins, cable-tie slots, rounded cable pass-throughs, chamfered boxes, context ghosts. **Contains no dimensions at all** — everything arrives as an argument. |
 | [`second_floor_cage.scad`](second_floor_cage.scad) | The cage the owner asked for. `render_mode = part / context / section`, `part = all / cage / clip`. |
 | [`esp_tray.scad`](esp_tray.scad) | `variant = shoe` (the on-edge carrier for the car) or `bench` (a desk tray for flashing — explicitly **not** a vehicle part). |
@@ -169,8 +169,14 @@ thing in this folder:
 
 ## Editing rules
 
-- **A number may only be added to `w17_params.scad`, and only with a provenance tag.**
-  If a model file contains a literal dimension, that is a bug.
+- **Every number that will ever meet a physical object must be a named parameter with a
+  provenance tag.** Shared ones live in `w17_params.scad`; ones used by a single model may
+  be declared at the top of that model, still named and still tagged. An *anonymous
+  literal* in geometry — a bare `8` inside a `cylinder()` — is a bug, because nobody can
+  later tell whether it was measured or invented.
+  The one exemption, stated so it is not abused: pure **layout** arithmetic on a test
+  coupon (where a label sits, how far apart two rows are on a plate) is not a fit
+  dimension and does not need a tag.
 - When a measurement lands, change the value *and* its tag (`ASSUMED` → `MEASURED(file:line)`),
   and delete its row from §9. The study's §12 table and the measurement-session prompt
   are the other two places that list it.
