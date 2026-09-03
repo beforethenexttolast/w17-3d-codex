@@ -65,6 +65,9 @@ insert_boss_wall  = 2.0;    // POLICY(hoop wall around a heat-set insert, >= 2 m
 // so the models render. It is not a measurement. Measurement: M-01.
 s0_measured       = 9.82;   // ASSUMED (see §9)
 
+// The worst finite shell roof sampled over BOTH board seats at S0 = 0.
+roof_z_worst      = 27.18;  // DERIVED(ZK:117, at approximately X+3 / L-37)
+
 // KO-01, the steering rod sweep. PROVISIONAL until the ASM-08 lock-to-lock
 // sweep is physically run. It is the most restrictive keep-out in the car.
 ko01_x_lo         = -80;    // ASSUMED (see §9) C_clearance_keepout_register.md:30-48
@@ -121,7 +124,7 @@ board_seat_x0     = 3.0;    // ASSUMED (see §9) OP-H turns on whether this can 
 board_seat_z0     = 1.0;    // DERIVED(ZK:99 seat Z1..32) parametric escape route, AA §5.3
 board_l_in        = 30.0;   // DERIVED(ko01_l_guard) PCB plane inboard face
 board_l_out       = 43.0;   // DERIVED(ZK:99 outer face) == wing_l_half
-board_top_z       = 32.0;   // DERIVED(board_seat_z0 + esp_len)
+board_top_z       = 32.0;   // DERIVED(board_seat_z0 + esp_wid: the 31 mm side stands up)
 
 // hole pattern + USB-C: no MH-ET drawing exists in any project document
 esp_hole_dx       = 33.0;   // ASSUMED (see §9) M-03
@@ -151,8 +154,44 @@ guide_x1          = 3.0;    // DERIVED(== board_seat_x0)
 guide_top_z       = 30.0;   // ASSUMED (see §9) M-07; may stop below board_top_z
 guide_top_margin  = 2.0;    // DERIVED(board_top_z - guide_top_z) the §5.3 escape route
 
-retainer_t        = 3.0;    // ESTIMATED(a 3 mm bar in PETG over a 39 mm span, hand load only)
-retainer_w        = 8.0;    // ESTIMATED(wide enough for an M3 thumbscrew boss)
+rail_out          = board_l_in + slot_w + rail_t;  // DERIVED = 33.6, outboard face of rail/guide
+
+// The aft end guide, and the one thing in the cage that reaches over a board.
+// It occupies the board's aft 2 mm of component zone on the OUTBOARD side.
+// That is a real intrusion and coupon C-3 is what proves or kills it.
+guide_post_l      = 2.0;    // ESTIMATED(how far the post overlaps the board's aft edge)
+guide_post_t      = 4.0;    // ESTIMATED(thick enough to stand 29 mm tall without a rib)
+
+// Board retention. It is a CLIP, not a bar, and not a screw. Three CAD
+// findings forced that, and all three are worth remembering:
+//
+//  1. NOTHING MAY RISE ABOVE board_top_z. A bar lying over the board's top
+//     edge adds its own thickness, and AA §5.3's required S0 is computed
+//     from the board top: 3 mm of bar turns 9.82 mm into 12.82 mm, which is
+//     outside the 0..11 mm bound S0 is known to live in. It would kill the
+//     design on paper. The clip's top face is flush at board_top_z.
+//  2. THERE IS NOWHERE FOR A HEAT-SET INSERT. An M3x5 insert needs an 8 mm
+//     boss; the aft end guide is 2 mm long in X, and above Z14 the only
+//     legal band is |L| 30..43, which the board fills.
+//  3. RETENTION MUST TOUCH THE COMPONENT ZONE. The band is exactly one
+//     board thick (AA §5.2), so any structure that reaches over the board
+//     stands in the space its outboard components occupy. The only choice
+//     is HOW MUCH and AT HOW FEW STATIONS. Two clips per board is the
+//     smallest answer that still resists a 20 g crash load. WHERE those
+//     stations may be depends on the real board's component layout —
+//     M-03, then coupon C-3 with a board in hand.
+//
+// The clip drops onto a printed peg in the base plate; the peg/hole fit is
+// exactly what coupon C-1's ladder measures, so the clip is also the first
+// part that consumes a real coupon result.
+clip_len          = 6.0;    // ESTIMATED(a short station, to touch as few components as possible)
+clip_t            = 2.0;    // ESTIMATED(5 perimeters; it is loaded in compression, not bending)
+clip_foot_w       = 5.0;    // ESTIMATED(enough footprint to stand a 31 mm upright on)
+clip_peg_d        = 3.0;    // ESTIMATED(matches coupon C-1's 3 mm peg/hole ladder)
+clip_finger_h     = 2.0;    // ESTIMATED(overlap onto the board's top edge)
+clip_finger_gap   = 0.4;    // ESTIMATED(so the finger clears the PCB face, not clamps it)
+clip_station_x    = [10, 34];  // ESTIMATED(two stations, spread over the 39 mm board)
+fit_clearance     = 0.20;   // ASSUMED (see §9) per-side print clearance, retired by coupon C-1
 
 zip_slot_w        = 4.0;    // ASSUMED (see §9) fits a 3 mm cable tie; tie stock not calipered
 zip_slot_l        = 2.5;    // ASSUMED (see §9)
@@ -260,6 +299,7 @@ gcs_clear         =  6.0;   // POLICY(air around the TX module, the box's only r
 //  M-19  hall_gap                                       1.5
 //  C-1   insert_m3_d / insert_m3_h / screw_m3_clear_d
 //  C-1   zip_slot_w / zip_slot_l                     4.0/2.5
+//  C-1   fit_clearance                                  0.20
 //
 // ---------------------------------------------------------------------
 
@@ -279,6 +319,12 @@ assert(pdb_z1 <= ko01_z_guard,
        "PDB audit top has risen above the KO-01 guard: zero reserve is now negative");
 assert(guide_top_z <= board_top_z,
        "the aft end guide may stop below the board top, never above it");
+// The gate that decides whether this cage exists at all (AA §5.3):
+s0_required       = board_top_z + clr_static - roof_z_worst;  // DERIVED = 9.82
+s0_upper_bound    = 11.0;   // DERIVED(D_measurement_plan.md:43-49, S0 in 0..~11)
+
+assert(s0_required <= s0_upper_bound,
+       "the cage's tallest point now needs an S0 outside the 0..11 mm bound (AA §5.3)");
 assert(is_undef(drs_arm_pivot_span),
        "drs_arm_pivot_span was given a value — the 58 mm figure is a bbox, not a pivot span");
 
