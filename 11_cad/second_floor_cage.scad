@@ -10,7 +10,7 @@
 //  DRAFT. Every dimension comes from w17_params.scad and roughly half of
 //  them are tagged ASSUMED, which means they have never been measured.
 //
-//  WHAT THIS IS NOT: a printable production part. A2 is NOT EXECUTED and
+//  WHAT THIS IS NOT: a printable production part. A2 is NOT-EXECUTED and
 //  Phase B is BLOCKED. Print the fit_check_coupons.scad coupons first
 //  (C-1, then C-2 and C-3), measure the car (M-01, M-02, M-03, M-07), put
 //  the real numbers in w17_params.scad, and only then talk about printing

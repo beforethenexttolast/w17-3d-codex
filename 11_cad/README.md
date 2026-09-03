@@ -10,7 +10,7 @@ to Claude Code) · **Study:**
 
 Nothing in this folder is a production part.
 
-**A2 is NOT EXECUTED and Phase B is BLOCKED.** No file here authorises a production
+**A2 is NOT-EXECUTED and Phase B is BLOCKED.** No file here authorises a production
 print, a shell cut, a hole in a donor part, or any powered work. Roughly half of the
 dimensions these models are built from have never been measured — they are tagged
 `ASSUMED` in [`w17_params.scad`](w17_params.scad) §9 and each names the measurement

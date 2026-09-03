@@ -21,7 +21,7 @@
 //  Every ASSUMED value lives in section 9 under its own banner, is listed
 //  in the study's §12, and names the measurement (M-nn) that retires it.
 //
-//  A2 IS NOT EXECUTED AND PHASE B IS BLOCKED. Nothing in this file
+//  A2 IS NOT-EXECUTED AND PHASE B IS BLOCKED. Nothing in this file
 //  authorises a production print, a shell cut, a hole in a donor part,
 //  or any powered work. The models here render so the owner can SEE a
 //  proposal and so fit-check coupons can be printed in draft.
