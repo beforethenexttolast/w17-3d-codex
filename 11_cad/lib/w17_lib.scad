@@ -2,9 +2,18 @@
 // lib/w17_lib.scad — shared helpers for every W17 model in 11_cad/
 // =====================================================================
 //
-//  Rule: this file contains NO dimensions. Everything it needs arrives as
-//  a parameter from w17_params.scad. If you find yourself typing a number
-//  here, it belongs in w17_params.scad with a provenance tag.
+//  Rule: this file contains NO DIMENSION OF THE VEHICLE. Every size a
+//  shape needs arrives as an argument from w17_params.scad. If you find
+//  yourself typing a size here, it belongs in w17_params.scad with a
+//  provenance tag.
+//
+//  Two numbers survive that rule, and they are here rather than there
+//  because they are PROPORTIONS OF A SHAPE, not sizes of a thing: the
+//  headroom a heat-set boss gets above its insert, and how much of a
+//  pocket's width the finger-relief scallop takes. Both are declared as
+//  named default arguments with a provenance tag, so a caller can
+//  override either and neither is an anonymous literal. If a third one
+//  ever appears, that is the moment to move all of them out.
 //
 //  Beginner note on how OpenSCAD works, because this repo teaches:
 //  a `module` is a named shape you can stamp out repeatedly. Shapes are
@@ -94,6 +103,9 @@ module w17_standoff(h, od, bore = 0, insert_d = 0, insert_h = 0) {
 
 // A boss for a heat-set insert, sized from the insert and a hoop wall.
 // The soldering iron melts the brass in; the hoop is what stops it splitting.
+//   extra_h  ESTIMATED(material left below the insert so the iron cannot push
+//            the brass out through the bottom of the boss; a proportion of the
+//            shape, not a size of a part — see the header note)
 module w17_insert_boss(insert_d, insert_h, wall, extra_h = 1.5) {
     w17_standoff(h = insert_h + extra_h,
                  od = insert_d + 2*wall,
@@ -115,15 +127,18 @@ module w17_standoff_pattern(dx, dy, h, od, bore = 0, insert_d = 0, insert_h = 0)
 
 // A rectangular pocket for a PCB lying flat, with a finger relief on both
 // short ends so the board can be lifted out without a tool.
-//   l, w, t  board length, width, thickness to be recessed
-//   clear    per-side clearance (from the C-1 coupon, never guessed twice)
-module w17_board_pocket(l, w, t, clear) {
+//   l, w, t       board length, width, thickness to be recessed
+//   clear         per-side clearance (from the C-1 coupon, never guessed twice)
+//   relief_frac   ESTIMATED(the finger scallop's diameter as a fraction of the
+//                 pocket width: big enough for a fingertip, small enough that
+//                 the pocket still has ends. A proportion, not a size — header)
+module w17_board_pocket(l, w, t, clear, relief_frac = 0.45) {
     translate([-(l + 2*clear)/2, -(w + 2*clear)/2, -EPS])
         cube([l + 2*clear, w + 2*clear, t + EPS]);
     // finger reliefs: half-round scallops at both short ends
     for (sx = [-1, 1])
         translate([sx * (l + 2*clear)/2, 0, -EPS])
-            cylinder(h = t + EPS, d = w * 0.45);
+            cylinder(h = t + EPS, d = w * relief_frac);
 }
 
 // The four mounting holes of a board, as a cutting tool. Centred on origin.
