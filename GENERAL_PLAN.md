@@ -15,6 +15,51 @@ filament on hand, nothing printed yet.
 
 ---
 
+## 2026-09-03 — mechanical design moved into this repo (owner decision A3)
+
+Owner decision **A3, 2026-09-02**, verbatim intent: *"Take over that part as well. Some
+3d models were printed and we may start test assembly. But my plan is calculate best
+assembly structure (what goes where) and maybe develop additional inner cage or
+structure to put some devices (like ESPs) on the 'second floor' inside."*
+
+**What changed.** Mechanical design of the electronics packaging — the trays/cassette,
+the inner cage / "second floor", the DRS flap linkage, the USB-C charge flap and the
+GCS box — is now Claude Code's, in this repo. It was previously Codex territory.
+`~/Documents/Codex/w17-rc-print-codex` stays read-only reference, consulted skeptically.
+
+**What landed the same day:**
+
+| Where | What |
+|---|---|
+| [`10_assembly_architecture/AA_electronics_placement_study.md`](10_assembly_architecture/AA_electronics_placement_study.md) | the single "what goes where" answer for all 23 onboard modules, the second-floor cage concept, the DRS linkage check, charge-flap candidates CF-1…CF-6, the GCS box concept, the M-00…M-20 measurement list, and the ASSUMED-parameter list |
+| [`11_cad/`](11_cad/README.md) | parametric OpenSCAD drafts: `w17_params.scad` (every dimension named and provenance-tagged), `lib/`, `second_floor_cage.scad`, `esp_tray.scad`, `fit_check_coupons.scad`, `gcs_box.scad`, `render.sh` |
+| [`w17-mechanical-measurement-session-prompt.md`](w17-mechanical-measurement-session-prompt.md) | the owner sitting that retires the guesses — calipers and a scale, no power |
+
+**What it does NOT change.** Nothing here is a production part and nothing proves a
+fit. **A2 stays NOT-EXECUTED and Phase B stays BLOCKED.** The phase roadmap below is
+untouched: this work sits alongside Phases 5–7, it does not reorder them, and the
+critical path is unchanged.
+
+**The one thing that must happen next**, and it blocks everything mechanical:
+**S0 has never been measured.** The cage needs `9.82 mm` of an `11 mm` ceiling, and
+that single number decides whether it is built at all. Coupon **C-4** is printed for
+exactly that reading. Run the measurement sitting.
+
+### New open problems from that work (details in the study §10)
+
+| ID | Problem |
+|---|---|
+| **OP-A** | The ESC has no station — 34 mm body + 10 mm intake plane needs Z45.5, which no registered shell station supplies even at S0 = 11 |
+| **OP-B** | DS3235SG vs `Servoholder`: measured 20.2 mm face into an 18.5 mm arch, ~1.7 mm interference. Dry fit with no force; if it binds, the fix is a relieved holder in CAD, never a knife on the servo |
+| **OP-C** | Two documents give two different charge-module footprints; no pocket may be cut to either |
+| **OP-D** | The cassette has no retention — the four-boss pattern is rejected and the external saddle does not exist |
+| **OP-E** | BX100 buzzer in or out? It competes for exactly the volume OP-A needs. The study recommends out |
+| **OP-F** | Charge flap CF-1 (reprinted side vent) vs CF-2 (existing floor opening) — a showpiece-vs-invisibility call, after M-12 / M-15 |
+| **OP-G** | The three centreline splice screws as a shared donor stack — a real cassette datum, or occupied and the idea dies. M-20 |
+| **OP-H** | The boards' forward end has nothing to land on; either the clips cantilever or the seat moves ~2 mm aft. M-03 |
+
+---
+
 ## Phase 1 — Inventory & classification ✅ done on paper (2026-07-10)
 - **Goal:** know what every raw file is and whether we print it.
 - **Inputs:** `unsorted_stl_raw/`, docs v1/v2, Codex-repo reports (read-only cross-check).
