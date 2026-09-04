@@ -1,0 +1,8 @@
+id,quantity,unit,value,tolerance,photo_ref,notes
+M-03,esp_thk_headers,mm,12.4,0.2,,installed thickness with headers as worn
+M-03h,board_seat_x0,mm,3.0,0.2,,confirms OP-H does not move
+M-03f,esp_usb_type,enum,usb_c,,IMG_001,confirms USB-C per ZK
+M-06a,pdb_len,mm,,,,could not -- PDB not populated yet
+M-99,not_a_real_param,mm,5.0,,,orphan test row: no matching ASSUMED parameter
+M-07,guide_top_z,mm,29.4,0.3,IMG_002,
+M-07dup,guide_top_z,mm,29.6,0.3,IMG_003,duplicate-target conflict test
