@@ -18,8 +18,12 @@ the same physical quantities under different IDs, and split into what can be mea
 **today** versus what is **BLOCKED** on a part that does not exist yet.
 
 Capture goes on [`MEASUREMENT_RECORD_SHEET.md`](MEASUREMENT_RECORD_SHEET.md) (print it) or
-[`MEASUREMENT_RECORD_SHEET.csv`](MEASUREMENT_RECORD_SHEET.csv) (type it). **One home per
-number:** the sheet is the *capture* medium; afterwards the values are transcribed into the
+[`MEASUREMENT_RECORD_SHEET.csv`](MEASUREMENT_RECORD_SHEET.csv) (type it). Both are written by
+[`tools/gen_measurement_sheet.py`](tools/gen_measurement_sheet.py) from **one** row list, so
+they cannot drift — **never hand-edit either sheet; edit the script and re-run it.** Each cell
+carries a **`param`** column naming the exact `w17_params.scad` parameter it sets, or empty for
+a *register-only* cell whose number must **not** be written into the parameter file. **One home
+per number:** the sheet is the *capture* medium; afterwards the values are transcribed into the
 session prompt's tables (the record), then into
 [`11_cad/w17_params.scad`](11_cad/w17_params.scad) with the tag changed from `ASSUMED` to
 `MEASURED(file:line)`, then the entry is deleted from that file's §9 and §12 of
@@ -53,6 +57,32 @@ whatever the numbers say. No part is forced, cut, drilled, filed or glued in thi
 9. **A measurement you could not take is a result:** write `could not — <why>`. Never estimate
    to fill a cell.
 10. Do **M-00 first**. It decides whether Stations 3–5 exist at all.
+
+---
+
+## Coordinates, datums and sides — read this before you write a signed number
+
+Every `X`, `L`, `Z`, `DAT-F`, *belt side*, *mirror side*, *outboard* and *inboard* below
+means exactly this and nothing else. **A mirrored `L` or a swapped `X`/`Y` is invisible in
+the recorded number** — nobody can catch it later, so get it right once, here.
+
+| Term | What it means | Source |
+|---|---|---|
+| **DAT-F** | the **assembled original-floor top**. It is the datum for every height in this runbook | [`fit_studies/README.md:12`](10_assembly_architecture/fit_studies/README.md); [`11_cad/w17_params.scad:41-44`](11_cad/w17_params.scad) |
+| **Z** | height above DAT-F. **`Z = 0` is DAT-F, and up is +** | [`fit_studies/README.md:12`](10_assembly_architecture/fit_studies/README.md) |
+| **X** | along the car. **`+X` is FORWARD, toward the nose**; `X = 0` is the front/rear floor joint | [`fit_studies/README.md:13`](10_assembly_architecture/fit_studies/README.md) |
+| **L** | lateral, from the vehicle centreline. **BELT side (= architecture-RIGHT) is `L−`; MIRROR side is `L+`.** `\|L\|` is the unsigned distance from the centreline | [`fit_studies/README.md:14`](10_assembly_architecture/fit_studies/README.md); [`D_measurement_plan.md:51`](10_assembly_architecture/D_measurement_plan.md) |
+| **outboard / inboard** *(of a board on edge)* | **outboard** = the face carrying the **taller components** — the one that will point **away from the register wall** once the board stands on edge. **inboard** = the other face, which sits against the wall | AA §5.2/§5.6 (the 13 mm band is one board thick, components outboard) |
+| **S0** | the shell-bottom clearance above DAT-F (M-01). **Not** a gate name — the A2 gate once called S0 is now **SF** | [`fit_studies/README.md:15`](10_assembly_architecture/fit_studies/README.md) |
+
+**Two practical consequences.**
+1. Before you measure a **loose** board, put a piece of tape on its **outboard** face and
+   write "OUT" on it. Every M-03h margin is read on that face; "outboard" is otherwise
+   meaningless for a board lying on a bench.
+2. Rows that ask for a hole **pitch** name the **edge** (39 mm long edge / 31 mm short
+   edge), never "X" and "Y" — the board is loose, so it has no car axes yet.
+
+---
 
 **Have in hand on the bench before you sit down (Stations 1–2):** 3× MH-ET D1-Mini ESP32,
 2× IP2326 charge module, 2× UBEC, the XT90-S pigtail pair, XT60/XT30 stock, the electrolytic
@@ -88,23 +118,49 @@ a soldering iron, a knife, a file, a drill.
 | Station | Where you are | Needs | Rows | Blocked |
 |---|---|---|---|---|
 | **0** | anywhere, 10 min | eyes | 1 | 0 |
-| **1** | bench, loose parts, calipers | nothing printed | 40 | 5 |
+| **1** | bench, loose parts, calipers | nothing printed | 42 | 5 + C-1.1¹ |
 | **2** | same bench, scale swap | nothing printed | 11 | 4 |
 | **3** | car, shell off | printed floor/steering (M-00) | 9 | 0 |
 | **4** | car, shell seated | printed shell + floor (M-00) | 6 | 1 |
 | **5** | car, rear end | printed wing/rear stack (M-00) | 12 | 2 |
 
-**Stations 1 and 2 do not depend on M-00 and can be done today.** They are 51 of the 79 rows
-and they retire more `ASSUMED` parameters than the rest of the sitting combined.
+¹ `C-1.1` is not blocked on a *part*: it is the reserved row that coupon **C-1** answers once TP-001 is printed. It cannot run in a caliper sitting.
+
+**Stations 1 and 2 do not depend on M-00.** They are **53 of the 81 rows** — but 9 of those
+53 are **BLOCKED** on a part that does not exist (5 in Station 1, 4 in Station 2) and one
+(`C-1.1`) waits on a printed coupon, so what can actually run today is **43 rows**, plus
+**M-04** conditional on a female header being in stock. They still retire more `ASSUMED` parameters than the rest of the sitting combined.
+
+> *Count correction (2026-09-05).* The first draft of this pack reported "51 runnable today".
+> 51 was the **station count** for Stations 1–2 at 79 rows, not the runnable count; subtracting
+> the 9 BLOCKED rows gave **42**. Station 1 has since gained **M-03x** (the board-to-board
+> cross-check, previously prose only) and the reserved coupon row **C-1.1**, so the sitting is
+> **81 rows**, Stations 1–2 are **53**, and **43** of them run today.
 
 **If you only have an hour** the session prompt's answer is M-00, M-01, M-02, M-03
 ([`w17-mechanical-measurement-session-prompt.md:32`](w17-mechanical-measurement-session-prompt.md)).
 **If nothing is printed**, that hour becomes **M-00, M-03, M-04, M-05** — which is Station 1's
 first two blocks, and is the highest-value hour available without a car.
 
-**Rows vs values.** The 79 rows below are *measurements*; several read more than one number
-(M-26 alone reads seventeen). The record sheet expands them into **231 numbered cells**, one per
-value, so nothing is lost between "take this measurement" and "write this down".
+**Rows vs values.** The 81 rows below are *measurements*; several read more than one number
+(M-26 alone reads seventeen). The record sheet expands them into **254 numbered cells**, so
+nothing is lost between "take this measurement" and "write this down". Both sheets are written
+by [`tools/gen_measurement_sheet.py`](tools/gen_measurement_sheet.py) from **one** row list —
+edit that script and re-run it; never hand-edit a sheet.
+
+**The sheet's `param` column, and why some cells deliberately have none.** Each cell carries the
+exact `11_cad/w17_params.scad` parameter it sets, and
+[`11_cad/tools/ingest_measurements.py`](11_cad/tools/ingest_measurements.py) reads **that column**
+to build a reviewable patch. Two rules follow, and both are enforced by the tools:
+
+- **One cell per parameter.** Where a quantity is read at several stations (S0 at four points,
+  the rod at three), the station cells are *register-only* and a single derived cell
+  (`M-01.worst`, `M-02a.min`, `M-02b.max`, `M-02c.max`, `M-07.worst`) carries the parameter.
+  Two cells naming one parameter is a `CONFLICT` and **both** are dropped.
+- **A measured STOCK dimension is not the FEATURE dimension.** A screw's thread OD is not the
+  clearance hole; an insert's knurl OD is not the bore it melts into; a cable tie's strap is not
+  the slot it threads through. Feature = stock **+ clearance**, which is a CAD decision. Those
+  cells say **DO NOT ENTER INTO SCAD** and carry no `param`. See Block C.
 
 **Reading the tables.** `mm` means millimetres to **0.1** unless the row says otherwise;
 `g` means grams to **1**. `Tol.` is the precision the consumer actually needs — measuring
@@ -138,11 +194,12 @@ taken per board.
 | **M-03a** | Bare PCB **length × width**, jaws on the FR4 edges, not on a header or a shield lip | calipers | mm ±0.2 | `esp_len` / `esp_wid` — upgrades `DOCUMENTED(SKU class)` → MEASURED ([`11_cad/w17_params.scad:138-139`](11_cad/w17_params.scad)); ZK CAS-03 | — | outside **39 × 31 ±1** → this is not the SKU the whole cassette was planned on; stop and report before any other board row is trusted |
 | **M-03b** | PCB **thickness**, on a bare edge away from a pad | calipers | mm ±0.1 | `esp_pcb_t` ([`:140`](11_cad/w17_params.scad)); `slot_w` = pcb_t + hand-fit | — | ≠ 1.6 ±0.2 → `slot_w` (1.8) is wrong; re-derive before coupon C-3 |
 | **M-03c** | **Total thickness with headers fitted, at its thickest** — jaws across the board's two faces at the worst station, including the tallest through-hole tail on the underside | calipers | mm ±0.2 | `esp_thk_headers` (retires §9 `M-03`); AA §5.2 "the 13 mm band is exactly one board thick"; the assert at [`11_cad/w17_params.scad:391`](11_cad/w17_params.scad) | — | **> 13.0 → the assert fires and the design stops.** The band `board_l_out − board_l_in` is 13.0 mm exactly. Thinner is harmless (slack in the band); fatter ends the cage as drawn |
-| **M-03d** | Mounting-hole **pitch X and pitch Y** (centre-to-centre, opposite corners) and **hole Ø** | calipers (internal jaws for Ø) | mm ±0.2 | `esp_hole_dx` / `esp_hole_dy` / `esp_hole_d` (retires §9 `M-03`); coupon **C-3** | — | no mounting holes at all → say so; the cage's retention is a clip and does not use them ([`11_cad/w17_params.scad:220-229`](11_cad/w17_params.scad)), but C-3's hole-pattern half becomes void |
+| **M-03d** | Mounting-hole pitch **along the 39 mm LONG edge** and **along the 31 mm SHORT edge** (centre-to-centre, opposite corners), and **hole Ø**. *Name the edge, not an axis: the board is loose and has no car axes yet. `esp_hole_dx` = 33.0 against `esp_len` 39.0, so **dx runs along the LONG edge**; `esp_hole_dy` = 25.0 against `esp_wid` 31.0* | calipers (internal jaws for Ø) | mm ±0.2 | `esp_hole_dx` (long edge) / `esp_hole_dy` (short edge) / `esp_hole_d` (retires §9 `M-03`); coupon **C-3** | — | no mounting holes at all → say so; the cage's retention is a clip and does not use them ([`11_cad/w17_params.scad:220-229`](11_cad/w17_params.scad)), but C-3's hole-pattern half becomes void |
 | **M-03e** | **Which edge carries the service port** — long or short edge, and which end of it | eyes + calipers | — | `esp_usb_edge` (retires §9 `M-03`); decides the clip notch, AA §5.6 | ✅ the port edge with the silkscreen legible | port on a **long** edge → the on-edge wall seat presents a different face to X+42; AA §4.7's single service opening has to be re-planned |
 | **M-03f** | **Which connector it actually is** — USB-C, micro-USB B, or something else — then its shell **width × height**, how far it **protrudes past the PCB edge**, and its **offset from that edge's centreline** | calipers | mm ±0.2 | `esp_usb_type`, `esp_usb_w`, `esp_usb_h`, `esp_usb_offset` (retires §9 `M-03`); **closes OP-I** and the AA §1 / [`w17-electrical-inputs-for-codex.md:8,10`](../w17-electrical-inputs-for-codex.md) vs [`ZK:102`](10_assembly_architecture/fit_studies/ZK_electronics_cassette_fit_study.md) conflict | ✅ the connector itself, close enough to read the shell shape | **micro-USB** → this is not just a smaller hole: AA §4.7's service story and §5.6's clip-notch rule were both written for USB-C. Record it and stop treating the USB-C wording anywhere as fact |
 | **M-03g** | With a **dead** cable plugged in: how far the **plug body** projects past the PCB edge, and the cable's **minimum bend radius** before the plug is levered | calipers + rule | mm ±0.5 | service access; KO-34 (lift envelope); AA §4.7 | — | plug + bend exceeds the X+42…+46 tongue → the service opening cannot be at the tongue; report the number, do not cut anything |
-| **M-03h** | **Component-free zones:** how far in from **each** of the four edges the **outboard** face is bare. Four numbers, one per edge | calipers + rule | mm ±0.5 | **OP-H**; `clip_station_x` (currently `[10, 34]` ESTIMATED) and `board_seat_x0` (retires §9 `M-03`); coupon **C-3**'s "both clip stations land on bare PCB" criterion | ✅ the outboard face flat-on with a rule alongside, so the bare margins are readable | no bare band at either **X+10** or **X+34** → the two clip stations as drawn stand on components. Report where the bare land actually is; the clips move, the board does not |
+| **M-03h** | **Component-free zones:** how far in from **each** of the four edges the **outboard** face is bare. Four numbers, one per edge. **`outboard` = the face carrying the taller components, the one that will point AWAY from the register wall once the board stands on edge** — tape it and mark it "OUT" before you measure (see *Coordinates, datums and sides*) | calipers + rule | mm ±0.5 | **OP-H**; `clip_station_x` (currently `[10, 34]` ESTIMATED) and `board_seat_x0` (retires §9 `M-03`); coupon **C-3**'s "both clip stations land on bare PCB" criterion | ✅ the outboard face flat-on with a rule alongside, so the bare margins are readable | no bare band at either **X+10** or **X+34** → the two clip stations as drawn stand on components. Report where the bare land actually is; the clips move, the board does not |
+| **M-03x** | **Boards #2 and #3 cross-check:** M-03a (length) and M-03c (thickness with headers) on each of the other two boards. *(Previously stated only in this block's prose, with cells `M-03x.1`/`M-03x.2` on the record sheet and no row id here — now a row of its own)* | calipers | mm ±0.2 | nothing directly; it decides whether every other M-03 row must be taken **per board** | — | any board differs from board #1 by more than the tolerance → **they are not one SKU.** Take all of M-03 per board and say so; do not average them |
 | **M-03i** | *Optional, do not let it delay anything:* read the **adjacent header pin pairs** off the silkscreen (which signal sits next to which) | eyes | — | A2 review **F12** (the MH-ET adjacency list, an explicit OWED placeholder) and open finding **F20** ([`../w17-pdb-build-and-connector-guide.md:141-144,184`](../w17-pdb-build-and-connector-guide.md)) | ✅ both silkscreen edges, sharp enough to read every label | — (its fallback, "beeper-check every joint", stays valid and slower) |
 | **M-04** | The **female header** intended for the PDB, stacked with an MH-ET's **pre-soldered male pins**, seated as it would be in the cassette: **total stack height** | calipers | mm **±0.1** | `esp_socket_stack` (retires §9 `M-04`); the socketing **GO/NO-GO** ([`../w17-socket-stack-caliper-prompt.md`](../w17-socket-stack-caliper-prompt.md)); owner decision **F12** | — | Run the verdict from the socket prompt, not from here. **NO-GO → stop, do not solder**: F12 reopens, the boards go hard-wired, and §3 rule 2's unseat-for-isolation method has to be rewritten before anyone touches the harness. **Marginal is a report, not a judgement call.** ⚠ needs a female header from stock — if none is on hand, this row is `could not — no female header` and the socketing decision stays owed |
 
@@ -156,9 +213,9 @@ the number the whole cage turns on.
 | ID | What / datum & landmarks | Tool | Unit · Tol. | Unlocks | 📷 | Stop if |
 |---|---|---|---|---|---|---|
 | **M-05a** | **1000 µF electrolytic**: body **Ø × height**, and lead length below the body. Height is from the *seating plane* (where it sits on the board), not from the lead tips | calipers | mm ±0.2 | `pdb_stack_h` candidate (retires §9 `M-05`); [`../w17-batch1-measurements-for-codex.md:63-72`](../w17-batch1-measurements-for-codex.md) §2a's re-derivation | — | see M-05d |
-| **M-05b** | **XT60** body **L × W × H**, male and female as actually used, measured lying as it will lie on the board | calipers | mm ±0.2 | `pdb_stack_h` candidate; **KO-33** dock body allocation | — | see M-05d |
-| **M-05c** | **XT90-S loop key / master pigtail**: body **L × W × H** of each half, **mated overall length**, and the **pull axis** (which way the finger pulls) | calipers + rule | mm ±0.5 | `pdb_stack_h` candidate; finger access at the body ([`../w17-pdb-build-and-connector-guide.md:36-57`](../w17-pdb-build-and-connector-guide.md), owner decisions F9a/F9b); M-08d | ✅ the mated pair with an arrow drawn on tape along the pull axis | see M-05d |
-| **M-05d** | **The tallest thing on the board, whatever it turns out to be** = `max(M-05a, M-05b, M-05c, 9.1)` — the 9.1 is the **already-MEASURED** UBEC height ([`../w17-batch1-measurements-for-codex.md:45`](../w17-batch1-measurements-for-codex.md)). Write the arithmetic on the sheet, not just the answer | derived at the bench | mm ±0.2 | `pdb_stack_h` (retires §9 `M-05`) | — | **> 13 mm → the cage's constraint arithmetic changes.** The PDB's audit top is `Z14` and KO-01's bottom is `Z22`: exactly the 8 mm moving-clearance policy with nothing spare ([`11_cad/w17_params.scad:128,395`](11_cad/w17_params.scad)). Report the number and stop; do not re-plan the cage at the bench |
+| **M-05b** | **XT60** body, male and female as actually used, measured lying as it will lie on the board. **Three cells per half** on the sheet (`.1l/.1w/.1h`, `.2l/.2w/.2h`) — one number each; only the **H** cell, the installed height above the board seating plane, is an M-05d candidate | calipers | mm ±0.2 | `pdb_stack_h` candidate (H only); **KO-33** dock body allocation | — | see M-05d |
+| **M-05c** | **XT90-S loop key / master pigtail**: body **L**, **W** and installed **H** of each half (**three cells per half**, one number each — only **H** is an M-05d candidate), the **mated overall length** (`M-05c.3` — a LENGTH, explicitly **not** an M-05d candidate), and the **pull axis** (which way the finger pulls) | calipers + rule | mm ±0.5 | `pdb_stack_h` candidate; finger access at the body ([`../w17-pdb-build-and-connector-guide.md:36-57`](../w17-pdb-build-and-connector-guide.md), owner decisions F9a/F9b); M-08d | ✅ the mated pair with an arrow drawn on tape along the pull axis | see M-05d |
+| **M-05d** | **The tallest thing on the board** = `max(M-05a.2, M-05b.1h, M-05b.2h, M-05c.1h, M-05c.2h, 9.1)` — **INSTALLED HEIGHTS above the board seating plane ONLY**, one number per term. The 9.1 is the **already-MEASURED** UBEC height ([`../w17-batch1-measurements-for-codex.md:45`](../w17-batch1-measurements-for-codex.md)). **Mated lengths (`M-05c.3`) and body lengths/widths are NOT candidates** — a ~60 mm mated length dropped into this `max()` would trip the "> 13 mm" stop and halt the cage for a reason that does not exist. Write the arithmetic on the sheet, not just the answer | derived at the bench | mm ±0.2 | `pdb_stack_h` (retires §9 `M-05`) | — | **> 13 mm → the cage's constraint arithmetic changes.** The PDB's audit top is `Z14` and KO-01's bottom is `Z22`: exactly the 8 mm moving-clearance policy with nothing spare ([`11_cad/w17_params.scad:128,395`](11_cad/w17_params.scad)). Report the number and stop; do not re-plan the cage at the bench |
 | **M-06** | PDB finished outline L × W, mounting-hole positions, connector exit faces and directions | — | — | `pdb_len` / `pdb_wid` (§9 `M-06`) | — | **BLOCKED — the board does not exist.** No substrate has been chosen or bought (nothing in [`../HARDWARE_INVENTORY.md`](../HARDWARE_INVENTORY.md) is a perfboard). `pdb_len`/`pdb_wid` stay `ASSUMED` until the board is planned flat and built at A2 build week. **Do not cut a pocket to 55 × 45.** Owner action below |
 | **M-21** | **Dock connector bodies**, one row per type: **XT30**, 3-pin servo (JR), **JST-XH 3 / 4 / 5**, JST-PH 2, **U.FL** head + pigtail Ø, and the camera↔Wi-Fi shielded 4-pin / micro-USB. For each: body **L × W × H** and **mated depth** (the pair plugged together) | calipers | mm ±0.2 | **KO-33** ("caliper XT60/XT30/3-pin/XH3/4/5/USB/U.FL", [`C_clearance_keepout_register.md:104`](10_assembly_architecture/C_clearance_keepout_register.md)); [`M_connector_harness_matrix.md`](10_assembly_architecture/M_connector_harness_matrix.md); [`Z_wire_schedule.md`](10_assembly_architecture/Z_wire_schedule.md); sanity-checks `pass_slot_w/h` (10 × 6 ESTIMATED) | — | any mated body deeper than the X+42…+58 dock projection → the dock is stepped or wrapped, not straight; record and report |
 
@@ -169,11 +226,31 @@ against coupon **C-1**. That is right for `fit_clearance` — which only a print
 answer — but **wrong for the rest**: the inserts, the screws and the ties are on hand and
 are caliper rows, today. See *Reconciliation findings* below.
 
+> ### ⚠ The one thing most likely to go wrong in this block
+> **What you are measuring is STOCK. Most of these parameters are the FEATURE the stock has
+> to fit through, and a feature is `stock + clearance`.** Writing the measured stock number
+> into the feature parameter deletes the clearance silently and the part is unbuildable:
+>
+> | You measure | The parameter is | If you write the stock number in |
+> |---|---|---|
+> | M3 screw **thread OD** (~2.95–3.0) | `screw_m3_clear_d` = the **clearance HOLE Ø**, used directly as `cylinder(d = …)` at [`gcs_box.scad:115,162,212`](11_cad/gcs_box.scad) and [`fit_check_coupons.scad:139`](11_cad/fit_check_coupons.scad) | every screw hole in the GCS box, both sleds and coupon C-2 is too small for its own screw |
+> | Insert **knurl OD** | `insert_m3_d` = the **bore the brass melts into**, cut as `cylinder(d = insert_d)` at [`lib/w17_lib.scad:98-100`](11_cad/lib/w17_lib.scad) via `w17_insert_boss` | a bore equal to the knurl leaves the brass nothing to bite; the insert spins |
+> | Cable-tie **strap W × T** | `zip_slot_w` / `zip_slot_l` = the **slot rectangle**, cut as `cube([slot_w, slot_l, t])` at [`lib/w17_lib.scad:176-179`](11_cad/lib/w17_lib.scad); `4.0` is documented as "fits a 3 mm cable tie" ([`:243`](11_cad/w17_params.scad)) | the slot is exactly the strap: no dressing room, and the tie will not thread |
+>
+> So **M-22a.1, M-22a.1b, M-22b.1, M-22b.2, M-22b.3, M-22c.1, M-22c.2 and M-22c.3 are
+> register-only** — the sheet marks them `DO NOT ENTER INTO SCAD` and gives them no `param`.
+> Record the number, report it, and let the feature be re-derived in CAD. The exceptions are
+> **M-22a.2** (insert length **is** the pocket depth, 1:1) and the coupon row **C-1.1**.
+> `screw_m3_clear_d` is tagged `ASSUMED-adjacent` ([`:71`](11_cad/w17_params.scad)) and is not
+> tool-patchable in any case — so M-22b does **not** retire it, contrary to what the first draft
+> of this runbook implied.
+
 | ID | What / datum & landmarks | Tool | Unit · Tol. | Unlocks | 📷 | Stop if |
 |---|---|---|---|---|---|---|
-| **M-22a** | **Heat-set insert M3×5** from the on-hand pack: **outside Ø** at its widest knurl, and **overall length** | calipers | mm ±0.1 | `insert_m3_d` (4.0 ASSUMED) / `insert_m3_h` (5.7 ASSUMED) ([`11_cad/w17_params.scad:73-74`](11_cad/w17_params.scad)); every `insert_boss` in [`11_cad/lib/w17_lib.scad`](11_cad/lib/w17_lib.scad); the GCS box lid | — | OD outside **4.0 ±0.2** → every boss Ø in the library changes; do not print a GCS lid until it is re-rendered |
-| **M-22b** | **M3 screw** from the on-hand kit: thread **OD**, **button-head Ø**, head **height** | calipers | mm ±0.1 | `screw_m3_clear_d` (3.4) / `screw_m3_head_d` (6.0) ([`:71-72`](11_cad/w17_params.scad)) | — | head Ø > 6.0 → counterbores in the GCS box and the sleds are undersized |
-| **M-22c** | **Cable-tie stock**: strap **width × thickness**, and head thickness | calipers | mm ±0.1 | `zip_slot_w` (4.0) / `zip_slot_l` (2.5) (retires §9 `C-1` rows) ([`:243-244`](11_cad/w17_params.scad)) | — | strap wider than 3.5 mm → the 4.0 slot has under 0.5 mm of dressing room; report |
+| **M-22a** | **Heat-set insert M3×5** from the on-hand pack: **outside Ø at its widest knurl**, **body (minor) Ø below the knurl**, and **overall length** | calipers | mm ±0.1 | **length → `insert_m3_h`** (5.7 ASSUMED, [`:74`](11_cad/w17_params.scad)) — pocket depth is the insert length 1:1. **Both diameters are REGISTER-ONLY**: `insert_m3_d` is the melt **bore** ([`lib/w17_lib.scad:98-100`](11_cad/lib/w17_lib.scad)), a CAD decision made between the two, not either of them | — | knurl OD outside **4.0 ±0.2** → every boss Ø in the library changes; do not print a GCS lid until it is re-rendered. **Do not enter either diameter into `w17_params.scad`** |
+| **M-22b** | **M3 screw** from the on-hand kit: thread **OD**, **button-head Ø**, head **height** | calipers | mm ±0.1 | **REGISTER-ONLY, all three.** `screw_m3_clear_d` (3.4, `ASSUMED-adjacent` [`:71`](11_cad/w17_params.scad)) is the clearance **hole**, = thread OD + clearance; `screw_m3_head_d` (6.0) is `DOCUMENTED(ISO 7380)` ([`:72`](11_cad/w17_params.scad)). This row **checks** both and retires neither | — | head Ø > 6.0 → counterbores in the GCS box and the sleds are undersized: **report it**, do not patch the parameter |
+| **M-22c** | **Cable-tie stock**: strap **width × thickness**, and head thickness | calipers | mm ±0.1 | **REGISTER-ONLY, all three.** `zip_slot_w` (4.0) / `zip_slot_l` (2.5) ([`:243-244`](11_cad/w17_params.scad)) are the **slot**, = strap + dressing room. This row does **not** retire the §9 `C-1` rows on its own | — | strap wider than 3.5 mm → the 4.0 slot has under 0.5 mm of dressing room; report |
+| **C-1.1** | **RESERVED — not a caliper row.** The per-side print clearance, read off coupon **C-1** once TP-001 is printed. Left blank in this sitting | (a printed coupon) | mm ±0.05 | `fit_clearance` (0.20 ASSUMED, [`:59`](11_cad/w17_params.scad)) — **the only §9 entry that a printed part, not a caliper, answers**. Procedure and export command: [`11_cad/COUPON_PRINT_PLAN.md`](11_cad/COUPON_PRINT_PLAN.md) §C-1 | — | steps 1–2 of the ladder are **negative controls**: if either fits, this printer/filament is running under size — write that down, do not force a larger step to feel right |
 | **M-22d** | *Optional, needs wire stock:* dress a representative **4-way silicone bundle** as it would run and measure its **OD** | calipers + tape | mm ±0.5 | sanity for `pass_slot_w/h` (10 × 6) and `tail_hole_d` (8.0), all ESTIMATED ([`:247-248,263`](11_cad/w17_params.scad)) | — | bundle OD > 8 mm → the tail hole is undersized; a hole in free plate is cheap to grow, so report rather than redesign |
 
 ### Block D — the rest of the on-hand parts
@@ -230,15 +307,31 @@ own, off the car.
 to hold their relationship. If a group came back `none`, write `could not — not printed` and
 move on; that is a result.
 
+> **M-02a–e need MORE than parts existing, and this is a stop rule, not advice.** They sweep the
+> steering rod *lock to lock and through bump travel*, which requires the **front end assembled**
+> — steering blocks, king pins, rod ends and both front shocks fitted — **and the chassis blocked
+> up on the floor pan so the wheels hang free and the suspension is unloaded**, so that two
+> sittings give the same number. Station 3's gate (M-00) only says the parts exist, and this
+> program's own premise is *without final assembly*.
+>
+> **If the front end is not assembled that way, write `could not — front end not assembled` for
+> M-02a, M-02b, M-02c, M-02d and M-02e, and move on.** **Do not sweep a partly-assembled rod** —
+> a rod that is short one rod end or one shock sweeps a different envelope, and M-02 is the row
+> that replaces provisional KO-01 and sets the cage's entire guard band. A wrong KO-01 is worse
+> than no KO-01.
+>
+> **Record how you supported the chassis** (what is under the floor, and where) on the sheet, so
+> the next sitting can reproduce it.
+
 | ID | What / datum & landmarks | Tool | Unit · Tol. | Unlocks | 📷 | Stop if |
 |---|---|---|---|---|---|---|
 | **M-20** | **Free-feature occupancy.** Walk the nine registered M3 features and **try an actual M3 screw** in each — do not judge by eye. Splice screws at **X +7.50 / +14.26 / +22.69, L 0**; rear brackets at **X −27.76, L −13.50 / +16.50**; free singles at **X −39.99, L −32.86** and **X −39.94, L +17.14**; centreline pedestal candidates at **X +57.50** and **X +64.24, L 0**. For each: free / occupied, and by what | eyes + an M3 screw | — | **D-27** stage 2; **OP-G** (the three splice screws are the only existing-hole anchors inside the cassette footprint); **OP-D** (the cassette has no retention); PS-01…PS-15 mounting | ✅ one photo per **occupied** feature, showing what occupies it | the three splice screws occupied → **OP-G dies here**; both centreline features occupied → the pedestal's only anchors die. Both are good outcomes — cheaper than finding out with a printed part in hand. **No new holes in donor parts**, whatever the result |
 | **M-28** | **`Servoholder` arch vs DS3235SG.** Measure the **printed** arch's real clear opening (length × height) — the mesh figure is 42.0 × 18.5 — then offer the servo **side-on** and record whether it enters **without force** and, if not, exactly **where it binds** | calipers + feeler | mm ±0.2 | **OP-B**; **D-09** Gate D residual; gates the whole floor print batch. Context: the measured servo face is **40.25 × 20.2** → ~1.75 mm clearance in length and **~1.7 mm interference** in height ([`../w17-batch1-measurements-for-codex.md:85-97`](../w17-batch1-measurements-for-codex.md)) | ✅ the servo offered to the arch, and a close-up of the binding point | **it binds → stop.** Do not file, do not force, do not heat. A test-grade print can bind from layer swell alone; the fix is production tolerance or a measured relief in CAD. Also record the shaft-centre orientation you used (boss-forward X−46.76 vs reversed X−66.76) — it is still unpinned |
 | **M-29** | **`Steering Block4` king-pin bore Ø**, both sides, with the caliper's internal jaws | calipers | mm **±0.1** | **D-05**; the M3 × 30 dowel fit; steering geometry | — | outside 3.0 +0.15 / −0.05 → the king pin will not press or will be sloppy; a reprint tolerance change, decided in CAD |
 | **M-30** | **Mirrored front hub** bearing seat Ø (for the 8 × 12 × 3.5 bearing), both hubs | calipers | mm **±0.1** | **D-22** — the left hub exists only as a Bambu mirror | — | seat Ø off by more than 0.1 → the mirrored hub needs a tolerance pass before the wheel print |
-| **M-02a** | Steering **rod lowest Z** at three stations (**X ≈ +40 / 0 / −40**), swept lock to lock and through bump travel. Datum **DAT-F** (floor top) | rule + a marker on the rod | mm ±2 | `ko01_z_lo` (retires §9 `M-02`); **replaces provisional KO-01**; ASM-08 / CAS-01 | ✅ **both locks**, photographed from the same place | see M-02e |
-| **M-02b** | Rod **highest Z** at the same three stations | rule + marker | mm ±2 | `ko01_z_hi` (retires §9 `M-02`) | — | see M-02e |
-| **M-02c** | Max **\|L\|** the rod reaches at each station | rule | mm ±2 | `ko01_l_half` (retires §9 `M-02`) | — | see M-02e |
+| **M-02a** | Steering **rod lowest Z** at three stations (**X ≈ +40 / 0 / −40** — `+X` is forward, see *Coordinates*), swept lock to lock and through bump travel. Datum **DAT-F** (floor top). Then write the **minimum of the three** into `M-02a.min` | rule + a marker on the rod | mm ±2 | the three station cells are register-only; **`M-02a.min` → `ko01_z_lo`** (retires §9 `M-02`); **replaces provisional KO-01**; ASM-08 / CAS-01 | ✅ **both locks**, photographed from the same place | see M-02e; and the Station 3 precondition above |
+| **M-02b** | Rod **highest Z** at the same three stations. Then the **maximum of the three** into `M-02b.max` | rule + marker | mm ±2 | `M-02b.max` → `ko01_z_hi` (retires §9 `M-02`) | — | see M-02e |
+| **M-02c** | Max **\|L\|** the rod reaches at each station (unsigned distance from the centreline). Then the **greatest of the three** into `M-02c.max` | rule | mm ±2 | `M-02c.max` → `ko01_l_half` (retires §9 `M-02`) | — | see M-02e |
 | **M-02d** | **Fore/aft extent of the swept rod: X of the most forward and most rearward swept point.** *(New row — see Reconciliation findings: §9 lists `ko01_x_lo` / `ko01_x_hi` under M-02 but the prompt's M-02 table has no cell for them)* | rule | mm ±2 | `ko01_x_lo` / `ko01_x_hi` (retires the last two §9 `M-02` entries) | — | see M-02e |
 | **M-02e** | **Does anything already fitted enter that envelope?** List every item and where | eyes + rule | mm ±2 | KO-01 / KO-11 / **KO-36**; the cage's whole guard arithmetic (`ko01_z_guard` = 14, `ko01_l_guard` = 30, [`11_cad/w17_params.scad:107-108`](11_cad/w17_params.scad)) | ✅ anything found inside the envelope | measured **`z_lo` < 22** or **`l_half` > 22** → the guard band shrinks: the PDB's 3 mm gap to KO-01 (already 5 mm short of the 8 mm moving policy) goes further negative, and `wall_top_z` / `wall_l_out` both move. **Report; do not re-derive the cage at the bench** |
 
@@ -250,12 +343,31 @@ move on; that is a result.
 
 | ID | What / datum & landmarks | Tool | Unit · Tol. | Unlocks | 📷 | Stop if |
 |---|---|---|---|---|---|---|
-| **M-01** | **S0** — height of the seated shell's bottom edge above the floor top, at **four or more points**: forward belt-side, forward mirror-side, rear belt-side, rear mirror-side, and optionally over the cassette. Shell **seated and only lightly pressed** — not clamped, not lifted. Datum **DAT-F ↔ shell bottom edge**. **Record all readings, not the smallest** — the *spread* is a second result | depth gauge, feeler stack, or coupon **C-4** (steps 2…11 mm; read the tallest step that still passes) | mm **±0.5** | `s0_measured` (retires §9 `M-01`); **D-04** / CAS-02; **the whole second-floor cage** | ✅ the gauge in place at one point, showing the seating | **< 9.82 → stop, and do not shave the cage.** Reopen the board orientation with a real number in hand — a production stop already demanded by [`ZK:363-364`](10_assembly_architecture/fit_studies/ZK_electronics_cassette_fit_study.md). **> 11 → the derived 0…11 bound is wrong**; re-check the datum before believing it. **Below the 2 mm step → "below the lowest step"**, a real answer and a serious one. **Spread > 1.0 mm → the shell does not sit flat**, which is a different problem from sitting low, and the cage cares about both |
-| **M-07** | **Cassette deck clear height** above the floor with the shell seated, at **X +3, +20, +42**, across **\|L\| 27…46**, **both sides** — six cells | depth gauge | mm ±1 | `guide_top_z` (retires §9 `M-07`); AA §5.4 | — | the worst value must agree with **M-01 + the modelled roof (27.18 at X+3 / L−37)**. **If it does not, one of the two is wrong — say which you trust and why**, on the sheet, at the bench |
+| **M-01** | **S0** — height of the seated shell's bottom edge above the floor top, at **four or more points**: forward belt-side, forward mirror-side, rear belt-side, rear mirror-side, and optionally over the cassette. Shell **seated and only lightly pressed** — not clamped, not lifted. Datum **DAT-F ↔ shell bottom edge**. **Record all readings, not the smallest** — the *spread* is a second result. Then write the **worst (smallest)** reading into `M-01.worst`, which is the one cell that sets the parameter, and the spread into `M-01.6` | depth gauge, feeler stack, or coupon **C-4** (steps 2…11 mm; read the tallest step that still passes) | mm **±0.5** | the five point cells are register-only; **`M-01.worst` → `s0_measured`** (retires §9 `M-01`); **D-04** / CAS-02; **the whole second-floor cage** | ✅ the gauge in place at one point, showing the seating | **< 9.82 → stop, and do not shave the cage.** Reopen the board orientation with a real number in hand — a production stop already demanded by [`ZK:363-364`](10_assembly_architecture/fit_studies/ZK_electronics_cassette_fit_study.md). **> 11 → the derived 0…11 bound is wrong**; re-check the datum before believing it. **Below the 2 mm step → "below the lowest step"**, a real answer and a serious one. **Spread > 1.0 mm → the shell does not sit flat**, which is a different problem from sitting low, and the cage cares about both |
+| **M-07** | **Cassette deck clear height** above DAT-F with the shell seated, at **X +3, +20, +42**, across **\|L\| 27…46**, **both sides** — six cells, then the **worst (smallest)** of them into `M-07.worst` | depth gauge | mm ±1 | **all seven cells are register-only.** They **bound** `guide_top_z`; they are not its value — see the box below. AA §5.4 | — | the worst value must agree with **M-01 + the modelled roof (27.18 at X+3 / L−37)**. **If it does not, one of the two is wrong — say which you trust and why**, on the sheet, at the bench |
 | **M-11e** | **ESC candidate stations:** at each of three stations you would consider, record where it is (X, L) and **how much open air is above** the fan intake with the body seated | rule + depth gauge | mm ±0.5 | **OP-A** — the largest unsolved packaging problem; **KO-20**; CAS-06 / ASM-49 | ✅ each candidate with the ESC dry-placed (not fixed) | policy wants **10 mm of open air** above the fan, i.e. a plane at **Z 45.5** with the measured 34.0 mm body. **No registered shell station supplies it, even at S0 = 11.** This row is looking for a home, not confirming one — if none of the three works, say so; the decision (relocate / accept a documented lower gap with a measured thermal run / change the ESC) is the owner's |
-| **M-12** | **Shell interior at the charge-flap candidates.** **CF-1** (side vent) and **CF-2** (floor opening at X +39.18, \|L\| 55.71): **wall thickness**, **local depth behind**, and **what is behind it**. Datum: shell inner face | calipers | mm ±0.5 | `flap_open_w` / `flap_open_h` / `flap_wall` (retires §9 `M-12`); **OP-F** | ✅ behind each candidate | **No cut is authorised by this row.** It exists so the CF-1 / CF-2 decision is made against numbers instead of preference. The shell stays unmodified — the flap must use an existing opening or a reversible insert |
-| **M-15** | **Side-vent parts** `2023NEWSideVent1/2.stl`: internal geometry, how they mount to the shell, and the **visible face dimensions** | calipers | mm ±0.2 | `vent_w` / `vent_h` (retires §9 `M-15`) | — | ⚠ the `13.1 × 10.3` currently in `w17_params.scad` is the **floor slot, not the shell vent**. Nobody has measured the vent. Do not carry the floor number forward |
+| **M-12** | **Shell interior at the charge-flap candidates — taken on the SHELL, with the side-vent part REMOVED.** **CF-1** (the side-vent aperture in the shell) and **CF-2** (floor opening at X +39.18, \|L\| 55.71): the aperture's **clear opening W × H** (`M-12.2w` / `M-12.2h`, **new cells** — M-12 was supposed to retire `flap_open_w/h` and had no cell for either), the **wall thickness**, the **local depth behind**, and **what is behind it**. Datum: shell inner face | calipers | mm ±0.5 | `flap_open_w` / `flap_open_h` / `flap_wall` (retires §9 `M-12`); **OP-F** | ✅ behind each candidate | **No cut is authorised by this row.** It exists so the CF-1 / CF-2 decision is made against numbers instead of preference. The shell stays unmodified — the flap must use an existing opening or a reversible insert |
+| **M-15** | **Side-vent parts** `2023NEWSideVent1/2.stl` — taken on the **PART, in hand**, not on the shell: clear opening **W** and **H** (`M-15.1w` / `M-15.1h`), internal **depth**, how they mount to the shell, and the **visible face dimensions**. **M-12 and M-15 are not the same opening measured twice:** M-12 is the hole in the shell with the vent removed, M-15 is the vent part itself | calipers | mm ±0.2 | `vent_w` / `vent_h` (retires §9 `M-15`) | — | ⚠ the `13.1 × 10.3` currently in `w17_params.scad` is the **floor slot, not the shell vent**. Nobody has measured the vent. Do not carry the floor number forward |
 | **M-10** | Tyre arch clearance at full steer, full bump, and both together, four corners, body on | — | — | **D-37** / risk **E-30** | — | **BLOCKED — Tamiya tyres ⏳ in transit** ([`../HARDWARE_INVENTORY.md`](../HARDWARE_INVENTORY.md) §B). The registered margins are **3.5 mm and 4 mm**, already below policy, so this row is looking for a problem that is probably there |
+
+> ### ⚠ M-07 measures a BOUND on `guide_top_z`, not `guide_top_z`
+> Six cells of this runbook once all named `guide_top_z`. Two things were wrong with that.
+>
+> 1. **Six cells cannot set one parameter.** The ingest tool's duplicate-target rule would
+>    report `CONFLICT` and drop all six, so the reading would never land at all. The sheet now
+>    has one defining cell, **`M-07.worst`**.
+> 2. **Even one cell is a bound, not the value.** `guide_top_z` (30.0) is a **cage design
+>    output**, constrained by `assert(guide_top_z <= board_top_z)` with `board_top_z = 32.0`
+>    ([`11_cad/w17_params.scad:149,201,397`](11_cad/w17_params.scad)). What the depth gauge
+>    reads at M-07 is a **shell-interior clear height** ≈ S0 + the shell roof, which at
+>    S0 ≈ 9.82 and `roof_z_worst` 27.18 lands well **above** 32 — so entering it directly
+>    would fire that assert for a reason that is not a real design failure.
+>
+> **So `M-07.worst` is register-only too.** Report the number; `guide_top_z` is then set in CAD
+> from it, and **`guide_top_margin` — a hardcoded `DERIVED(board_top_z - guide_top_z)` literal
+> at [`:202`](11_cad/w17_params.scad) that no `assert()` re-derives — MUST be recomputed in the
+> same edit.** `ingest_measurements.py` now prints a `RECOMPUTE` line for exactly this class of
+> parameter whenever one of its inputs moves.
 
 ---
 
@@ -287,8 +399,15 @@ DRS check runs with the real rear shock / stack / wing / LED harness present.
 2. Transcribe into the tables in
    [`w17-mechanical-measurement-session-prompt.md`](w17-mechanical-measurement-session-prompt.md)
    and commit it in `w17-3d-codex` — **it is the record**.
-3. For each row, update [`11_cad/w17_params.scad`](11_cad/w17_params.scad): the value, **and**
-   the tag (`ASSUMED` → `MEASURED(<file>:<line>)`), **and** delete its entry from §9.
+3. For each cell **that carries a `param`**, update
+   [`11_cad/w17_params.scad`](11_cad/w17_params.scad): the value, **and** the tag
+   (`ASSUMED` → `MEASURED(<file>:<line>)`), **and** delete its entry from §9. The reviewable
+   way to do it is
+   `11_cad/tools/ingest_measurements.py --sheet MEASUREMENT_RECORD_SHEET.csv` — dry run first;
+   it prints a unified diff, never guesses a mapping, refuses two cells that name one
+   parameter, and flags any `DERIVED` literal that now needs recomputing. **A cell with no
+   `param` is not transcribed into `w17_params.scad` at all** — it is a record, and where it is
+   a *stock* dimension the corresponding *feature* parameter is re-derived in CAD (see Block C).
 4. Update §12 of
    [`AA_electronics_placement_study.md`](10_assembly_architecture/AA_electronics_placement_study.md)
    to match.
@@ -309,9 +428,9 @@ Source: [`11_cad/w17_params.scad:343-373`](11_cad/w17_params.scad) §9, the mirr
 
 | §9 parameter(s) | §9 says | Row here | Runnable this sitting? |
 |---|---|---|---|
-| `s0_measured` | M-01 | **M-01** | M-00-gated (needs the shell) |
-| `ko01_z_lo`, `ko01_z_hi`, `ko01_l_half` | M-02 | **M-02a / M-02b / M-02c** | M-00-gated |
-| `ko01_x_lo`, `ko01_x_hi` | M-02 | **M-02d** ← *new row; the prompt's M-02 table has no cell for these* | M-00-gated |
+| `s0_measured` | M-01 | **M-01.worst** ← *the five point cells are register-only* | M-00-gated (needs the shell) |
+| `ko01_z_lo`, `ko01_z_hi`, `ko01_l_half` | M-02 | **M-02a.min / M-02b.max / M-02c.max** ← *the nine station cells are register-only* | M-00-gated **and** front-end-assembled — see the Station 3 stop rule |
+| `ko01_x_lo`, `ko01_x_hi` | M-02 | **M-02d.2 / M-02d.1** ← *new row; the prompt's M-02 table has no cell for these* | same |
 | `esp_thk_headers` | M-03 | **M-03c** | ✅ today |
 | `esp_hole_dx` / `dy` / `d` | M-03 | **M-03d** | ✅ today |
 | `esp_usb_w` / `h` / `offset` | M-03 | **M-03f** | ✅ today |
@@ -321,26 +440,35 @@ Source: [`11_cad/w17_params.scad:343-373`](11_cad/w17_params.scad) §9, the mirr
 | `esp_socket_stack` | M-04 | **M-04** | ✅ today, **if a female header is in stock** |
 | `pdb_stack_h` | M-05 | **M-05a–d** | ✅ today |
 | `pdb_len`, `pdb_wid` | M-06 | **M-06** | ❌ **BLOCKED** — the PDB does not exist |
-| `guide_top_z` | M-07 | **M-07** | M-00-gated |
-| `flap_open_w` / `h`, `flap_wall` | M-12 | **M-12** | M-00-gated |
+| `guide_top_z` | M-07 | **M-07.worst — register-only.** M-07 reads a *bound*, not the value; `guide_top_z` is a cage design output set in CAD from it, and `guide_top_margin` is recomputed with it | M-00-gated |
+| `flap_open_w` / `h`, `flap_wall` | M-12 | **M-12.2w / M-12.2h** ← *new cells* **/ M-12.1** | M-00-gated |
 | `sp3t_body_l/w/h`, `sp3t_cutout_l/w` | M-13 | **M-13** | ❌ **BLOCKED** — no switch selected |
 | `drs_arm_pivot_span` | M-14d | **M-14d** | M-00-gated |
-| `vent_w`, `vent_h` | M-15 | **M-15** | M-00-gated |
+| `vent_w`, `vent_h` | M-15 | **M-15.1w / M-15.1h** (the vent **part**, not the shell — see M-12/M-15 scope) | M-00-gated |
 | `chg_l` / `w` / `h` | M-16 | **M-16** | ✅ today |
-| `gcs_tx_l/w/h` | M-17 | **M-17a** | ✅ today (variant confirm included) |
-| `gcs_ftdi_l/w/h` | M-17 | **M-17b** | ✅ today |
+| `gcs_tx_l/w/h` | M-17 | **M-17a.2l / .2w / .2h** (one number per cell; **M-17a.1** confirms the variant first) | ✅ today (variant confirm included) |
+| `gcs_ftdi_l/w/h` | M-17 | **M-17b.1l / .1w / .1h** | ✅ today |
 | `gcs_wifi_l/w/h` | M-17 | **M-17d** (primary) · M-17c measures only the **spare** | ❌ **BLOCKED** — adapter not procured |
 | `gcs_hub_l/w/h` | M-17 | **M-17e** | ❌ **BLOCKED** — hub not procured |
 | `spk_port_d` | M-18 | **M-18b** | M-00-gated; it is a **decision**, not a discovery |
 | `hall_gap` | M-19 | **M-19c** | ❌ **BLOCKED** — magnets in transit |
-| `insert_m3_d`, `insert_m3_h` | C-1 | **M-22a** ← *reassigned: a caliper row, not a coupon row* | ✅ today |
-| `screw_m3_clear_d` (+ `screw_m3_head_d`) | C-1 | **M-22b** ← *reassigned* | ✅ today |
-| `zip_slot_w`, `zip_slot_l` | C-1 | **M-22c** ← *reassigned* | ✅ today |
-| `fit_clearance` | C-1 | **none — correctly so.** Only a printed peg/hole ladder can answer it | ❌ needs coupon C-1 printed |
+| `insert_m3_h` | C-1 | **M-22a.2** ← *reassigned: a caliper row, not a coupon row. Insert length **is** the pocket depth, 1:1* | ✅ today |
+| `insert_m3_d` | C-1 | **M-22a.1 / .1b — register-only.** It is the melt **bore**, a CAD decision between the knurl and body diameters, not either of them | measured today, **retired in CAD** |
+| `screw_m3_clear_d` (+ `screw_m3_head_d`) | C-1 | **M-22b — register-only.** The clearance **hole** = thread OD + clearance; `screw_m3_clear_d` is `ASSUMED-adjacent` and not tool-patchable, `screw_m3_head_d` is `DOCUMENTED` | checked today, **retired in CAD** |
+| `zip_slot_w`, `zip_slot_l` | C-1 | **M-22c — register-only.** The **slot** = strap + dressing room | checked today, **retired in CAD** |
+| `fit_clearance` | C-1 | **C-1.1** — a reserved, blank row on the sheet. Only a printed peg/hole ladder can answer it | ❌ needs coupon C-1 printed |
 
 **No §9 entry is unmapped.** Four are BLOCKED on a part that does not exist, one
-(`fit_clearance`) is correctly a coupon rather than a caliper, and three were filed under
-C-1 that are really caliper rows.
+(`fit_clearance`) is correctly a coupon rather than a caliper (and now has its own reserved
+sheet row, `C-1.1`), and three were filed under C-1 that are really caliper rows.
+
+**Of the 53 live `ASSUMED (see §9)` parameters, 35 have a sheet cell that carries their name**
+and are patchable by `ingest_measurements.py`. The other **18 are deliberately register-only**:
+`insert_m3_d`, `zip_slot_w`, `zip_slot_l` (stock ≠ feature) · `guide_top_z` (a design output
+bounded by M-07, not read by it) · `board_seat_x0` (a decision M-03h unlocks, not a number it
+reads) · `pdb_len`, `pdb_wid`, the five `sp3t_*`, the three `gcs_wifi_*` and the three
+`gcs_hub_*` (BLOCKED — the parts do not exist, and each will get its own cell when they do).
+`screw_m3_clear_d` is a 54th name in §9 but is tagged `ASSUMED-adjacent`, so no tool touches it.
 
 ## Cross-check B — every row maps to a consumer
 
@@ -355,6 +483,7 @@ close register rows instead, and they are why this runbook is longer than §9:
 |---|---|
 | M-00 | `PRINT_LOG.md`; gates Stations 3–5 |
 | M-03a / M-03b | upgrade `esp_len`/`esp_wid`/`esp_pcb_t` from `DOCUMENTED` to `MEASURED`; ZK CAS-03 |
+| M-03x | decides whether every other M-03 row must be taken **per board** |
 | M-03g | AA §4.7 service access; KO-34 |
 | M-03i | A2 review **F12**, open finding **F20** |
 | M-05a–c | feed M-05d; KO-33 (XT60 body) |
@@ -365,6 +494,7 @@ close register rows instead, and they are why this runbook is longer than §9:
 | M-19a / d | PS-16, D-38, AA §4.5 |
 | M-20 | D-27 stage 2, **OP-G**, **OP-D** |
 | M-21 | **KO-33**, M connector matrix, Z wire schedule |
+| M-22a.1/.1b, M-22b, M-22c | the **stock** dimensions from which `insert_m3_d`, `screw_m3_clear_d` and `zip_slot_w/l` are re-derived in CAD (feature = stock + clearance) |
 | M-22d | sanity for `pass_slot_*` / `tail_hole_d` (ESTIMATED, not ASSUMED) |
 | M-23 | **Gate C**, D-06 / D-34, the duct's nine dims, KO-24 |
 | M-24 | KO-26, D-33 |
@@ -400,21 +530,28 @@ B: USB-PORT (a port to design, not a part) · B: COOL-DUCT (to design) · B: FUT
 **Method (DERIVED, and checkable):** every source was read at the granularity of its own
 enumerated rows; each enumerated request for a physical quantity counted as one "ask".
 
+> *Correction (2026-09-05).* The §9 line said **35**, which reproduces from neither reading of
+> that section: counting §9's **named parameters** gives **55** (53 live `ASSUMED (see §9)`
+> definition lines, plus the deliberately-`undef` `drs_arm_pivot_span` and the
+> `ASSUMED-adjacent` `screw_m3_clear_d`), while counting §9's **table rows** gives 23. The line
+> is now 55, which carries the harvest to **204** and the in-scope total to **167**. The
+> deduplicated row count is unaffected — only the ledger's arithmetic was wrong.
+
 | Source | Asks |
 |---|---:|
 | [`w17-mechanical-measurement-session-prompt.md`](w17-mechanical-measurement-session-prompt.md) M-00…M-20, sub-rows counted | 63 |
 | [`D_measurement_plan.md`](10_assembly_architecture/D_measurement_plan.md) D-01…D-39, excluding digitally-closed and document-review rows | 33 |
 | [`B_component_envelope_register.md`](10_assembly_architecture/B_component_envelope_register.md) B.1 `TO MEASURE` + B.4 | 23 |
 | [`C_clearance_keepout_register.md`](10_assembly_architecture/C_clearance_keepout_register.md) "required physical test" cells that ask for a dimension or a gap | 21 |
-| [`11_cad/w17_params.scad`](11_cad/w17_params.scad) §9, counted per named parameter | 35 |
+| [`11_cad/w17_params.scad`](11_cad/w17_params.scad) §9, counted per named parameter | 55 |
 | [`../w17-socket-stack-caliper-prompt.md`](../w17-socket-stack-caliper-prompt.md) | 2 |
 | [`../w17-batch1-measurements-for-codex.md`](../w17-batch1-measurements-for-codex.md) §6 "still open" | 6 |
 | [`../HARDWARE_INVENTORY.md`](../HARDWARE_INVENTORY.md) (weigh the 5200 pack) | 1 |
-| **Harvested total** | **184** |
+| **Harvested total** | **204** |
 | − already retired by the 2026-07-24 caliper session (ESC body, Wi-Fi body, UBEC, amp, speaker outline, RP1, motor, DS3235SG face, BX100, LED strip width) | −10 |
 | − out of scope for a no-power, no-assembly sitting (the 27 listed above) | −27 |
-| **In-scope asks** | **147** |
-| **After dedupe → rows in this runbook** | **79** |
+| **In-scope asks** | **167** |
+| **After dedupe → rows in this runbook** | **81** |
 
 **The merges that did the work** (same physical quantity, asked under different IDs):
 
@@ -457,7 +594,11 @@ the mechanical package.
    `insert_m3_d` / `insert_m3_h`, `screw_m3_clear_d`, `zip_slot_w` / `zip_slot_l` are
    properties of **purchased stock that is on hand**, not of this printer. Only
    `fit_clearance` genuinely needs the printed ladder. **Resolved here:** M-22a / M-22b /
-   M-22c, runnable today; C-1 keeps `fit_clearance` alone.
+   M-22c, runnable today; C-1 keeps `fit_clearance` alone, on the sheet's reserved `C-1.1` row.
+   **Corrected 2026-09-05:** of those, only `insert_m3_h` is actually *retired* by a caliper.
+   `insert_m3_d`, `screw_m3_clear_d` and `zip_slot_w/l` are **feature** dimensions (a bore, a
+   clearance hole, a slot) whose stock counterpart is what M-22 measures; the parameters are
+   `stock + clearance` and stay a CAD decision. See the ⚠ box in Block C.
 4. **The speaker is rectangular, and the prompt asks for a basket Ø.** M-18a says *"speaker
    basket Ø, cone Ø"*; the batch-1 caliper record has **35.3 × 25.1 × 6.1**
    ([`../w17-batch1-measurements-for-codex.md:47`](../w17-batch1-measurements-for-codex.md)).
@@ -480,6 +621,23 @@ the mechanical package.
    the outline is a **design output**, not a measurement. **Resolved here:** M-06 is BLOCKED
    and says so; M-05a–d still deliver the height, which is the number the cage actually needs.
 
+8. **Six cells all named `guide_top_z`, and five all named `s0_measured`.** A parameter can
+   have exactly one defining cell — otherwise the ingest tool reports `CONFLICT` and drops
+   every one of them, so the reading never lands. **Resolved here:** the station cells are
+   register-only and a single derived cell carries the parameter (`M-01.worst`, `M-02a.min`,
+   `M-02b.max`, `M-02c.max`, `M-07.worst`). `M-07.worst` is additionally register-only because
+   what it reads *bounds* `guide_top_z` rather than being it — see the ⚠ box after Station 4.
+9. **`M-12` was supposed to retire `flap_open_w` / `flap_open_h` and had no cell for either** —
+   it asked only for wall thickness, the depth behind, and what is behind. **Resolved here:**
+   new cells `M-12.2w` / `M-12.2h` read the aperture's clear opening. Also, M-12 and M-15 read
+   two different objects (the shell with the vent removed; the vent part in hand) and now say so.
+10. **The runbook's own citation `w17_params.scad:391` / `:395` was challenged and is CORRECT.**
+    Re-verified 2026-09-05 by `grep -n '^assert'`: the asserts open at **382, 384, 391, 393,
+    395, 397, 403, 405**. `:391` is `assert(board_l_out - board_l_in >= esp_thk_headers …)` and
+    `:395` is `assert(pdb_z1 <= ko01_z_guard …)`, exactly as M-03c and M-05d cite them. No
+    change was made. The 2026-09-05 edits to `w17_params.scad` were written to add **no lines
+    and remove none**, so every `w17_params.scad:NNN` citation in this package stays valid.
+
 ---
 
 ## BLOCKED rows, and what would unblock them
@@ -495,6 +653,7 @@ Each is phrased as **device / where-how / what it unlocks / what would then be m
 | **M-27b**, **M-19b**, **M-19c** | neodymium magnets 3 × 1 mm | ⏳ ordered / in transit ([`../HARDWARE_INVENTORY.md`](../HARDWARE_INVENTORY.md) §7) | `hall_gap`; KO-27; PS-16 | magnet body, collar runout, achievable gap (non-magnetic gauge) |
 | **M-10** | Tamiya 54198 / 51400 tyres | ⏳ ordered / on the way (rcMart) | D-37 / E-30 — arch margins are 3.5 / 4 mm, already below policy | arch clearance at full steer, full bump, and both |
 | **M-09**, **M-08h**, **M-08i** | a rolling assembly (printed parts + tyres + cassette + pedestal) | needs M-00's parts **and** printing the cassette/pedestal, which is itself gated on M-01/M-02 | D-39 / ASM-58; **no balance claim and no ballast until it exists** | four-corner weights; cassette and pedestal masses |
+| **M-02a–e** *(conditional)* | an **assembled front end** — steering blocks, king pins, rod ends, both front shocks — and the chassis blocked so the wheels hang free | not "blocked on a part": the parts may exist and still not be assembled, and this program's premise is *without final assembly* | all five `ko01_*`; **replaces provisional KO-01**; the cage's whole guard band | the rod's swept Z / \|L\| / X envelope, lock to lock and through bump. Otherwise: `could not — front end not assembled` |
 | **M-04** *(conditional)* | one female header of the type intended for the PDB | office stock — [`../HARDWARE_INVENTORY.md`](../HARDWARE_INVENTORY.md) §D lists the interconnect as owned but **not delivery-verified** | `esp_socket_stack`; owner decision **F12** GO/NO-GO | seated stack height |
 | **Stations 3–5** *(24 rows)* | printed donor parts | **M-00 decides.** If the shell does not exist, M-01 cannot be taken and the cage stays a proposal | `s0_measured`, all `ko01_*`, `guide_top_z`, `flap_*`, `vent_*`, `drs_arm_pivot_span` | everything in Stations 3, 4 and 5 |
 
