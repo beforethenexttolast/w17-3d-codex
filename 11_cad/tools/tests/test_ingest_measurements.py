@@ -223,5 +223,90 @@ class TestApplyWritesAndIsIdempotentOnDryRun(unittest.TestCase):
             self.assertIn("guide_top_z       = 30.0;   // ASSUMED (see §9)", new_text)  # untouched
 
 
+class TestParamColumn(unittest.TestCase):
+    """The 2026-09-05 schema handshake: `param` is the mapping, prose is prose.
+
+    Before this, the sheet put prose in `quantity` and the tool required
+    `quantity` to BE the parameter name — 231 rows read, 0 matched, exit 0.
+    """
+
+    def setUp(self):
+        self.params_path = FIXTURES / "sample_params.scad"
+
+    def test_param_column_is_the_mapping_not_the_prose(self):
+        rows = im.load_sheet(FIXTURES / "sample_measurements_param.csv")
+        self.assertTrue(all(r.has_param_col for r in rows))
+        lines, _report, matched, _errors = im.build_patch(
+            self.params_path, rows, "sample_measurements_param.csv", "2026-09-05"
+        )
+        self.assertEqual(matched, {"esp_thk_headers", "guide_top_z"})
+        self.assertIn("esp_thk_headers   = 12.4;", "".join(lines))
+
+    def test_empty_param_is_register_only_not_a_miss(self):
+        rows = im.load_sheet(FIXTURES / "sample_measurements_param.csv")
+        _lines, report, _matched, errors = im.build_patch(
+            self.params_path, rows, "sample_measurements_param.csv", "2026-09-05"
+        )
+        joined = "\n".join(report)
+        # M-22b.1 measures an M3 thread OD, which is NOT screw_m3_clear_d.
+        self.assertNotIn("M-22b.1", joined.replace("REG ", ""))
+        self.assertRegex(joined, r"REG\s+1 register-only row")
+        self.assertFalse(any("M-22b.1" in e for e in errors))
+        # and screw_m3_clear_d is untouched
+        self.assertIn("screw_m3_clear_d  = 3.4;    // ASSUMED-adjacent",
+                      "".join(_lines))
+
+    def test_param_naming_a_nonexistent_parameter_is_an_error(self):
+        rows = im.load_sheet(FIXTURES / "sample_measurements_param.csv")
+        _lines, report, _matched, errors = im.build_patch(
+            self.params_path, rows, "sample_measurements_param.csv", "2026-09-05"
+        )
+        self.assertTrue(any("not_a_real_param" in e for e in errors))
+        self.assertIn("MISS", "\n".join(report))
+
+    def test_derived_literal_is_flagged_for_recompute(self):
+        rows = im.load_sheet(FIXTURES / "sample_measurements_param.csv")
+        _lines, report, _matched, _errors = im.build_patch(
+            self.params_path, rows, "sample_measurements_param.csv", "2026-09-05"
+        )
+        joined = "\n".join(report)
+        # guide_top_margin = DERIVED(board_top_z - guide_top_z) is a hardcoded
+        # literal; guide_top_z just moved, so it must be recomputed by hand.
+        self.assertRegex(joined, r"RECOMP\s+guide_top_margin")
+        self.assertIn("RECOMPUTE IT BY HAND", joined)
+        # ... and the tool must NOT have rewritten it itself
+        self.assertIn("guide_top_margin  = 2.0;", "".join(_lines))
+
+
+class TestNothingMatchedFails(unittest.TestCase):
+    """A sheet that reads rows and patches nothing used to exit 0."""
+
+    def _run(self, sheet_name):
+        with tempfile.TemporaryDirectory() as d:
+            params_copy = Path(d) / "w17_params.scad"
+            shutil.copy(FIXTURES / "sample_params.scad", params_copy)
+            before = params_copy.read_text(encoding="utf-8")
+            rc = im.main(["--sheet", str(FIXTURES / sheet_name),
+                          "--params", str(params_copy)])
+            self.assertEqual(before, params_copy.read_text(encoding="utf-8"))
+            return rc
+
+    def test_prose_legacy_sheet_exits_1(self):
+        self.assertEqual(self._run("sample_measurements_prose.csv"), 1)
+
+    def test_unfilled_sheet_exits_1(self):
+        self.assertEqual(self._run("sample_measurements_unfilled.csv"), 1)
+
+    def test_apply_on_an_unmatched_sheet_writes_nothing_and_exits_1(self):
+        with tempfile.TemporaryDirectory() as d:
+            params_copy = Path(d) / "w17_params.scad"
+            shutil.copy(FIXTURES / "sample_params.scad", params_copy)
+            before = params_copy.read_text(encoding="utf-8")
+            rc = im.main(["--sheet", str(FIXTURES / "sample_measurements_prose.csv"),
+                          "--params", str(params_copy), "--apply", "--skip-render"])
+            self.assertEqual(rc, 1)
+            self.assertEqual(before, params_copy.read_text(encoding="utf-8"))
+
+
 if __name__ == "__main__":
     unittest.main()

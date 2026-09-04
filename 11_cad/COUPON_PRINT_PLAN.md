@@ -48,12 +48,14 @@ identifies the coupon; the marker label is what stops it from being mistaken for
 a production part on the bench (E-22).
 
 Every coupon's read-out is designed to land directly in a
-`MEASUREMENT_RECORD_SHEET.csv` row (`id,quantity,unit,value,tolerance,photo_ref,notes`
-— the schema this plan shares with B1's brief and
+`MEASUREMENT_RECORD_SHEET.csv` row
+(`id,param,quantity,unit,value,tolerance,photo_ref,notes` — the schema shared by
+[`../tools/gen_measurement_sheet.py`](../tools/gen_measurement_sheet.py) and
 [`tools/ingest_measurements.py`](tools/ingest_measurements.py)), so a coupon
 result reaches `w17_params.scad` through the same reviewable dry-run/`--apply`
-patch path as an owner caliper reading. `quantity` must be the exact
-`w17_params.scad` parameter name (see the tool's own docstring for why).
+patch path as an owner caliper reading. **`param` is the mapping** — the exact
+`w17_params.scad` parameter name, or empty for a register-only row; `quantity`
+is prose and is never parsed for a parameter name (see the tool's docstring).
 
 ---
 
@@ -97,14 +99,20 @@ those goes together by hand, this printer/filament combo is running under
 size — write that down as the result, do not force a larger step to "feel
 right."
 
-**CSV row this produces:**
+**Where this result goes.** `MEASUREMENT_RECORD_SHEET.csv` already holds a
+**reserved row `C-1.1`** for it — the one row on the sheet that a printed part,
+not a caliper, answers (`param = fit_clearance`, value blank until this coupon
+is read). **Fill that row in; do not invent a new id.** Write the step number
+into its `value` and name the coupon in its `notes`:
+
 ```
-id,quantity,unit,value,tolerance,photo_ref,notes
-TP-001-c1-step4,fit_clearance,mm,0.10,±0.05,,"first step that fit by hand and stayed put when shaken; steps 1-2 (negative) did not fit"
+id,param,quantity,unit,value,tolerance,photo_ref,notes
+C-1.1,fit_clearance,"RESERVED — per-side print clearance read off coupon C-1 …",mm,0.10,±0.05,,"TP-001 step 4: first step that fit by hand and stayed put when shaken; steps 1-2 (negative) did not fit"
 ```
-(`0.10` above is a placeholder for whichever step number the coupon actually
-reads — fill in the real one.) Feed it to
-`tools/ingest_measurements.py --sheet MEASUREMENT_RECORD_SHEET.csv` (dry run
+
+(`0.10` above is a placeholder for whichever step the coupon actually reads —
+fill in the real one.) Then run
+`tools/ingest_measurements.py --sheet ../MEASUREMENT_RECORD_SHEET.csv` (dry run
 first) to patch `fit_clearance` in `w17_params.scad`.
 
 ---
@@ -151,11 +159,12 @@ named parameter this retires (no `standoff_height_offset` exists in
 `w17_params.scad`); record it as a process-calibration row and decide with
 the owner whether it becomes a new named `POLICY` constant.
 
-**CSV row this produces (process check, not a §9 retirement — will report as
-an unmatched row if fed to `ingest_measurements.py`, which is correct/expected):**
+**CSV row this produces** — a process check, not a §9 retirement, so `param` is
+**empty** (register-only) and `ingest_measurements.py` will count it under `REG`
+and patch nothing, which is correct and expected:
 ```
-id,quantity,unit,value,tolerance,photo_ref,notes
-TP-002-c2-offset,standoff_height_offset,mm,-0.10,±0.15,,"all five pillars ~0.10mm short vs plate top; systematic, not per-height"
+id,param,quantity,unit,value,tolerance,photo_ref,notes
+TP-002-c2-offset,,"C-2 standoff height offset vs the plate top",mm,-0.10,±0.15,,"all five pillars ~0.10mm short; systematic, not per-height"
 ```
 
 ---
@@ -201,15 +210,20 @@ missed; (c) look at each clip-station block against the board's real
 component layout — record "copper" or the name of whatever component it
 lands on, at each of the two `clip_station_x` positions (10, 34 mm).
 
-**CSV rows this produces:**
+**CSV rows this produces.** `esp_hole_dx/dy/d` are already owned by sheet rows
+**M-03d.1/.2/.3** — C-3 *confirms* them, it does not re-declare them. **One row
+per parameter**: if you add a second row carrying the same `param`, the tool
+reports `CONFLICT` and skips both. So a C-3 confirmation either goes into the
+existing M-03d cell's `notes`, or is added register-only (`param` empty) as
+below:
 ```
-id,quantity,unit,value,tolerance,photo_ref,notes
-TP-003-c3-holedx,esp_hole_dx,mm,33.2,±0.2,IMG_0xx,"caliper-confirmed against C-3 dry fit"
-TP-003-c3-holedy,esp_hole_dy,mm,24.8,±0.2,IMG_0xx,
-TP-003-c3-holed,esp_hole_d,mm,3.2,±0.1,,"pins dropped through cleanly at nominal"
-TP-003-c3-slotfit,slot_w,mm,1.8,±0.2,,"board dropped in flat, no forcing (ESTIMATED param, not §9 -- record anyway)"
-TP-003-c3-clip1,clip_station_x_0,note,copper,,IMG_0xx,"station at X10 lands on bare PCB"
-TP-003-c3-clip2,clip_station_x_1,note,capacitor,,IMG_0xx,"station at X34 lands on a component -- needs relocating"
+id,param,quantity,unit,value,tolerance,photo_ref,notes
+TP-003-c3-holedx,,"C-3 cross-check of the hole pitch along the long edge",mm,33.2,±0.2,IMG_0xx,"confirms M-03d.1; if it disagrees, say which you trust"
+TP-003-c3-holedy,,"C-3 cross-check of the hole pitch along the short edge",mm,24.8,±0.2,IMG_0xx,"confirms M-03d.2"
+TP-003-c3-holed,,"C-3 cross-check of the hole diameter",mm,3.2,±0.1,,"pins dropped through cleanly at nominal; confirms M-03d.3"
+TP-003-c3-slotfit,,"C-3 edge-slot fit (slot_w is ESTIMATED, not a §9 target)",mm,1.8,±0.2,,"board dropped in flat, no forcing"
+TP-003-c3-clip1,,"C-3 clip station X10: what it lands on",note,copper,,IMG_0xx,"lands on bare PCB"
+TP-003-c3-clip2,,"C-3 clip station X34: what it lands on",note,capacitor,,IMG_0xx,"lands on a component -- needs relocating"
 ```
 (`clip_station_x_0/1` and `slot_w` are not `ASSUMED (see §9)` targets — they
 will not be auto-patched by `ingest_measurements.py`; they are CAD decisions
@@ -272,14 +286,17 @@ the worst (tightest) point governs, matching this file's own convention for
 `roof_z_worst` ("the worst finite shell roof sampled over BOTH board
 seats").
 
-**CSV rows this produces:**
+**CSV rows this produces.** C-4 is the *instrument* for sheet rows **M-01.1–.5**;
+the four point readings go into those existing cells (register-only), and the
+governing minimum goes into **M-01.worst**, which is the single cell carrying
+`param = s0_measured`. Do not create a second `s0_measured` row.
 ```
-id,quantity,unit,value,tolerance,photo_ref,notes
-TP-004-c4-pt1,s0_point_fwd_left,mm,7,±0.5,IMG_0xx,gauge step resolution is 1mm
-TP-004-c4-pt2,s0_point_fwd_right,mm,8,±0.5,IMG_0xx,
-TP-004-c4-pt3,s0_point_aft_left,mm,6,±0.5,IMG_0xx,"tightest point -- governs"
-TP-004-c4-pt4,s0_point_aft_right,mm,8,±0.5,IMG_0xx,
-M-01,s0_measured,mm,6,±0.5,,"minimum of the four C-4 readings above; shell sits with ~2mm spread front-to-back"
+id,param,quantity,unit,value,tolerance,photo_ref,notes
+M-01.1,,"S0 at forward, BELT side (L-) …",mm,7,±0.5,IMG_0xx,"read with C-4; gauge step resolution is 1mm"
+M-01.2,,"S0 at forward, MIRROR side (L+) …",mm,8,±0.5,IMG_0xx,
+M-01.3,,"S0 at rear, BELT side (L-) …",mm,6,±0.5,IMG_0xx,"tightest point -- governs"
+M-01.4,,"S0 at rear, MIRROR side (L+) …",mm,8,±0.5,IMG_0xx,
+M-01.worst,s0_measured,"S0 WORST (smallest) of the M-01 readings …",mm,6,±0.5,,"minimum of the four C-4 readings above; shell sits with ~2mm spread front-to-back"
 ```
 (Only the final `s0_measured` row is an `ASSUMED (see §9)` target that
 `ingest_measurements.py` will patch; the four `s0_point_*` rows are raw field
