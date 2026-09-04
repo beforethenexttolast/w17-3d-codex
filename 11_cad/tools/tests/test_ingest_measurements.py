@@ -171,6 +171,109 @@ class TestBuildPatch(unittest.TestCase):
         self.assertNotIn("SEC9   M-06", joined_report)
 
 
+class TestSection9ShorthandExpansion(unittest.TestCase):
+    """R1 fix (2026-09-05 V-B review, FIX-B2). The real w17_params.scad §9
+    table writes a few rows in elliptical shorthand — only the FIRST name in
+    a group is written in full, e.g. "ko01_x_lo/x_hi/l_half/z_lo/z_hi" (M-02)
+    or the comma-grouped "sp3t_body_l/w/h, sp3t_cutout_l/w" (M-13). The old
+    plain "/"-split kept only whichever fragment already happened to be a
+    real full identifier — for M-02 that was just "ko01_x_lo" — and silently
+    dropped "x_hi", "l_half", "z_lo", "z_hi" as unrecognised. That let a row
+    that was 4/5 still ASSUMED be reported "fully retired" off one matched
+    cell. This fixture is standalone (not the shared sample_params.scad) so
+    it does not change any other test's row/column counts."""
+
+    SCAD = (
+        "ko01_x_lo         = -80;    // ASSUMED (see §9)\n"
+        "ko01_x_hi         = 100;    // ASSUMED (see §9)\n"
+        "ko01_l_half       = 22;     // ASSUMED (see §9)\n"
+        "ko01_z_lo         = 22;     // ASSUMED (see §9)\n"
+        "ko01_z_hi         = 38;     // ASSUMED (see §9)\n"
+        "sp3t_body_l       = 20.0;   // ASSUMED (see §9)\n"
+        "sp3t_body_w       =  9.0;   // ASSUMED (see §9)\n"
+        "sp3t_body_h       = 12.0;   // ASSUMED (see §9)\n"
+        "sp3t_cutout_l     = 13.0;   // ASSUMED (see §9)\n"
+        "sp3t_cutout_w     =  5.0;   // ASSUMED (see §9)\n"
+        "\n"
+        "// ---------------------------------------------------------------------\n"
+        "// 9. ===================  ASSUMED — THE OWNER'S LIST  ==================\n"
+        "//    Every value referenced above as \"ASSUMED (see §9)\" is repeated here.\n"
+        "// ---------------------------------------------------------------------\n"
+        "//\n"
+        "//  M-02  ko01_x_lo/x_hi/l_half/z_lo/z_hi   -80/100/22/22/38\n"
+        "//  M-13  sp3t_body_l/w/h, sp3t_cutout_l/w   20/9/12, 13/5\n"
+        "//\n"
+        "// -----------------------------------------------------------------------\n"
+    )
+
+    def _lines(self):
+        return self.SCAD.splitlines(keepends=True)
+
+    def test_elliptical_slash_row_expands_to_all_full_names(self):
+        rows = im.find_section9_rows(self._lines())
+        m02 = [params for _idx, row_id, params in rows if row_id == "M-02"]
+        self.assertEqual(
+            m02,
+            [["ko01_x_lo", "ko01_x_hi", "ko01_l_half", "ko01_z_lo", "ko01_z_hi"]],
+        )
+
+    def test_comma_grouped_shorthand_row_expands_each_group_separately(self):
+        rows = im.find_section9_rows(self._lines())
+        m13 = [params for _idx, row_id, params in rows if row_id == "M-13"]
+        self.assertEqual(
+            m13,
+            [["sp3t_body_l", "sp3t_body_w", "sp3t_body_h",
+              "sp3t_cutout_l", "sp3t_cutout_w"]],
+        )
+
+    def _sheet(self, *param_value_pairs):
+        lines = ["id,param,quantity,unit,value,tolerance,photo_ref,notes"]
+        for i, (param, value) in enumerate(param_value_pairs, start=1):
+            lines.append(f"R{i},{param},x,mm,{value},2,,")
+        return "\n".join(lines) + "\n"
+
+    def test_partial_shorthand_row_is_partially_not_fully_retired(self):
+        with tempfile.TemporaryDirectory() as d:
+            params_copy = Path(d) / "w17_params.scad"
+            params_copy.write_text(self.SCAD, encoding="utf-8")
+            csv_path = Path(d) / "sheet.csv"
+            csv_path.write_text(self._sheet(("ko01_x_lo", -85)), encoding="utf-8")
+            rows = im.load_sheet(csv_path)
+            _lines, report, matched, _errors = im.build_patch(
+                params_copy, rows, "sheet.csv", "2026-09-05"
+            )
+            self.assertEqual(matched, {"ko01_x_lo"})
+            joined = "\n".join(report)
+            self.assertNotIn("M-02: fully retired", joined)
+            self.assertRegex(joined, r"SEC9\s+M-02: partially retired")
+            self.assertIn("ko01_x_lo now MEASURED", joined)
+            for still in ("ko01_x_hi", "ko01_l_half", "ko01_z_lo", "ko01_z_hi"):
+                self.assertIn(still, joined)
+
+    def test_fully_filled_shorthand_row_reports_fully_retired(self):
+        with tempfile.TemporaryDirectory() as d:
+            params_copy = Path(d) / "w17_params.scad"
+            params_copy.write_text(self.SCAD, encoding="utf-8")
+            csv_path = Path(d) / "sheet.csv"
+            csv_path.write_text(
+                self._sheet(
+                    ("ko01_x_lo", -85), ("ko01_x_hi", 95), ("ko01_l_half", 24),
+                    ("ko01_z_lo", 20), ("ko01_z_hi", 40),
+                ),
+                encoding="utf-8",
+            )
+            rows = im.load_sheet(csv_path)
+            _lines, report, matched, _errors = im.build_patch(
+                params_copy, rows, "sheet.csv", "2026-09-05"
+            )
+            self.assertEqual(
+                matched,
+                {"ko01_x_lo", "ko01_x_hi", "ko01_l_half", "ko01_z_lo", "ko01_z_hi"},
+            )
+            joined = "\n".join(report)
+            self.assertRegex(joined, r"SEC9\s+M-02: fully retired")
+
+
 class TestApplyWritesAndIsIdempotentOnDryRun(unittest.TestCase):
     def test_dry_run_never_writes(self):
         with tempfile.TemporaryDirectory() as d:

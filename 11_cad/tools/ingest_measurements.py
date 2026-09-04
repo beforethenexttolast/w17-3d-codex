@@ -148,6 +148,11 @@ ASSUMED_RE = re.compile(
 SECTION9_ROW_RE = re.compile(r"^//\s+(?P<mid>[A-Za-z0-9\-\(\)]+)\s+(?P<rest>.*)$")
 IDENT_RE = re.compile(r"[A-Za-z_][A-Za-z0-9_]*")
 
+# Any top-level "name = value; ..." definition, comment or not — used only to
+# validate a §9 shorthand expansion (see _expand_section9_group below)
+# against a name that genuinely exists in the file, never to guess one.
+PARAM_DEF_RE = re.compile(r"^(?P<name>[A-Za-z_][A-Za-z0-9_]*)[ \t]*=")
+
 # A hardcoded literal whose provenance comment states the inputs it was derived
 # from, e.g. "guide_top_margin  = 2.0;    // DERIVED(board_top_z - guide_top_z)".
 # Nothing in the file re-derives these, so patching an input desynchronises them.
@@ -216,10 +221,75 @@ def find_assumed_params(scad_lines: list[str]) -> dict[str, tuple[int, re.Match]
     return found
 
 
+def _all_defined_names(scad_lines: list[str]) -> set[str]:
+    """Every name this file ever assigns to, comment lines excluded. Used only
+    to check that a §9 shorthand expansion (below) names a parameter that
+    genuinely exists — never to invent one. Deliberately not scoped to "before
+    the §9 banner" or to "ASSUMED (see §9)" only: a shorthand row may need to
+    resolve against a name that has already been measured (no longer tagged
+    ASSUMED) or that is DERIVED/POLICY/etc., and a stray match against one of
+    those is harmless because the caller separately intersects against the
+    live-ASSUMED / just-matched set before reporting anything."""
+    names = set()
+    for line in scad_lines:
+        if line.lstrip().startswith("//"):
+            continue
+        m = PARAM_DEF_RE.match(line)
+        if m:
+            names.add(m.group("name"))
+    return names
+
+
+def _expand_section9_group(tokens: list[str], known_names: set[str]) -> list[str]:
+    """Expand one comma-separated group of a §9 row into full parameter
+    names. Most rows already list full names ("esp_hole_dx / esp_hole_dy /
+    esp_hole_d") and are returned as-is. A handful use elliptical shorthand —
+    a full first name, then bare suffixes that share an unwritten prefix with
+    it, e.g. "ko01_x_lo/x_hi/l_half/z_lo/z_hi" (prefix "ko01_") or
+    "sp3t_body_l/w/h" (prefix "sp3t_body_"). The prefix length is not fixed
+    across rows, so every candidate cut is tried, shortest first, and used
+    only when it makes EVERY fragment in the group resolve to a name that
+    genuinely exists in the file (`known_names`, from `_all_defined_names`).
+    A fragment that resolves to nothing real is never invented and never
+    silently kept as the bogus literal fragment — the whole group falls back
+    to just its one confirmed name, so a caller counting "how many names does
+    this row list" is never told about a name that cannot be checked."""
+    if not tokens:
+        return []
+    if all(IDENT_RE.fullmatch(t) and t in known_names for t in tokens):
+        return list(tokens)
+    first = tokens[0]
+    if not (IDENT_RE.fullmatch(first) and first in known_names):
+        return []
+    if len(tokens) == 1:
+        return [first]
+    parts = first.split("_")
+    for cut in range(1, len(parts)):
+        prefix = "_".join(parts[: len(parts) - cut])
+        if not prefix:
+            continue
+        candidates = [f"{prefix}_{frag}" for frag in tokens[1:]]
+        if all(IDENT_RE.fullmatch(c) and c in known_names for c in candidates):
+            return [first] + candidates
+    # No cut resolved every fragment to a real name: report only the one
+    # name we could confirm, never a guessed fragment such as bare "x_hi".
+    return [first]
+
+
 def find_section9_rows(scad_lines: list[str]) -> list[tuple[int, str, list[str]]]:
     """Return [(line_index, m_id, [param_names_on_that_row]), ...] for
     section 9's table, i.e. every commented row of the form
-    '//  M-03  esp_hole_dx / esp_hole_dy / esp_hole_d  33/25/3.2'."""
+    '//  M-03  esp_hole_dx / esp_hole_dy / esp_hole_d  33/25/3.2'. Handles
+    both full-name rows and the handful of elliptical-shorthand rows (M-02,
+    M-13) via _expand_section9_group — see that function for how. A
+    comma-separated row (M-13's "sp3t_body_l/w/h, sp3t_cutout_l/w") is
+    treated as separate shorthand groups, each expanded against its own
+    first name, then concatenated. A wildcard/comma-only row with no "/"
+    (M-17's "gcs_tx_*, gcs_ftdi_*, ...") still tokenizes to nothing, on
+    purpose: "gcs_tx_*" is not an identifier, so it is dropped rather than
+    guessed — check that row by hand, as the module docstring on the SEC9
+    report already says."""
+    known_names = _all_defined_names(scad_lines)
     out = []
     in_section9 = False
     seen_row = False
@@ -242,7 +312,13 @@ def find_section9_rows(scad_lines: list[str]) -> list[tuple[int, str, list[str]]
         # Parameter names are the identifiers before two-or-more spaces
         # (the value column), stripped of stray "<-" annotations.
         head = re.split(r"\s{2,}", rest, maxsplit=1)[0]
-        params = [tok for tok in re.split(r"\s*/\s*", head) if IDENT_RE.fullmatch(tok)]
+        params: list[str] = []
+        for group in head.split(","):
+            group = group.strip()
+            if not group:
+                continue
+            tokens = [t for t in re.split(r"\s*/\s*", group) if t]
+            params.extend(_expand_section9_group(tokens, known_names))
         if params:
             seen_row = True
             out.append((i, row_id, params))
@@ -380,17 +456,19 @@ def build_patch(scad_path: Path, rows: list[Row], sheet_name: str, date: str):
                 )
 
     # section 9 bookkeeping report (informational only — never edited).
-    # find_section9_rows uses a plain "/"-split, which mis-tokenizes the
-    # handful of §9 rows that use elliptical shorthand instead of full
-    # names (e.g. "ko01_x_lo/x_hi/l_half/z_lo/z_hi" -> a bogus "x_hi"
-    # fragment; "gcs_tx_*, ..." wildcard/comma rows aren't tokenized at
-    # all). Rather than guess at the abbreviation, every extracted token
-    # is checked against the file's REAL parameter names (either still
-    # ASSUMED, or matched by this run) before being reported — a bogus
-    # fragment that is neither is silently dropped, never reported as
-    # "retired" or "still ASSUMED". This means shorthand/wildcard §9
-    # rows (currently M-02, M-13, M-17) may be under-reported here;
-    # check those by hand.
+    # find_section9_rows expands the handful of §9 rows that use elliptical
+    # shorthand instead of full names (e.g. "ko01_x_lo/x_hi/l_half/z_lo/z_hi"
+    # -> ko01_x_lo, ko01_x_hi, ko01_l_half, ko01_z_lo, ko01_z_hi) so that
+    # "fully retired" below is computed over the row's REAL parameter count,
+    # not just however many fragments happened to already be full names — a
+    # partly-measured M-02 (only ko01_x_lo filled) now reports "partially
+    # retired", not a false "fully retired" that would tell the owner to
+    # strike a row whose other four parameters are still ASSUMED. A
+    # fragment that cannot be resolved to a real name is never guessed —
+    # it is dropped, and the row falls back to reporting only the names it
+    # could confirm. "gcs_tx_*, ..." wildcard/comma rows (M-17) still
+    # tokenize to nothing on purpose ("gcs_tx_*" is not an identifier);
+    # check that row by hand.
     known_params = set(assumed.keys()) | matched_names
     sec9 = find_section9_rows(lines)
     for _idx, row_id, raw_params in sec9:
