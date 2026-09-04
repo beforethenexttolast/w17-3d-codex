@@ -260,17 +260,17 @@ knurl, a cable tie's strap) while the parameter is the *feature* that part must 
 
 ### M-03x.1 — Board #2: length and thickness-with-headers (cross-check)
 
-- **Unit:** mm  ·  **Tolerance:** ±0.2  ·  **param:** (register-only)
+- **Unit:** mm (L x T)  ·  **Tolerance:** ±0.2  ·  **param:** (register-only)
 - **Value:** `______________________`
 - **Photo ref (optional):** `______________`
-- If any board differs by more than the tolerance they are not one SKU: take every M-03 row per board.
+- Register-only — label the two numbers. If any board differs by more than the tolerance they are not one SKU: take every M-03 row per board.
 
 ### M-03x.2 — Board #3: length and thickness-with-headers (cross-check)
 
-- **Unit:** mm  ·  **Tolerance:** ±0.2  ·  **param:** (register-only)
+- **Unit:** mm (L x T)  ·  **Tolerance:** ±0.2  ·  **param:** (register-only)
 - **Value:** `______________________`
 - **Photo ref (optional):** `______________`
-- Same.
+- Register-only — label the two numbers. Same.
 
 ### M-03i — OPTIONAL: adjacent header pin pairs read off the silkscreen
 
@@ -1427,7 +1427,7 @@ knurl, a cable tie's strap) while the parameter is the *feature* that part must 
 - **Unit:** mm  ·  **Tolerance:** ±2  ·  **param:** `ko01_x_lo`
 - **Value:** `______________________`
 - **Photo ref (optional):** `______________`
-- PRECONDITION: M-02a-e need the FRONT END ASSEMBLED — steering blocks, king pins, rod ends and front shocks fitted — and the chassis blocked up on the floor pan so the wheels hang free and the suspension is unloaded. If it is not, write 'could not — front end not assembled'. DO NOT sweep a partly-assembled rod. ko01_x_lo. Same note.
+- PRECONDITION: M-02a-e need the FRONT END ASSEMBLED — steering blocks, king pins, rod ends and front shocks fitted — and the chassis blocked up on the floor pan so the wheels hang free and the suspension is unloaded. If it is not, write 'could not — front end not assembled'. DO NOT sweep a partly-assembled rod. ko01_x_lo. Same note. EXPECT A NEGATIVE NUMBER (a rearward point is a NEGATIVE X; provisional ko01_x_lo = -80 at w17_params.scad:94) — do not write it positive. Nothing in 11_cad/ consumes ko01_x_lo yet: no geometry and no assert reads it, so this row only retires the §9 record, it does not change any rendered part.
 
 ### M-02e — Does anything ALREADY FITTED enter that envelope? List every item and where
 

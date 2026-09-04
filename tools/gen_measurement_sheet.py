@@ -82,8 +82,8 @@ r(st,"M-03h.1","Component-free margin from the FORWARD short edge, on the OUTBOA
 r(st,"M-03h.2","Component-free margin from the AFT short edge, on the OUTBOARD face","mm","±0.5","","OUTBOARD FACE as defined in M-03h.1. OP-H.")
 r(st,"M-03h.3","Component-free margin from the INBOARD long edge, on the OUTBOARD face","mm","±0.5","","OUTBOARD FACE as defined in M-03h.1. OP-H.")
 r(st,"M-03h.4","Component-free margin from the OUTBOARD long edge, on the OUTBOARD face","mm","±0.5","the outboard face flat-on with a rule alongside","OUTBOARD FACE as defined in M-03h.1. OP-H. STOP if no bare land at X+10 or X+34 — clip_station_x [10,34] stands on components. board_seat_x0 is a DECISION this row unlocks, not a number it reads: register-only.")
-r(st,"M-03x.1","Board #2: length and thickness-with-headers (cross-check)","mm","±0.2","","If any board differs by more than the tolerance they are not one SKU: take every M-03 row per board.")
-r(st,"M-03x.2","Board #3: length and thickness-with-headers (cross-check)","mm","±0.2","","Same.")
+r(st,"M-03x.1","Board #2: length and thickness-with-headers (cross-check)","mm (L x T)","±0.2","","Register-only — label the two numbers. If any board differs by more than the tolerance they are not one SKU: take every M-03 row per board.")
+r(st,"M-03x.2","Board #3: length and thickness-with-headers (cross-check)","mm (L x T)","±0.2","","Register-only — label the two numbers. Same.")
 r(st,"M-03i","OPTIONAL: adjacent header pin pairs read off the silkscreen","text","-","both silkscreen edges, every label readable","A2 review F12 + open finding F20. Do NOT let this delay the M-04 verdict.")
 r(st,"M-04","Female header + MH-ET male pins, SEATED: total stack height","mm","±0.1","","esp_socket_stack. GO/NO-GO on socketing vs S0 >= 9.82. NO-GO = STOP, do not solder; F12 reopens. Marginal is a report, not a judgement. Needs a female header from stock.", param="esp_socket_stack")
 
@@ -263,7 +263,7 @@ for sid, station in [("1","forward, X ~ +40"),("2","middle, X ~ 0"),("3","rear, 
     r(st, f"M-02c.{sid}", f"Max |L| the rod reaches at {station}", "mm","±2","",M02_GATE+NOSCAD+"Feeds M-02c.max.")
 r(st,"M-02c.max","GREATEST |L| of the three M-02c readings = max(M-02c.1, M-02c.2, M-02c.3)","mm","±2","","ko01_l_half — the single defining cell.", param="ko01_l_half")
 r(st,"M-02d.1","Most FORWARD X reached by any swept point of the rod (+X is toward the nose)","mm","±2","",M02_GATE+"ko01_x_hi. NEW ROW: section 9 lists ko01_x_lo/x_hi under M-02 but the prompt's M-02 table has no cell for them.", param="ko01_x_hi")
-r(st,"M-02d.2","Most REARWARD X reached by any swept point of the rod","mm","±2","",M02_GATE+"ko01_x_lo. Same note.", param="ko01_x_lo")
+r(st,"M-02d.2","Most REARWARD X reached by any swept point of the rod","mm","±2","",M02_GATE+"ko01_x_lo. Same note. EXPECT A NEGATIVE NUMBER (a rearward point is a NEGATIVE X; provisional ko01_x_lo = -80 at w17_params.scad:94) — do not write it positive. Nothing in 11_cad/ consumes ko01_x_lo yet: no geometry and no assert reads it, so this row only retires the §9 record, it does not change any rendered part.", param="ko01_x_lo")
 r(st,"M-02e","Does anything ALREADY FITTED enter that envelope? List every item and where","text","-","anything found inside the envelope",M02_GATE+"KO-01 / KO-11 / KO-36. STOP-READ: measured z_lo < 22 or l_half > 22 shrinks the guard band (ko01_z_guard 14, ko01_l_guard 30) and drives the PDB's already-negative-by-5mm gap further negative. Report; do not re-derive the cage at the bench.")
 
 # ---------------- Station 4 ----------------

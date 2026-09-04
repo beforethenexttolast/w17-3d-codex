@@ -68,12 +68,12 @@ the recorded number** — nobody can catch it later, so get it right once, here.
 
 | Term | What it means | Source |
 |---|---|---|
-| **DAT-F** | the **assembled original-floor top**. It is the datum for every height in this runbook | [`fit_studies/README.md:12`](10_assembly_architecture/fit_studies/README.md); [`11_cad/w17_params.scad:41-44`](11_cad/w17_params.scad) |
-| **Z** | height above DAT-F. **`Z = 0` is DAT-F, and up is +** | [`fit_studies/README.md:12`](10_assembly_architecture/fit_studies/README.md) |
-| **X** | along the car. **`+X` is FORWARD, toward the nose**; `X = 0` is the front/rear floor joint | [`fit_studies/README.md:13`](10_assembly_architecture/fit_studies/README.md) |
-| **L** | lateral, from the vehicle centreline. **BELT side (= architecture-RIGHT) is `L−`; MIRROR side is `L+`.** `\|L\|` is the unsigned distance from the centreline | [`fit_studies/README.md:14`](10_assembly_architecture/fit_studies/README.md); [`D_measurement_plan.md:51`](10_assembly_architecture/D_measurement_plan.md) |
+| **DAT-F** | the **assembled original-floor top**. It is the datum for every height in this runbook | [`fit_studies/README.md:13`](10_assembly_architecture/fit_studies/README.md); [`11_cad/w17_params.scad:41-44`](11_cad/w17_params.scad) |
+| **Z** | height above DAT-F. **`Z = 0` is DAT-F, and up is +** | [`fit_studies/README.md:13`](10_assembly_architecture/fit_studies/README.md) |
+| **X** | along the car. **`+X` is FORWARD, toward the nose**; `X = 0` is the front/rear floor joint | [`fit_studies/README.md:14`](10_assembly_architecture/fit_studies/README.md) |
+| **L** | lateral, from the vehicle centreline. **BELT side (= architecture-RIGHT) is `L−`; MIRROR side is `L+`.** `\|L\|` is the unsigned distance from the centreline | [`fit_studies/README.md:15`](10_assembly_architecture/fit_studies/README.md); [`D_measurement_plan.md:51`](10_assembly_architecture/D_measurement_plan.md) |
 | **outboard / inboard** *(of a board on edge)* | **outboard** = the face carrying the **taller components** — the one that will point **away from the register wall** once the board stands on edge. **inboard** = the other face, which sits against the wall | AA §5.2/§5.6 (the 13 mm band is one board thick, components outboard) |
-| **S0** | the shell-bottom clearance above DAT-F (M-01). **Not** a gate name — the A2 gate once called S0 is now **SF** | [`fit_studies/README.md:15`](10_assembly_architecture/fit_studies/README.md) |
+| **S0** | the shell-bottom clearance above DAT-F (M-01). **Not** a gate name — the A2 gate once called S0 is now **SF** | [`fit_studies/README.md:16`](10_assembly_architecture/fit_studies/README.md) |
 
 **Two practical consequences.**
 1. Before you measure a **loose** board, put a piece of tape on its **outboard** face and
