@@ -23,7 +23,7 @@ Confidence: **C** confirmed placement · **R** recommended · **P** provisional 
 | CTL-E3 (spare) | **not installed** (bench stock) | — | — | — | — | C | — |
 | RX-ELRS | Z2L (deck fwd edge if D-26 conflicts) | flat, antenna fwd | PS-06 | CRSF aft | CN-19→H-06 | R | D-26, D-20 |
 | VID-CAM | Z8 gimbal module (nose **REJECTED-for-primary**, E-24; revisit only after D-25+D-06, owner) | boresight fwd, roll-trimmed | PS-10 (gated) | soldered leads aft | H-07 (**CN-16 at deck edge, S3/DN-11**) | G | **D-06, D-07, halo check** |
-| VID-WIFI | Z3R-L1 deck rear slot (airbox draft) | flat, pigtails aft | PS-04 pocket (P9 **dummy**, RST-06) | USB pad fwd, U.FL aft | H-07/H-10 | P | **possession + D-06b**, D-02 |
+| VID-WIFI | Z3R-L1 deck rear slot (airbox draft) | flat, pigtails fwd | PS-04 pocket (P9 **dummy**, RST-06) | USB pad fwd, U.FL fwd at the X+1 module edge, turning outward — corrected 2026-09-06 to match the measured placement ([`fit_studies/ZK_electronics_cassette_fit_study.md:103`](fit_studies/ZK_electronics_cassette_fit_study.md), restated [`AA_electronics_placement_study.md:154`](AA_electronics_placement_study.md)); this row's original "aft" was the pre-measurement 2026-07-18 guess | H-07/H-10 | P | **possession + D-06b**, D-02 |
 | VID-HS | bonded to VID-WIFI | — | thermal bond | — | — | C(spec) | D-06b |
 | VID-ANT ×2 | PS-12 posts at deck rear (fallback: **standalone chassis posts** — ZB shell mount rejected S3: shell-mounted whips would tether the body through the ~30-mate U.FL at every body-off) | shallow V, tips up | PS-04/PS-12 | U.FL to module | H-10 ≤80 mm | P | D-06b, D-20 |
 | AUD-AMP | Z3R-L1 deck beside CTL-E2 | flat | PS-04 pad | spk lead outboard | on-deck + CN-21 | R | D-02 |
