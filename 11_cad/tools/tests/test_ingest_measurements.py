@@ -1,0 +1,415 @@
+#!/usr/bin/env python3
+"""Unit tests for ingest_measurements.py.
+
+No pytest dependency (none is installed in this environment) — plain
+unittest, runnable as:
+
+    python3 -m unittest discover -s 11_cad/tools/tests -v
+
+or directly:
+
+    python3 11_cad/tools/tests/test_ingest_measurements.py
+
+These tests never touch the real w17_params.scad or the real
+MEASUREMENT_RECORD_SHEET.csv — everything runs against the small
+fixtures in tests/fixtures/, and --apply is exercised only against a
+tempfile copy.
+"""
+from __future__ import annotations
+
+import csv
+import shutil
+import sys
+import tempfile
+import unittest
+from pathlib import Path
+
+TOOLS_DIR = Path(__file__).resolve().parent.parent
+FIXTURES = Path(__file__).resolve().parent / "fixtures"
+sys.path.insert(0, str(TOOLS_DIR))
+
+import ingest_measurements as im  # noqa: E402
+
+
+class TestLoadSheet(unittest.TestCase):
+    def test_reads_all_rows(self):
+        rows = im.load_sheet(FIXTURES / "sample_measurements.csv")
+        self.assertEqual(len(rows), 7)
+        self.assertEqual(rows[0].id, "M-03")
+        self.assertEqual(rows[0].quantity, "esp_thk_headers")
+        self.assertEqual(rows[0].value, "12.4")
+
+    def test_missing_header_raises(self):
+        with tempfile.TemporaryDirectory() as d:
+            bad = Path(d) / "bad.csv"
+            bad.write_text("id,quantity,unit,value\nM-01,x,mm,1\n", encoding="utf-8")
+            with self.assertRaises(ValueError):
+                im.load_sheet(bad)
+
+    def test_missing_file_is_caller_responsibility(self):
+        with self.assertRaises(FileNotFoundError):
+            im.load_sheet(FIXTURES / "does_not_exist.csv")
+
+
+class TestFindAssumedParams(unittest.TestCase):
+    def setUp(self):
+        self.lines = (FIXTURES / "sample_params.scad").read_text(encoding="utf-8").splitlines(keepends=True)
+
+    def test_finds_only_true_assumed_tags(self):
+        found = im.find_assumed_params(self.lines)
+        names = set(found.keys())
+        self.assertEqual(
+            names,
+            {"esp_thk_headers", "board_seat_x0", "esp_usb_type", "guide_top_z", "pdb_len", "pdb_wid"},
+        )
+        # ASSUMED-adjacent must never be matched
+        self.assertNotIn("screw_m3_clear_d", names)
+
+    def test_captures_current_value(self):
+        found = im.find_assumed_params(self.lines)
+        _, m = found["esp_thk_headers"]
+        self.assertEqual(m.group("value").strip(), "13.0")
+        _, m2 = found["esp_usb_type"]
+        self.assertEqual(m2.group("value").strip(), '"usb_c"')
+
+
+class TestFindSection9Rows(unittest.TestCase):
+    def test_bundled_rows_list_every_param(self):
+        # Real w17_params.scad §9 reuses the same M-nn id across several
+        # TABLE ROWS (e.g. "M-03  esp_thk_headers", "M-03  esp_usb_type"
+        # are two separate rows), so find_section9_rows must return a
+        # LIST, not a dict keyed by id — this fixture mirrors that.
+        lines = (FIXTURES / "sample_params.scad").read_text(encoding="utf-8").splitlines(keepends=True)
+        rows = im.find_section9_rows(lines)
+        m03_params = [p for _idx, row_id, params in rows if row_id == "M-03" for p in params]
+        self.assertIn("esp_thk_headers", m03_params)
+        self.assertIn("board_seat_x0", m03_params)
+        self.assertIn("esp_usb_type", m03_params)
+        m06_rows = [params for _idx, row_id, params in rows if row_id == "M-06"]
+        self.assertEqual(m06_rows, [["pdb_len", "pdb_wid"]])
+        m07_rows = [params for _idx, row_id, params in rows if row_id == "M-07"]
+        self.assertEqual(m07_rows, [["guide_top_z"]])
+
+
+class TestBuildPatch(unittest.TestCase):
+    def setUp(self):
+        self.params_path = FIXTURES / "sample_params.scad"
+        self.rows = im.load_sheet(FIXTURES / "sample_measurements.csv")
+
+    def test_matches_expected_params_only(self):
+        _lines, _report, matched, errors = im.build_patch(
+            self.params_path, self.rows, "sample_measurements.csv", "2026-09-05"
+        )
+        # guide_top_z is excluded: it has a CONFLICT (two rows target it)
+        self.assertEqual(matched, {"esp_thk_headers", "board_seat_x0", "esp_usb_type"})
+        self.assertTrue(any("CONFLICT" in e for e in errors))
+
+    def test_numeric_value_is_written_literally(self):
+        lines, _report, _matched, _errors = im.build_patch(
+            self.params_path, self.rows, "sample_measurements.csv", "2026-09-05"
+        )
+        joined = "".join(lines)
+        self.assertIn("esp_thk_headers   = 12.4;", joined)
+        self.assertIn("MEASURED(sample_measurements.csv#M-03, 2026-09-05)", joined)
+
+    def test_enum_value_is_quoted(self):
+        lines, _report, _matched, _errors = im.build_patch(
+            self.params_path, self.rows, "sample_measurements.csv", "2026-09-05"
+        )
+        joined = "".join(lines)
+        self.assertIn('esp_usb_type      = "usb_c";', joined)
+
+    def test_unmatched_and_could_not_rows_are_reported_not_applied(self):
+        lines, report, matched, _errors = im.build_patch(
+            self.params_path, self.rows, "sample_measurements.csv", "2026-09-05"
+        )
+        joined_report = "\n".join(report)
+        self.assertIn("not_a_real_param", joined_report)
+        self.assertIn("MISS", joined_report)
+        self.assertTrue(any("SKIP" in r and "M-06a" in r for r in report))
+        # pdb_len must be untouched: its only CSV row was "could not"
+        self.assertNotIn("pdb_len", matched)
+        joined = "".join(lines)
+        self.assertIn('pdb_len           = 55;     // ASSUMED (see §9)', joined)
+
+    def test_conflicting_rows_leave_target_untouched(self):
+        lines, _report, matched, errors = im.build_patch(
+            self.params_path, self.rows, "sample_measurements.csv", "2026-09-05"
+        )
+        self.assertNotIn("guide_top_z", matched)
+        joined = "".join(lines)
+        self.assertIn("guide_top_z       = 30.0;   // ASSUMED (see §9)", joined)
+        self.assertTrue(any("guide_top_z" in e for e in errors))
+
+    def test_never_touches_unrelated_lines(self):
+        old_text = self.params_path.read_text(encoding="utf-8")
+        lines, _report, _matched, _errors = im.build_patch(
+            self.params_path, self.rows, "sample_measurements.csv", "2026-09-05"
+        )
+        new_text = "".join(lines)
+        old_lines = old_text.splitlines()
+        new_lines = new_text.splitlines()
+        self.assertEqual(len(old_lines), len(new_lines))
+        changed = [i for i, (a, b) in enumerate(zip(old_lines, new_lines)) if a != b]
+        # Only the 3 matched definition lines change; §9 table, the
+        # ASSUMED-adjacent line, and everything else stay byte-identical.
+        self.assertEqual(len(changed), 3)
+        self.assertNotIn(
+            "screw_m3_clear_d  = 3.4;    // ASSUMED-adjacent: typical M3 clearance; confirmed by coupon C-1",
+            [old_lines[i] for i in changed],
+        )
+
+    def test_section9_reports_partial_vs_full_retirement(self):
+        _lines, report, _matched, _errors = im.build_patch(
+            self.params_path, self.rows, "sample_measurements.csv", "2026-09-05"
+        )
+        joined_report = "\n".join(report)
+        # M-03 bundles 3 params, all matched here -> fully retired
+        self.assertRegex(joined_report, r"SEC9\s+M-03: fully retired")
+        # M-06 bundles pdb_len/pdb_wid; pdb_len was "could not" so neither
+        # is matched -> M-06 must not be reported at all (nothing retired)
+        self.assertNotIn("SEC9   M-06", joined_report)
+
+
+class TestSection9ShorthandExpansion(unittest.TestCase):
+    """R1 fix (2026-09-05 V-B review, FIX-B2). The real w17_params.scad §9
+    table writes a few rows in elliptical shorthand — only the FIRST name in
+    a group is written in full, e.g. "ko01_x_lo/x_hi/l_half/z_lo/z_hi" (M-02)
+    or the comma-grouped "sp3t_body_l/w/h, sp3t_cutout_l/w" (M-13). The old
+    plain "/"-split kept only whichever fragment already happened to be a
+    real full identifier — for M-02 that was just "ko01_x_lo" — and silently
+    dropped "x_hi", "l_half", "z_lo", "z_hi" as unrecognised. That let a row
+    that was 4/5 still ASSUMED be reported "fully retired" off one matched
+    cell. This fixture is standalone (not the shared sample_params.scad) so
+    it does not change any other test's row/column counts."""
+
+    SCAD = (
+        "ko01_x_lo         = -80;    // ASSUMED (see §9)\n"
+        "ko01_x_hi         = 100;    // ASSUMED (see §9)\n"
+        "ko01_l_half       = 22;     // ASSUMED (see §9)\n"
+        "ko01_z_lo         = 22;     // ASSUMED (see §9)\n"
+        "ko01_z_hi         = 38;     // ASSUMED (see §9)\n"
+        "sp3t_body_l       = 20.0;   // ASSUMED (see §9)\n"
+        "sp3t_body_w       =  9.0;   // ASSUMED (see §9)\n"
+        "sp3t_body_h       = 12.0;   // ASSUMED (see §9)\n"
+        "sp3t_cutout_l     = 13.0;   // ASSUMED (see §9)\n"
+        "sp3t_cutout_w     =  5.0;   // ASSUMED (see §9)\n"
+        "\n"
+        "// ---------------------------------------------------------------------\n"
+        "// 9. ===================  ASSUMED — THE OWNER'S LIST  ==================\n"
+        "//    Every value referenced above as \"ASSUMED (see §9)\" is repeated here.\n"
+        "// ---------------------------------------------------------------------\n"
+        "//\n"
+        "//  M-02  ko01_x_lo/x_hi/l_half/z_lo/z_hi   -80/100/22/22/38\n"
+        "//  M-13  sp3t_body_l/w/h, sp3t_cutout_l/w   20/9/12, 13/5\n"
+        "//\n"
+        "// -----------------------------------------------------------------------\n"
+    )
+
+    def _lines(self):
+        return self.SCAD.splitlines(keepends=True)
+
+    def test_elliptical_slash_row_expands_to_all_full_names(self):
+        rows = im.find_section9_rows(self._lines())
+        m02 = [params for _idx, row_id, params in rows if row_id == "M-02"]
+        self.assertEqual(
+            m02,
+            [["ko01_x_lo", "ko01_x_hi", "ko01_l_half", "ko01_z_lo", "ko01_z_hi"]],
+        )
+
+    def test_comma_grouped_shorthand_row_expands_each_group_separately(self):
+        rows = im.find_section9_rows(self._lines())
+        m13 = [params for _idx, row_id, params in rows if row_id == "M-13"]
+        self.assertEqual(
+            m13,
+            [["sp3t_body_l", "sp3t_body_w", "sp3t_body_h",
+              "sp3t_cutout_l", "sp3t_cutout_w"]],
+        )
+
+    def _sheet(self, *param_value_pairs):
+        lines = ["id,param,quantity,unit,value,tolerance,photo_ref,notes"]
+        for i, (param, value) in enumerate(param_value_pairs, start=1):
+            lines.append(f"R{i},{param},x,mm,{value},2,,")
+        return "\n".join(lines) + "\n"
+
+    def test_partial_shorthand_row_is_partially_not_fully_retired(self):
+        with tempfile.TemporaryDirectory() as d:
+            params_copy = Path(d) / "w17_params.scad"
+            params_copy.write_text(self.SCAD, encoding="utf-8")
+            csv_path = Path(d) / "sheet.csv"
+            csv_path.write_text(self._sheet(("ko01_x_lo", -85)), encoding="utf-8")
+            rows = im.load_sheet(csv_path)
+            _lines, report, matched, _errors = im.build_patch(
+                params_copy, rows, "sheet.csv", "2026-09-05"
+            )
+            self.assertEqual(matched, {"ko01_x_lo"})
+            joined = "\n".join(report)
+            self.assertNotIn("M-02: fully retired", joined)
+            self.assertRegex(joined, r"SEC9\s+M-02: partially retired")
+            self.assertIn("ko01_x_lo now MEASURED", joined)
+            for still in ("ko01_x_hi", "ko01_l_half", "ko01_z_lo", "ko01_z_hi"):
+                self.assertIn(still, joined)
+
+    def test_fully_filled_shorthand_row_reports_fully_retired(self):
+        with tempfile.TemporaryDirectory() as d:
+            params_copy = Path(d) / "w17_params.scad"
+            params_copy.write_text(self.SCAD, encoding="utf-8")
+            csv_path = Path(d) / "sheet.csv"
+            csv_path.write_text(
+                self._sheet(
+                    ("ko01_x_lo", -85), ("ko01_x_hi", 95), ("ko01_l_half", 24),
+                    ("ko01_z_lo", 20), ("ko01_z_hi", 40),
+                ),
+                encoding="utf-8",
+            )
+            rows = im.load_sheet(csv_path)
+            _lines, report, matched, _errors = im.build_patch(
+                params_copy, rows, "sheet.csv", "2026-09-05"
+            )
+            self.assertEqual(
+                matched,
+                {"ko01_x_lo", "ko01_x_hi", "ko01_l_half", "ko01_z_lo", "ko01_z_hi"},
+            )
+            joined = "\n".join(report)
+            self.assertRegex(joined, r"SEC9\s+M-02: fully retired")
+
+
+class TestApplyWritesAndIsIdempotentOnDryRun(unittest.TestCase):
+    def test_dry_run_never_writes(self):
+        with tempfile.TemporaryDirectory() as d:
+            params_copy = Path(d) / "w17_params.scad"
+            shutil.copy(FIXTURES / "sample_params.scad", params_copy)
+            before = params_copy.read_text(encoding="utf-8")
+            rc = im.main(
+                [
+                    "--sheet",
+                    str(FIXTURES / "sample_measurements.csv"),
+                    "--params",
+                    str(params_copy),
+                ]
+            )
+            after = params_copy.read_text(encoding="utf-8")
+            self.assertEqual(before, after)
+            # errors (CONFLICT) exist in this fixture, so exit code is 1
+            self.assertEqual(rc, 1)
+
+    def test_apply_writes_only_matched_lines(self):
+        with tempfile.TemporaryDirectory() as d:
+            params_copy = Path(d) / "w17_params.scad"
+            shutil.copy(FIXTURES / "sample_params.scad", params_copy)
+            # Use only the clean, unambiguous rows for this test so --apply
+            # can succeed (the full fixture sheet has a deliberate CONFLICT
+            # row that makes build_patch report an error and main() exit 1).
+            clean_csv = Path(d) / "clean.csv"
+            with (FIXTURES / "sample_measurements.csv").open(newline="", encoding="utf-8") as f:
+                reader = csv.DictReader(f)
+                rows = [r for r in reader if r["id"] in ("M-03", "M-03h", "M-03f")]
+            with clean_csv.open("w", newline="", encoding="utf-8") as f:
+                writer = csv.DictWriter(f, fieldnames=im.REQUIRED_HEADERS)
+                writer.writeheader()
+                writer.writerows(rows)
+
+            rc = im.main(
+                [
+                    "--sheet",
+                    str(clean_csv),
+                    "--params",
+                    str(params_copy),
+                    "--apply",
+                    "--skip-render",
+                ]
+            )
+            self.assertEqual(rc, 0)
+            new_text = params_copy.read_text(encoding="utf-8")
+            self.assertIn("esp_thk_headers   = 12.4;", new_text)
+            self.assertIn("board_seat_x0     = 3.0;    // MEASURED(clean.csv#M-03h", new_text)
+            self.assertIn("guide_top_z       = 30.0;   // ASSUMED (see §9)", new_text)  # untouched
+
+
+class TestParamColumn(unittest.TestCase):
+    """The 2026-09-05 schema handshake: `param` is the mapping, prose is prose.
+
+    Before this, the sheet put prose in `quantity` and the tool required
+    `quantity` to BE the parameter name — 231 rows read, 0 matched, exit 0.
+    """
+
+    def setUp(self):
+        self.params_path = FIXTURES / "sample_params.scad"
+
+    def test_param_column_is_the_mapping_not_the_prose(self):
+        rows = im.load_sheet(FIXTURES / "sample_measurements_param.csv")
+        self.assertTrue(all(r.has_param_col for r in rows))
+        lines, _report, matched, _errors = im.build_patch(
+            self.params_path, rows, "sample_measurements_param.csv", "2026-09-05"
+        )
+        self.assertEqual(matched, {"esp_thk_headers", "guide_top_z"})
+        self.assertIn("esp_thk_headers   = 12.4;", "".join(lines))
+
+    def test_empty_param_is_register_only_not_a_miss(self):
+        rows = im.load_sheet(FIXTURES / "sample_measurements_param.csv")
+        _lines, report, _matched, errors = im.build_patch(
+            self.params_path, rows, "sample_measurements_param.csv", "2026-09-05"
+        )
+        joined = "\n".join(report)
+        # M-22b.1 measures an M3 thread OD, which is NOT screw_m3_clear_d.
+        self.assertNotIn("M-22b.1", joined.replace("REG ", ""))
+        self.assertRegex(joined, r"REG\s+1 register-only row")
+        self.assertFalse(any("M-22b.1" in e for e in errors))
+        # and screw_m3_clear_d is untouched
+        self.assertIn("screw_m3_clear_d  = 3.4;    // ASSUMED-adjacent",
+                      "".join(_lines))
+
+    def test_param_naming_a_nonexistent_parameter_is_an_error(self):
+        rows = im.load_sheet(FIXTURES / "sample_measurements_param.csv")
+        _lines, report, _matched, errors = im.build_patch(
+            self.params_path, rows, "sample_measurements_param.csv", "2026-09-05"
+        )
+        self.assertTrue(any("not_a_real_param" in e for e in errors))
+        self.assertIn("MISS", "\n".join(report))
+
+    def test_derived_literal_is_flagged_for_recompute(self):
+        rows = im.load_sheet(FIXTURES / "sample_measurements_param.csv")
+        _lines, report, _matched, _errors = im.build_patch(
+            self.params_path, rows, "sample_measurements_param.csv", "2026-09-05"
+        )
+        joined = "\n".join(report)
+        # guide_top_margin = DERIVED(board_top_z - guide_top_z) is a hardcoded
+        # literal; guide_top_z just moved, so it must be recomputed by hand.
+        self.assertRegex(joined, r"RECOMP\s+guide_top_margin")
+        self.assertIn("RECOMPUTE IT BY HAND", joined)
+        # ... and the tool must NOT have rewritten it itself
+        self.assertIn("guide_top_margin  = 2.0;", "".join(_lines))
+
+
+class TestNothingMatchedFails(unittest.TestCase):
+    """A sheet that reads rows and patches nothing used to exit 0."""
+
+    def _run(self, sheet_name):
+        with tempfile.TemporaryDirectory() as d:
+            params_copy = Path(d) / "w17_params.scad"
+            shutil.copy(FIXTURES / "sample_params.scad", params_copy)
+            before = params_copy.read_text(encoding="utf-8")
+            rc = im.main(["--sheet", str(FIXTURES / sheet_name),
+                          "--params", str(params_copy)])
+            self.assertEqual(before, params_copy.read_text(encoding="utf-8"))
+            return rc
+
+    def test_prose_legacy_sheet_exits_1(self):
+        self.assertEqual(self._run("sample_measurements_prose.csv"), 1)
+
+    def test_unfilled_sheet_exits_1(self):
+        self.assertEqual(self._run("sample_measurements_unfilled.csv"), 1)
+
+    def test_apply_on_an_unmatched_sheet_writes_nothing_and_exits_1(self):
+        with tempfile.TemporaryDirectory() as d:
+            params_copy = Path(d) / "w17_params.scad"
+            shutil.copy(FIXTURES / "sample_params.scad", params_copy)
+            before = params_copy.read_text(encoding="utf-8")
+            rc = im.main(["--sheet", str(FIXTURES / "sample_measurements_prose.csv"),
+                          "--params", str(params_copy), "--apply", "--skip-render"])
+            self.assertEqual(rc, 1)
+            self.assertEqual(before, params_copy.read_text(encoding="utf-8"))
+
+
+if __name__ == "__main__":
+    unittest.main()

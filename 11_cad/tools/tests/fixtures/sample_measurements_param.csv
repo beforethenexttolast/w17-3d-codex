@@ -1,0 +1,5 @@
+id,param,quantity,unit,value,tolerance,photo_ref,notes
+M-03c,esp_thk_headers,"TOTAL thickness with headers fitted, at its thickest",mm,12.4,0.2,,prose quantity: the param column is the mapping
+M-07.worst,guide_top_z,WORST of the six clear heights,mm,29.4,1,,single defining cell
+M-22b.1,,"M3 screw: thread outside diameter (RECORD ONLY)",mm,2.98,0.1,,register-only: a stock dimension is not the clearance hole
+M-99,not_a_real_param,a param name that does not exist,mm,5.0,,,authoring error

@@ -1,0 +1,3 @@
+id,param,quantity,unit,value,tolerance,photo_ref,notes
+M-03c,esp_thk_headers,TOTAL thickness with headers fitted,mm,,0.2,,blank sheet
+M-22b.1,,M3 screw: thread outside diameter,mm,,0.1,,register-only and blank

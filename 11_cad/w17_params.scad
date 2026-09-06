@@ -68,10 +68,10 @@ $fn               = 48;     // render quality; not a physical dimension
 // 2. Fastener + insert family
 // ---------------------------------------------------------------------
 
-screw_m3_clear_d  = 3.4;    // ASSUMED-adjacent: typical M3 clearance; confirmed by coupon C-1
+screw_m3_clear_d  = 3.4;    // ASSUMED-adjacent: the clearance HOLE Ø (= M3 thread OD + clearance), used directly as cylinder(d=) in gcs_box/coupons — NEVER a measured thread OD; M-22b.1 records the stock and is register-only. Confirmed by coupon C-1
 screw_m3_head_d   = 6.0;    // DOCUMENTED(ISO 7380 button head M3, nominal)
-insert_m3_d       = 4.0;    // ASSUMED (see §9) brass heat-set M3x5 outside Ø, brand-dependent
-insert_m3_h       = 5.7;    // ASSUMED (see §9) brass heat-set M3x5 length
+insert_m3_d       = 4.0;    // ASSUMED (see §9) the BORE the brass M3x5 insert is melted INTO (w17_lib w17_standoff cuts cylinder(d=insert_d)) — NOT the measured knurl OD, which would leave nothing to grip; M-22a.1/.1b record the stock and are register-only. Brand-dependent
+insert_m3_h       = 5.7;    // ASSUMED (see §9) brass heat-set M3x5 length == pocket depth, 1:1, so M-22a.2 sets this one directly
 insert_boss_wall  = 2.0;    // POLICY(hoop wall around a heat-set insert, >= 2 mm)
 
 
@@ -198,8 +198,8 @@ slot_lead_in      = 0.6;    // ESTIMATED(45° chamfer so the board finds the slo
 
 guide_x0          = 1.0;    // DERIVED(aft of board_seat_x0, on the wing)
 guide_x1          = 3.0;    // DERIVED(== board_seat_x0)
-guide_top_z       = 30.0;   // ASSUMED (see §9) M-07; may stop below board_top_z
-guide_top_margin  = 2.0;    // DERIVED(board_top_z - guide_top_z) the §5.3 escape route
+guide_top_z       = 30.0;   // ASSUMED (see §9) a cage DESIGN OUTPUT; M-07 reads a shell-interior clear height, which BOUNDS it, not its value (see M-07.worst) — may stop below board_top_z
+guide_top_margin  = 2.0;    // DERIVED(board_top_z - guide_top_z) the §5.3 escape route — a HARDCODED literal: RECOMPUTE it by hand whenever guide_top_z moves; no assert re-derives it
 
 rail_out          = board_l_in + slot_w + rail_t;  // DERIVED = 33.6, outboard face of rail/guide
 
@@ -240,8 +240,8 @@ clip_finger_gap   = 0.4;    // ESTIMATED(so the finger clears the PCB face, not 
 clip_station_x    = [10, 34];  // ESTIMATED(two stations, spread over the 39 mm board)
 // fit_clearance is in §1 with the other process constants.
 
-zip_slot_w        = 4.0;    // ASSUMED (see §9) fits a 3 mm cable tie; tie stock not calipered
-zip_slot_l        = 2.5;    // ASSUMED (see §9)
+zip_slot_w        = 4.0;    // ASSUMED (see §9) the SLOT the tie threads through = strap width + dressing room (fits a 3 mm tie); M-22c.1 records the strap and is register-only. Tie stock not calipered
+zip_slot_l        = 2.5;    // ASSUMED (see §9) the slot's other side = strap thickness + dressing room; M-22c.2 records the strap and is register-only
 zip_slot_bridge   = 3.0;    // ESTIMATED(material left between a slot pair)
 
 pass_slot_w       = 10.0;   // ESTIMATED(a 4-way silicone bundle plus dressing room)
